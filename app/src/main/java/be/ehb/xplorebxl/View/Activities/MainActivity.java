@@ -15,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -33,6 +35,7 @@ import be.ehb.xplorebxl.Database.Database;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
+import be.ehb.xplorebxl.View.Fragments.DetailFragment;
 import be.ehb.xplorebxl.View.Fragments.ListViewFragment;
 
 /**
@@ -43,8 +46,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback {
 
     private GoogleMap map;
-    private MapFragment mapFragment;
-    private HashMap<Marker, Object > objectLinkedToMarker;
+    //private MapFragment mapFragment;
+    private HashMap<Marker, Object> objectLinkedToMarker;
+    Button btnCloseExtraFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,23 +64,33 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
         //MAPS
-        mapFragment = new MapFragment();
+        MapFragment mapFragment = new MapFragment();
         mapFragment.getMapAsync(this);
 
         getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
         objectLinkedToMarker = new HashMap<>();
 
+        btnCloseExtraFrag = findViewById(R.id.btn_main_close);
+
+        btnCloseExtraFrag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
+                btnCloseExtraFrag.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -91,9 +105,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+           // getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+            //setupMap();
 
-            setupMap();
+            MapFragment mapFragment = new MapFragment();
+            mapFragment.getMapAsync(this);
+
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
         } else if (id == R.id.nav_list) {
             getFragmentManager().beginTransaction().replace(R.id.frag_container, ListViewFragment.newInstance()).commit();
 
@@ -142,11 +160,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Log.d("testtest", "onInfoWindowClick: ");
 
-        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+
+        findViewById(R.id.detail_frag_container).setVisibility(View.VISIBLE);
+
+
+        getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, DetailFragment.newInstance()).commit();
+
+
+        btnCloseExtraFrag.setVisibility(View.VISIBLE);
+  /*      Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
         Object selectedObject = (objectLinkedToMarker.get(marker).getClass()).cast(objectLinkedToMarker.get(marker));
         intent.putExtra("selected object", (Serializable) objectLinkedToMarker.get(marker).getClass().cast(objectLinkedToMarker.get(marker)));
-        startActivity(intent);
+        startActivity(intent);*/
     }
 }
