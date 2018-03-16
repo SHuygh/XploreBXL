@@ -12,4 +12,6 @@
     <string name="txt_nav_list">List</string>
     <string name="txt_nav_about">About</string>
     <string name="txt_nav_setting">Settings</string>
+    <string name="btn_website">WEBSITE</string>
+    <string name="btn_favorites">ADD TO FAVORITES</string>
 </resources>
