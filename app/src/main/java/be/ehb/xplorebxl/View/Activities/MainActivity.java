@@ -3,6 +3,7 @@ package be.ehb.xplorebxl.View.Activities;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -26,6 +29,8 @@ import java.util.ArrayList;
 import be.ehb.xplorebxl.Database.Database;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.View.Fragments.AboutFragment;
+import be.ehb.xplorebxl.View.Fragments.ListViewFragment;
 
 /**
  * Created by TDS-Team on 16/03/2018.
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
 
     private GoogleMap map;
+    private MapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +61,11 @@ public class MainActivity extends AppCompatActivity
 
 
         //MAPS
-        MapFragment mapFragment = new MapFragment();
+        mapFragment = new MapFragment();
         mapFragment.getMapAsync(this);
 
         getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+
     }
 
     @Override
@@ -71,46 +78,25 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_map) {
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
-        } else if (id == R.id.nav_slideshow) {
+            setupMap();
+        } else if (id == R.id.nav_list) {
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, ListViewFragment.newInstance()).commit();
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_about) {
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, AboutFragment.newInstance()).commit();
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_settings) {
+            Toast.makeText(getApplicationContext(), "SETTING SCHERM AANMAKEN!!!", Toast.LENGTH_LONG).show();
+            //SETTINGSFRAGMENT
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -127,8 +113,12 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        drawMarkers();
+        setupMap();
+    }
 
+    private void setupMap() {
+        Log.d("testtest", "setupMap: ");
+        drawMarkers();
     }
 
     private void drawMarkers() {
@@ -136,11 +126,13 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Museum> museums = Database.getInstance().getMuseums();
 
         for(Museum element: museums){
-            map.addMarker(new MarkerOptions()
+            if(map.addMarker(new MarkerOptions()
                     .title(element.getName())
                     .position(element.getCoord())
                     .snippet("Click for more information")
-                    .icon(BitmapDescriptorFactory.defaultMarker(180)));
+                    .icon(BitmapDescriptorFactory.defaultMarker(180))) != null){
+                Log.d("testtest", "drawMarkers: " + element.getName());
+            };
         }
     }
 }

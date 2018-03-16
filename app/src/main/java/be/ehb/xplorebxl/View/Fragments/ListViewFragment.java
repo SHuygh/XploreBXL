@@ -20,7 +20,7 @@ public class ListViewFragment extends Fragment {
     }
 
 
-    public static ListViewFragment newInstance(String param1, String param2) {
+    public static ListViewFragment newInstance() {
         ListViewFragment fragment = new ListViewFragment();
         return fragment;
     }
