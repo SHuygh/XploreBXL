@@ -1,5 +1,6 @@
 package be.ehb.xplorebxl.View.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,7 +25,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import be.ehb.xplorebxl.Database.Database;
 import be.ehb.xplorebxl.Model.Museum;
@@ -37,10 +40,11 @@ import be.ehb.xplorebxl.View.Fragments.ListViewFragment;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback {
 
     private GoogleMap map;
     private MapFragment mapFragment;
+    private HashMap<Marker, Object > objectLinkedToMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,8 @@ public class MainActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
         getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+
+        objectLinkedToMarker = new HashMap<>();
 
     }
 
@@ -105,11 +111,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
-        return false;
-    }
-
-    @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity
     private void setupMap() {
         Log.d("testtest", "setupMap: ");
         drawMarkers();
+        map.setOnInfoWindowClickListener(this);
     }
 
     private void drawMarkers() {
@@ -126,13 +128,25 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Museum> museums = Database.getInstance().getMuseums();
 
         for(Museum element: museums){
-            if(map.addMarker(new MarkerOptions()
+           objectLinkedToMarker.put(map.addMarker(
+                   new MarkerOptions()
                     .title(element.getName())
                     .position(element.getCoord())
                     .snippet("Click for more information")
-                    .icon(BitmapDescriptorFactory.defaultMarker(180))) != null){
-                Log.d("testtest", "drawMarkers: " + element.getName());
-            };
+                    .icon(BitmapDescriptorFactory.defaultMarker(180))),
+                   element
+                   );
+            }
         }
+
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Log.d("testtest", "onInfoWindowClick: ");
+
+        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+        Object selectedObject = (objectLinkedToMarker.get(marker).getClass()).cast(objectLinkedToMarker.get(marker));
+        intent.putExtra("selected object", (Serializable) objectLinkedToMarker.get(marker).getClass().cast(objectLinkedToMarker.get(marker)));
+        startActivity(intent);
     }
 }
