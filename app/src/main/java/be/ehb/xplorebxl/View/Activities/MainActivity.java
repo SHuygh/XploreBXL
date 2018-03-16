@@ -12,7 +12,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+
+import be.ehb.xplorebxl.Database.Database;
+import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
 
 /**
@@ -20,7 +32,9 @@ import be.ehb.xplorebxl.R;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
+
+    private GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +52,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        //MAPS
+        MapFragment mapFragment = new MapFragment();
+        mapFragment.getMapAsync(this);
+
+        getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
     }
 
     @Override
@@ -95,5 +116,31 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+
+        drawMarkers();
+
+    }
+
+    private void drawMarkers() {
+
+        ArrayList<Museum> museums = Database.getInstance().getMuseums();
+
+        for(Museum element: museums){
+            map.addMarker(new MarkerOptions()
+                    .title(element.getName())
+                    .position(element.getCoord())
+                    .snippet("Click for more information")
+                    .icon(BitmapDescriptorFactory.defaultMarker(180)));
+        }
     }
 }

@@ -1,5 +1,7 @@
 package be.ehb.xplorebxl.Model;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.Serializable;
 
 /**
@@ -98,6 +100,11 @@ public class Museum implements Serializable {
     public void setCoordY(double coordY) {
         this.coordY = coordY;
     }
+
+    public LatLng getCoord(){
+        return new LatLng(coordX, coordY);
+    }
+
 
     @Override
     public String toString() {
