@@ -1,4 +1,4 @@
-package be.ehb.xplorebxl;
+package be.ehb.xplorebxl.View.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import be.ehb.xplorebxl.R;
+
+/**
+ * Created by TDS-Team on 16/03/2018.
+ */
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
