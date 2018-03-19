@@ -56,7 +56,9 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
     public abstract StreetArtDAO getStreetArtDao();
 
-
+    public List<StreetArt> getAllStreetArt(){
+        return getStreetArtDao().getAllStreetArt();
+    }
 
 
 
