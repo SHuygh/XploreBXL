@@ -33,6 +33,7 @@ import java.util.List;
 
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
+import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.MuseumHandler;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
@@ -53,8 +54,10 @@ public class MainActivity extends AppCompatActivity
     private MapFragment mapFragment;
     //private MapFragment mapFragment;
     private HashMap<Marker, Object> objectLinkedToMarker;
-    Button btnCloseExtraFrag;
-    MuseumHandler handler;
+    private  Button btnCloseExtraFrag;
+    private MuseumHandler handler;
+
+    private Object objectClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +136,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
             Toast.makeText(getApplicationContext(), "SETTING SCHERM AANMAKEN!!!", Toast.LENGTH_LONG).show();
 
-            LandMarksDatabase.getInstance(this).fillDB();
             //SETTINGSFRAGMENT
         }
 
@@ -168,6 +170,9 @@ public class MainActivity extends AppCompatActivity
                    element
                    );
             }
+        //List<StreetArt> streetArtList = LandMarksDatabase.getInstance(this)
+
+
         }
 
     private void updateCamera() {
@@ -191,7 +196,14 @@ public class MainActivity extends AppCompatActivity
         findViewById(R.id.detail_frag_container).setVisibility(View.VISIBLE);
         btnCloseExtraFrag.setVisibility(View.VISIBLE);
 
-        getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, DetailFragment.newInstance()).commit();
+        objectClicked = objectLinkedToMarker.get(marker);
+
+        if(objectClicked instanceof Museum){
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, DetailFragment.newInstance()).commit();
+        }else if(objectClicked instanceof StreetArt){
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, DetailFragment.newInstance()).commit();
+        }
+
 
 
   /*      Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
@@ -211,7 +223,7 @@ public class MainActivity extends AppCompatActivity
                     OkHttpClient client = new OkHttpClient();
 
                     Request request = new Request.Builder()
-                            .url("https://opendata.brussel.be/api/records/1.0/search/?dataset=musea-in-brussel&rows=40")
+                            .url("https://opendata.brussel.be/api/records/1.0/search/?dataset=musea-in-brussel&rows=70")
                             .get()
                             .build();
 

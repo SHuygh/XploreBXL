@@ -4,6 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.Serializable;
 
 /**
@@ -20,10 +22,31 @@ public class StreetArt implements Serializable {
     private String nameOfArtist;
     private String address;
     private String explanation;
+    private String imgUrl;
     private double coordX;
     private double coordY;
 
     public StreetArt() {
+    }
+
+    public StreetArt(@NonNull String recordId, String nameOfArt, String photo, String nameOfArtist, String address, String explanation, String imgID, double coordX, double coordY) {
+        this.recordId = recordId;
+        this.nameOfArt = nameOfArt;
+        this.photo = photo;
+        this.nameOfArtist = nameOfArtist;
+        this.address = address;
+        this.explanation = explanation;
+        this.imgUrl = "https://opendata.brussel.be/explore/dataset/streetart/files/"+imgUrl+"/300/";
+        this.coordX = coordX;
+        this.coordY = coordY;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     public String getRecordId() {
@@ -89,6 +112,8 @@ public class StreetArt implements Serializable {
     public void setCoordY(double coordY) {
         this.coordY = coordY;
     }
+
+    public LatLng getCoord(){return new LatLng(coordX, coordY);}
 
     @Override
     public String toString() {

@@ -3,7 +3,6 @@ package be.ehb.xplorebxl.Utils;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +63,7 @@ public class MuseumHandler extends Handler {
 
                 Museum museum = new Museum(recordId, name, city, adres, url, tel, email, coordX, coordY);
 
-                ArrayList<String> recordIdList = (ArrayList<String>) LandMarksDatabase.getInstance(context).getMuseumDao().getMuseamRecordID();
+                ArrayList<String> recordIdList = (ArrayList<String>) LandMarksDatabase.getInstance(context).getMuseumDao().getMuseumRecordID();
 
                 if(recordIdList.contains(recordId)){
                     LandMarksDatabase.getInstance(context).updateMuseum(museum);
