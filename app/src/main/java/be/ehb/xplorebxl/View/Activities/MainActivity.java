@@ -2,20 +2,14 @@ package be.ehb.xplorebxl.View.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -26,10 +20,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import be.ehb.xplorebxl.Database.Database;
+import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
@@ -124,8 +118,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void drawMarkers() {
-
-        ArrayList<Museum> museums = Database.getInstance().getMuseums();
+        List<Museum> museums = LandMarksDatabase.getInstance(this).getMuseums();
 
         for(Museum element: museums){
            objectLinkedToMarker.put(map.addMarker(
