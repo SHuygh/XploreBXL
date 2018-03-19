@@ -75,6 +75,18 @@ public abstract class LandMarksDatabase extends RoomDatabase {
         return getMuseumDao().getAllMuseums();
     }
 
+    public List<String> getMuseumRecordID(){
+        return  getMuseumDao().getMuseamRecordID();
+    }
+
+    public void insertMuseum(Museum m){
+        getMuseumDao().insertMuseum(m);
+    }
+
+    public void updateMuseum(Museum m){
+        getMuseumDao().updateMuseum(m);
+    }
+
 
 
 

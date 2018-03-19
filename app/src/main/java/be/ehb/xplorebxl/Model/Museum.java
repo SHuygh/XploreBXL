@@ -16,6 +16,7 @@ import java.io.Serializable;
 public class Museum implements Serializable {
 
     @PrimaryKey
+    @NonNull
     private String recordId;
     private String name;
     private String city;
@@ -26,11 +27,10 @@ public class Museum implements Serializable {
     private double coordX;
     private double coordY;
 
-
     public Museum() {
     }
 
-    public Museum(@NonNull String recordId, String name, String city, String adres, String url, String tel, String email, double coordX, double coordY) {
+    public Museum(String recordId, String name, String city, String adres, String url, String tel, String email, double coordX, double coordY) {
         this.recordId = recordId;
         this.name = name;
         this.city = city;
@@ -47,7 +47,7 @@ public class Museum implements Serializable {
         return recordId;
     }
 
-    public void setRecordId(@NonNull String recordId) {
+    public void setRecordId(String recordId) {
         this.recordId = recordId;
     }
 

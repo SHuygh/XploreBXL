@@ -2,6 +2,7 @@ package be.ehb.xplorebxl.View.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,9 +34,13 @@ import java.util.List;
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.MuseumHandler;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.DetailFragment;
 import be.ehb.xplorebxl.View.Fragments.ListViewFragment;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by TDS-Team on 16/03/2018.
@@ -48,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     //private MapFragment mapFragment;
     private HashMap<Marker, Object> objectLinkedToMarker;
     Button btnCloseExtraFrag;
+    MuseumHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +91,10 @@ public class MainActivity extends AppCompatActivity
                 btnCloseExtraFrag.setVisibility(View.GONE);
             }
         });
+
+        handler = new MuseumHandler(getApplicationContext());
+
+        downloadData();
 
     }
 
@@ -187,5 +198,40 @@ public class MainActivity extends AppCompatActivity
         Object selectedObject = (objectLinkedToMarker.get(marker).getClass()).cast(objectLinkedToMarker.get(marker));
         intent.putExtra("selected object", (Serializable) objectLinkedToMarker.get(marker).getClass().cast(objectLinkedToMarker.get(marker)));
         startActivity(intent);*/
+    }
+
+
+    private void downloadData() {
+        Thread backGroundThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+
+                    OkHttpClient client = new OkHttpClient();
+
+                    Request request = new Request.Builder()
+                            .url("https://opendata.brussel.be/api/records/1.0/search/?dataset=musea-in-brussel&rows=40")
+                            .get()
+                            .build();
+
+
+                    Response response = client.newCall(request).execute();
+
+                    Message msg = new Message();
+
+                    Bundle bndl = new Bundle();
+                    bndl.putString("json_data", response.body().string());
+                    msg.setData(bndl);
+
+
+                    handler.sendMessage(msg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        backGroundThread.start();
     }
 }

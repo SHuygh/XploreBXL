@@ -13,6 +13,7 @@ import java.io.Serializable;
 public class StreetArt implements Serializable {
 
     @PrimaryKey
+    @NonNull
     private String recordId;
     private String nameOfArt;
     private String photo;
