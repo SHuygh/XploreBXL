@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detail_frag_container">
+        app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 
@@ -37,6 +37,7 @@
         android:id="@+id/detail_frag_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@android:color/background_light"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

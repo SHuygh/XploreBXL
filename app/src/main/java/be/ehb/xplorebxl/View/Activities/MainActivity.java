@@ -10,16 +10,22 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,6 +33,7 @@ import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
+import be.ehb.xplorebxl.View.Fragments.DetailFragment;
 import be.ehb.xplorebxl.View.Fragments.ListViewFragment;
 
 /**
@@ -38,7 +45,9 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleMap map;
     private MapFragment mapFragment;
-    private HashMap<Marker, Object > objectLinkedToMarker;
+    //private MapFragment mapFragment;
+    private HashMap<Marker, Object> objectLinkedToMarker;
+    Button btnCloseExtraFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,17 +63,27 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
         //MAPS
-        mapFragment = new MapFragment();
+        MapFragment mapFragment = new MapFragment();
         mapFragment.getMapAsync(this);
 
         getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
         objectLinkedToMarker = new HashMap<>();
+
+        btnCloseExtraFrag = findViewById(R.id.btn_main_close);
+
+        btnCloseExtraFrag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
+                btnCloseExtraFrag.setVisibility(View.GONE);
+            }
+        });
 
     }
 
@@ -85,6 +104,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
+           // getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+            //setupMap();
+
+            MapFragment mapFragment = new MapFragment();
+            mapFragment.getMapAsync(this);
+
             getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
             setupMap();
@@ -96,6 +121,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
             Toast.makeText(getApplicationContext(), "SETTING SCHERM AANMAKEN!!!", Toast.LENGTH_LONG).show();
+
+            LandMarksDatabase.getInstance(this).fillDB();
             //SETTINGSFRAGMENT
         }
 
@@ -109,10 +136,10 @@ public class MainActivity extends AppCompatActivity
         map = googleMap;
 
         setupMap();
+        updateCamera();
     }
 
     private void setupMap() {
-        Log.d("testtest", "setupMap: ");
         drawMarkers();
         map.setOnInfoWindowClickListener(this);
     }
@@ -132,14 +159,33 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+    private void updateCamera() {
+
+        List<Museum> museums = LandMarksDatabase.getInstance(this).getMuseums();
+
+        if(museums.size() > 0){
+            LatLng coord = museums.get(0).getCoord();
+                if(coord != null){
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coord, 16);
+
+                    map.animateCamera(cameraUpdate);
+                }
+        }
+    }
+
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Log.d("testtest", "onInfoWindowClick: ");
 
-        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+        findViewById(R.id.detail_frag_container).setVisibility(View.VISIBLE);
+        btnCloseExtraFrag.setVisibility(View.VISIBLE);
+
+        getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, DetailFragment.newInstance()).commit();
+
+
+  /*      Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
         Object selectedObject = (objectLinkedToMarker.get(marker).getClass()).cast(objectLinkedToMarker.get(marker));
         intent.putExtra("selected object", (Serializable) objectLinkedToMarker.get(marker).getClass().cast(objectLinkedToMarker.get(marker)));
-        startActivity(intent);
+        startActivity(intent);*/
     }
 }

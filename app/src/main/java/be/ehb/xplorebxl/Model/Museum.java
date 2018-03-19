@@ -18,20 +18,37 @@ public class Museum implements Serializable {
     @PrimaryKey
     @NonNull
     private String recordId;
-    private String name, city, adres, url, tel, eMail;
-    private double coordX, coordY;
+    private String name;
+    private String city;
+    private String adres;
+    private String url;
+    private String tel;
+    private String email;
+    private double coordX;
+    private double coordY;
 
 
     public Museum() {
     }
 
+    public Museum(@NonNull String recordId, String name, String city, String adres, String url, String tel, String email, double coordX, double coordY) {
+        this.recordId = recordId;
+        this.name = name;
+        this.city = city;
+        this.adres = adres;
+        this.url = url;
+        this.tel = tel;
+        this.email = email;
+        this.coordX = coordX;
+        this.coordY = coordY;
+    }
 
-
+    @NonNull
     public String getRecordId() {
         return recordId;
     }
 
-    public void setRecordId(String recordId) {
+    public void setRecordId(@NonNull String recordId) {
         this.recordId = recordId;
     }
 
@@ -75,12 +92,12 @@ public class Museum implements Serializable {
         this.tel = tel;
     }
 
-    public String geteMail() {
-        return eMail;
+    public String getEmail() {
+        return email;
     }
 
-    public void seteMail(String eMail) {
-        this.eMail = eMail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public double getCoordX() {

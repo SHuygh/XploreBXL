@@ -1,6 +1,7 @@
 package be.ehb.xplorebxl.Model;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import java.util.List;
@@ -13,4 +14,7 @@ public interface MuseumDAO {
 
     @Query("SELECT * FROM Museum")
     List<Museum> getAllMuseums();
+
+    @Insert
+    void insertMuseum(Museum m);
 }
