@@ -1,10 +1,14 @@
 package be.ehb.xplorebxl.View.Fragments;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import be.ehb.xplorebxl.R;
 
@@ -27,8 +31,16 @@ public class AboutFragment extends android.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_about, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_about, container, false);
+
+        ImageView iv_test = rootView.findViewById(R.id.iv_test);
+
+        Uri uri;
+
+        uri = Uri.parse("https://opendata.brussel.be/explore/dataset/streetart/files/e25418821200a0f7c8f9f81b22d21691/300/");
+        Picasso.with(getActivity()).load(uri).into(iv_test);
+
+        return rootView;
     }
 
 }

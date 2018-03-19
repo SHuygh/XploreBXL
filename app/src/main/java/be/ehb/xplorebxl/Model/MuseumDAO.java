@@ -3,6 +3,7 @@ package be.ehb.xplorebxl.Model;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -16,8 +17,11 @@ public interface MuseumDAO {
     List<Museum> getAllMuseums();
 
     @Query("SELECT recordId FROM Museum")
-    List<String> getMuseamRecordID();
+    List<String> getMuseumRecordID();
 
     @Insert
     void insertMuseum(Museum m);
+
+    @Update
+    void updateMuseum(Museum m);
 }

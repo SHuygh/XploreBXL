@@ -16,6 +16,7 @@ import java.io.Serializable;
 public class Museum implements Serializable {
 
     @PrimaryKey
+    @NonNull
     private String recordId;
     private String name;
     private String city;
@@ -25,7 +26,6 @@ public class Museum implements Serializable {
     private String email;
     private double coordX;
     private double coordY;
-
 
     public Museum() {
     }
@@ -47,7 +47,7 @@ public class Museum implements Serializable {
         return recordId;
     }
 
-    public void setRecordId(@NonNull String recordId) {
+    public void setRecordId(String recordId) {
         this.recordId = recordId;
     }
 

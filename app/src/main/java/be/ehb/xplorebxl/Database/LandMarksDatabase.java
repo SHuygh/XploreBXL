@@ -31,48 +31,33 @@ public abstract class LandMarksDatabase extends RoomDatabase {
         return instance;
     }
 
+
+/**MUSEUM**/
+
     public abstract MuseumDAO getMuseumDao();
-
-    public abstract StreetArtDAO getStreetArtDao();
-
-//eigen functies
-
-    public void fillDB(){
-        ArrayList<Museum> museums = new ArrayList<>();
-
-        museums.add(new Museum("9e20aaa554aabb6b8da0f37ff1b45e125849c349",
-                "Archief en Museum voor het Vlaams Leven te Brussel",
-                "Brussel", "Arduinkaai 28", "http://www.amvb.be",
-                "telephone_telefoon", "info@amvb.be",
-                50.8552703, 4.34897509));
-
-        museums.add(new Museum("fbf48a0216f8e9814629179e06b3518bf4db6152",
-                "Art & marges museum",
-                "Brussel", "Arduinkaai 28", "http://www.amvb.be",
-                "telephone_telefoon", "info@amvb.be",
-                50.8347929,4.34647749));
-
-        museums.add(new Museum("efc644b8cb0c1b4d003f62d12afb1e602146baf8",
-                "Belgisch Museum van de Vrijmetselarij",
-                "Brussel", "Arduinkaai 28", "http://www.amvb.be",
-                "telephone_telefoon", "info@amvb.be",
-                50.8529947,4.3515889));
-
-        museums.add(new Museum("c1b3d92b8b7a92214ecd32834c41579461707e51",
-                "BELvue museum",
-                "Brussel", "Arduinkaai 28", "http://www.amvb.be",
-                "telephone_telefoon", "info@amvb.be",
-                50.84261069,4.3606882));
-
-        for(Museum element: museums){
-            getMuseumDao().insertMuseum(element);
-        }
-
-    }
-
 
     public List<Museum> getMuseums(){
         return getMuseumDao().getAllMuseums();
+    }
+
+    public List<String> getMuseumRecordID(){
+        return  getMuseumDao().getMuseumRecordID();
+    }
+
+    public void insertMuseum(Museum m){
+        getMuseumDao().insertMuseum(m);
+    }
+
+    public void updateMuseum(Museum m){
+        getMuseumDao().updateMuseum(m);
+    }
+
+/**StreetArt**/
+
+    public abstract StreetArtDAO getStreetArtDao();
+
+    public List<StreetArt> getAllStreetArt(){
+        return getStreetArtDao().getAllStreetArt();
     }
 
 
