@@ -16,7 +16,6 @@ import java.io.Serializable;
 public class Museum implements Serializable {
 
     @PrimaryKey
-    @NonNull
     private String recordId;
     private String name;
     private String city;

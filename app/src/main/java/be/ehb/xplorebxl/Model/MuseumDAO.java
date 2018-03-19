@@ -15,6 +15,9 @@ public interface MuseumDAO {
     @Query("SELECT * FROM Museum")
     List<Museum> getAllMuseums();
 
+    @Query("SELECT recordId FROM Museum")
+    List<String> getMuseamRecordID();
+
     @Insert
     void insertMuseum(Museum m);
 }
