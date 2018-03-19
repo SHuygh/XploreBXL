@@ -30,7 +30,7 @@ public class Museum implements Serializable {
     public Museum() {
     }
 
-    public Museum(@NonNull String recordId, String name, String city, String adres, String url, String tel, String email, double coordX, double coordY) {
+    public Museum(String recordId, String name, String city, String adres, String url, String tel, String email, double coordX, double coordY) {
         this.recordId = recordId;
         this.name = name;
         this.city = city;

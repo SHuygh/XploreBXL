@@ -1,8 +1,6 @@
 package be.ehb.xplorebxl.View.Activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,8 +22,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,7 +29,7 @@ import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
-import be.ehb.xplorebxl.View.Fragments.DetailFragment;
+import be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.ListViewFragment;
 
 /**
@@ -180,7 +176,7 @@ public class MainActivity extends AppCompatActivity
         findViewById(R.id.detail_frag_container).setVisibility(View.VISIBLE);
         btnCloseExtraFrag.setVisibility(View.VISIBLE);
 
-        getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, DetailFragment.newInstance()).commit();
+        getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance()).commit();
 
 
   /*      Intent intent = new Intent(getApplicationContext(), DetailActivity.class);

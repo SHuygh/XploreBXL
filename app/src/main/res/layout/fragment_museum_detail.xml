@@ -4,62 +4,62 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="be.ehb.xplorebxl.View.Fragments.DetailFragment">
+    tools:context="be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tv_detail_museum_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Museum aan de stroom"
         android:textAppearance="@android:style/TextAppearance.Material.Large"
-        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintStart_toStartOf="@+id/tv_detail_museum_address"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tv_detail_museum_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Rolwagenstraat 67, Antwerpen"
-        app:layout_constraintStart_toStartOf="@+id/button2"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintStart_toStartOf="@+id/btn_detail_museum_phone"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_museum_name" />
 
     <Button
-        android:id="@+id/button"
-        style="@style/Widget.AppCompat.Button.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@android:drawable/ic_menu_myplaces"
-        app:layout_constraintBottom_toBottomOf="@+id/button3"
-        app:layout_constraintStart_toEndOf="@+id/button3"
-        app:layout_constraintTop_toTopOf="@+id/button3" />
-
-    <Button
-        android:id="@+id/button3"
-        style="@style/Widget.AppCompat.Button.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/common_ic_googleplayservices"
-        app:layout_constraintBottom_toBottomOf="@+id/button2"
-        app:layout_constraintStart_toEndOf="@+id/button2"
-        app:layout_constraintTop_toTopOf="@+id/button2" />
-
-    <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_detail_museum_phone"
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/common_google_signin_btn_icon_dark"
+        android:background="@android:drawable/stat_sys_phone_call_forward"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_museum_address" />
+
+    <Button
+        android:id="@+id/btn_detail_museum_mail"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@android:drawable/sym_action_email"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_detail_museum_phone"
+        app:layout_constraintStart_toEndOf="@+id/btn_detail_museum_phone"
+        app:layout_constraintTop_toTopOf="@+id/btn_detail_museum_phone" />
+
+    <Button
+        android:id="@+id/btn_detail_museum_website"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/common_google_signin_btn_icon_dark"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_detail_museum_mail"
+        app:layout_constraintStart_toEndOf="@+id/btn_detail_museum_mail"
+        app:layout_constraintTop_toTopOf="@+id/btn_detail_museum_mail" />
 
 </android.support.constraint.ConstraintLayout>
