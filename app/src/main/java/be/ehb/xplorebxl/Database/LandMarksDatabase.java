@@ -1,21 +1,53 @@
 package be.ehb.xplorebxl.Database;
 
-import java.util.ArrayList;
+import android.arch.persistence.room.Database;
+import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
+import android.content.Context;
+
+import java.util.List;
 
 import be.ehb.xplorebxl.Model.Museum;
+import be.ehb.xplorebxl.Model.MuseumDAO;
+import be.ehb.xplorebxl.Model.StreetArt;
+import be.ehb.xplorebxl.Model.StreetArtDAO;
 
 /**
  * Created by TDS-Team on 16/03/2018.
  */
 
+@Database(version = 1, entities = {Museum.class, StreetArt.class})
+public abstract class LandMarksDatabase extends RoomDatabase {
 
-public class Database {
+    //singleton
+    private static LandMarksDatabase instance;
 
-    ArrayList<Museum> museums;
+    public static LandMarksDatabase getInstance (Context context){
+        if (instance == null){
+            instance = Room.databaseBuilder(context, LandMarksDatabase.class, "landMarks.db").allowMainThreadQueries().build();
 
-    private static final Database INSTANCE = new Database();
+        }
+        return instance;
+    }
 
-    private Database() {
+    public abstract MuseumDAO getMuseumDao();
+
+    public abstract StreetArtDAO getStreetArtDao();
+
+//eigen functies
+
+    public List<Museum> getMuseums(){
+        return getMuseumDao().getAllMuseums();
+    }
+
+
+
+
+   /* ArrayList<Museum> museums;
+
+    private static final LandMarksDatabase INSTANCE = new LandMarksDatabase();
+
+    private LandMarksDatabase() {
         museums = new ArrayList<>();
 
         museums.add(new Museum("9e20aaa554aabb6b8da0f37ff1b45e125849c349",
@@ -48,8 +80,10 @@ public class Database {
         return museums;
     }
 
-    public static Database getInstance(){
+    public static LandMarksDatabase getInstance(){
         return INSTANCE;
     }
+
+    */
 
 }
