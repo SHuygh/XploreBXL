@@ -1,5 +1,9 @@
 package be.ehb.xplorebxl.Model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
@@ -8,26 +12,20 @@ import java.io.Serializable;
  * Created by TDS-Team on 16/03/2018.
  */
 
+@Entity
 public class Museum implements Serializable {
 
-    private String recordId, name, city, adres, url, tel, eMail;
+    @PrimaryKey
+    @NonNull
+    private String recordId;
+    private String name, city, adres, url, tel, eMail;
     private double coordX, coordY;
 
 
     public Museum() {
     }
 
-    public Museum(String recordId, String name, String city, String adres, String url, String tel, String eMail, double coordX, double coordY) {
-        this.recordId = recordId;
-        this.name = name;
-        this.city = city;
-        this.adres = adres;
-        this.url = url;
-        this.tel = tel;
-        this.eMail = eMail;
-        this.coordX = coordX;
-        this.coordY = coordY;
-    }
+
 
     public String getRecordId() {
         return recordId;
