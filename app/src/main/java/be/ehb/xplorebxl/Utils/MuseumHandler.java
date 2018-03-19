@@ -56,8 +56,8 @@ public class MuseumHandler extends Handler {
                     String name = fields.getString(KEY_NAME);
                     String city = fields.getString(KEY_CITY);
                     String adres = fields.getString(KEY_ADRES);
-                    String url = fields.getString(KEY_URL);
-                    String tel = fields.getString(KEY_TEL);
+                    String url = (fields.has(KEY_URL)) ? fields.getString(KEY_URL) : "";
+                    String tel = (fields.has(KEY_TEL)) ? fields.getString(KEY_TEL) : "";
                     String email = fields.getString(KEY_EMAIL);
                     double coordX = fields.getDouble(KEY_COORDX);
                     double coordY = fields.getDouble(KEY_COORDY);
