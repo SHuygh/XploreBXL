@@ -1,5 +1,6 @@
 package be.ehb.xplorebxl.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
+import be.ehb.xplorebxl.View.Activities.MainActivity;
 
 /**
  * Created by huyghstijn on 19/03/2018.
@@ -51,9 +53,9 @@ public class RESTHandler extends Handler {
             KEY_COORDINATES_STREETART = "geocoordinates";
 
 
-    private Context context;
+    private MainActivity context;
 
-    public RESTHandler(Context context) {
+    public RESTHandler(MainActivity context) {
         this.context = context;
     }
 
@@ -82,8 +84,10 @@ public class RESTHandler extends Handler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
+        if(context.map != null) {
+            Log.d(TAG, "handleMessage: DONE DRAWMARKERS");
+            context.drawMarkers();
+        }
     }
 
 

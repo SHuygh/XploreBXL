@@ -1,11 +1,14 @@
 package be.ehb.xplorebxl.Utils;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -20,7 +23,7 @@ import be.ehb.xplorebxl.R;
 public class StreetArtListAdapter extends BaseAdapter {
 
     private class ViewHolder{
-        TextView tvRowStreetartName;
+        TextView tvRowStreetartArtistName;
         TextView tvRowStreetartAddress;
         ImageView ivRowStreetartPhoto;
     }
@@ -57,7 +60,7 @@ public class StreetArtListAdapter extends BaseAdapter {
             view = context.getLayoutInflater().inflate(R.layout.row_streetart,viewGroup,false);
             mViewHolder = new ViewHolder();
 
-            mViewHolder.tvRowStreetartName = view.findViewById(R.id.tv_row_streetart_artistname);
+            mViewHolder.tvRowStreetartArtistName = view.findViewById(R.id.tv_row_streetart_artistname);
             mViewHolder.tvRowStreetartAddress = view.findViewById(R.id.tv_row_streetart_address);
             mViewHolder.ivRowStreetartPhoto = view.findViewById(R.id.iv_row_streetart);
 
@@ -67,9 +70,18 @@ public class StreetArtListAdapter extends BaseAdapter {
 
         StreetArt currentStreetArt = items.get(i);
 
-        mViewHolder.tvRowStreetartName.setText(currentStreetArt.getNameOfArt());
+        mViewHolder.tvRowStreetartArtistName.setText(currentStreetArt.getNameOfArtist());
         mViewHolder.tvRowStreetartAddress.setText(currentStreetArt.getAddress());
 
+
+        if(currentStreetArt.isHasIMG()) {
+            String url = currentStreetArt.getImgUrl();
+
+            Uri uri = Uri.parse(url);
+            Picasso.with(context).load(uri).into(mViewHolder.ivRowStreetartPhoto);
+        }else {
+            mViewHolder.ivRowStreetartPhoto.setVisibility(View.INVISIBLE);
+        }
 
 
         return view;

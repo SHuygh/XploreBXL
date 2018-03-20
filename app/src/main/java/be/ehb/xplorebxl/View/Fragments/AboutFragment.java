@@ -35,6 +35,8 @@ public class AboutFragment extends android.app.Fragment {
 
         ImageView iv_test = rootView.findViewById(R.id.iv_test);
 
+
+
         Uri uri;
 
         uri = Uri.parse("https://opendata.brussel.be/explore/dataset/streetart/files/e25418821200a0f7c8f9f81b22d21691/300/");

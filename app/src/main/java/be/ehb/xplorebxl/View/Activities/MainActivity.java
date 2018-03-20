@@ -1,5 +1,6 @@
 package be.ehb.xplorebxl.View.Activities;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.NavigationView;
@@ -8,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -48,7 +50,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
 
-    private GoogleMap map;
+    public GoogleMap map;
     private HashMap<Marker, Object> objectLinkedToMarker;
     private  Button btnCloseExtraFrag;
 
@@ -89,8 +91,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-
         downloadData();
 
     }
@@ -112,8 +112,6 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
-           // getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
-            //setupMap();
 
             MapFragment mapFragment = new MapFragment();
             mapFragment.getMapAsync(this);
@@ -121,16 +119,19 @@ public class MainActivity extends AppCompatActivity
             getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
             setupMap();
+
+            findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
+            btnCloseExtraFrag.setVisibility(View.GONE);
         } else if (id == R.id.nav_list) {
             getFragmentManager().beginTransaction().replace(R.id.frag_container, ListViewFragment.newInstance()).commit();
+            findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
+            btnCloseExtraFrag.setVisibility(View.GONE);
 
         } else if (id == R.id.nav_about) {
             getFragmentManager().beginTransaction().replace(R.id.frag_container, AboutFragment.newInstance()).commit();
+            findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
+            btnCloseExtraFrag.setVisibility(View.GONE);
 
-        } else if (id == R.id.nav_settings) {
-            Toast.makeText(getApplicationContext(), "SETTING SCHERM AANMAKEN!!!", Toast.LENGTH_LONG).show();
-
-            //SETTINGSFRAGMENT
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -152,7 +153,8 @@ public class MainActivity extends AppCompatActivity
         updateCamera();
     }
 
-    private void drawMarkers() {
+    public void drawMarkers() {
+        Log.d("testtest", "drawMarkers: " + map.toString());
         List<Museum> museums = LandMarksDatabase.getInstance(this).getMuseums();
 
         for(Museum element: museums){
@@ -195,25 +197,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
- /*   @Override
-    public void onInfoWindowClick(Marker marker) {
-
-        findViewById(R.id.detail_frag_container).setVisibility(View.VISIBLE);
-        btnCloseExtraFrag.setVisibility(View.VISIBLE);
-
-        Object objectClicked = objectLinkedToMarker.get(marker);
-
-        if(objectClicked instanceof Museum){
-            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance((Museum) objectClicked)).commit();
-        }else if(objectClicked instanceof StreetArt){
-            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, StreetArtDetailFragment.newInstance()).commit();
-        }
-
-    }*/
-
-
     private void downloadData() {
-        final RESTHandler handler = new RESTHandler(getApplicationContext());
+        final RESTHandler handler = new RESTHandler(this);
 
         Thread backGroundThread = new Thread(new Runnable() {
             @Override
@@ -253,10 +238,11 @@ public class MainActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
-
             }
+
         });
         backGroundThread.start();
+
     }
 
     @Override
@@ -270,7 +256,7 @@ public class MainActivity extends AppCompatActivity
         if(objectClicked instanceof Museum){
             getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance((Museum) objectClicked)).commit();
         }else if(objectClicked instanceof StreetArt){
-            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, StreetArtDetailFragment.newInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, StreetArtDetailFragment.newInstance((StreetArt) objectClicked)).commit();
         }
 
         return true;

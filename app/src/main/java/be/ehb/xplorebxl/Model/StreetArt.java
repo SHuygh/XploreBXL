@@ -4,6 +4,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -35,7 +36,10 @@ public class StreetArt implements Serializable {
         this.address = address + ", Brussel";
         this.explanation = explanation;
         hasIMG = !TextUtils.isEmpty(imgID);
-        this.imgUrl = hasIMG ? "https://opendata.brussel.be/explore/dataset/streetart/files/"+imgUrl+"/300/" : "";
+        Log.d("testtest", "StreetArt: " + hasIMG);
+        Log.d("testtest", "StreetArt: " + imgID);
+        this.imgUrl = hasIMG ? "https://opendata.brussel.be/explore/dataset/streetart/files/"+imgID+"/300/" : "";
+        Log.d("testtest", "StreetArt: " + imgUrl);
         this.coordX = coordX;
         this.coordY = coordY;
     }
