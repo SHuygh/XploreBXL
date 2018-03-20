@@ -24,7 +24,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +32,7 @@ import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.Utils.MuseumHandler;
+import be.ehb.xplorebxl.Utils.RESTHandler;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.ListViewFragment;
@@ -47,16 +46,12 @@ import okhttp3.Response;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
 
     private GoogleMap map;
-    private MapFragment mapFragment;
-    //private MapFragment mapFragment;
     private HashMap<Marker, Object> objectLinkedToMarker;
     private  Button btnCloseExtraFrag;
-    private MuseumHandler handler;
 
-    private Object objectClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +89,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        handler = new MuseumHandler(getApplicationContext());
+
 
         downloadData();
 
@@ -148,12 +143,13 @@ public class MainActivity extends AppCompatActivity
         map = googleMap;
 
         setupMap();
-        updateCamera();
     }
 
     private void setupMap() {
         drawMarkers();
-        map.setOnInfoWindowClickListener(this);
+        //map.setOnInfoWindowClickListener(this);
+        map.setOnMarkerClickListener(this);
+        updateCamera();
     }
 
     private void drawMarkers() {
@@ -169,9 +165,19 @@ public class MainActivity extends AppCompatActivity
                    element
                    );
             }
-        //List<StreetArt> streetArtList = LandMarksDatabase.getInstance(this)
 
+         List<StreetArt> streetArtList = LandMarksDatabase.getInstance(this).getAllStreetArt();
 
+        for(StreetArt element: streetArtList){
+            objectLinkedToMarker.put(map.addMarker(
+                    new MarkerOptions()
+                            .title(element.getNameOfArtist())
+                            .position(element.getCoord())
+                            .snippet("Click for more information")
+                            .icon(BitmapDescriptorFactory.defaultMarker(90))),
+                    element
+            );
+        }
         }
 
     private void updateCamera() {
@@ -181,7 +187,7 @@ public class MainActivity extends AppCompatActivity
         if(museums.size() > 0){
             LatLng coord = museums.get(0).getCoord();
                 if(coord != null){
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coord, 16);
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coord, 13);
 
                     map.animateCamera(cameraUpdate);
                 }
@@ -189,60 +195,84 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    @Override
+ /*   @Override
     public void onInfoWindowClick(Marker marker) {
 
         findViewById(R.id.detail_frag_container).setVisibility(View.VISIBLE);
         btnCloseExtraFrag.setVisibility(View.VISIBLE);
 
-        objectClicked = objectLinkedToMarker.get(marker);
+        Object objectClicked = objectLinkedToMarker.get(marker);
 
         if(objectClicked instanceof Museum){
-            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance((Museum) objectClicked)).commit();
         }else if(objectClicked instanceof StreetArt){
             getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, StreetArtDetailFragment.newInstance()).commit();
         }
 
-
-
-  /*      Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-        Object selectedObject = (objectLinkedToMarker.get(marker).getClass()).cast(objectLinkedToMarker.get(marker));
-        intent.putExtra("selected object", (Serializable) objectLinkedToMarker.get(marker).getClass().cast(objectLinkedToMarker.get(marker)));
-        startActivity(intent);*/
-    }
+    }*/
 
 
     private void downloadData() {
+        final RESTHandler handler = new RESTHandler(getApplicationContext());
+
         Thread backGroundThread = new Thread(new Runnable() {
             @Override
             public void run() {
 
-                try {
+                String url_museums = "https://opendata.brussel.be/api/records/1.0/search/?dataset=musea-in-brussel&rows=70";
+                String url_streetArt = "https://opendata.brussel.be/api/records/1.0/search/?dataset=streetart&rows=70";
 
-                    OkHttpClient client = new OkHttpClient();
+                ArrayList<String> urlList = new ArrayList<>();
 
-                    Request request = new Request.Builder()
-                            .url("https://opendata.brussel.be/api/records/1.0/search/?dataset=musea-in-brussel&rows=70")
-                            .get()
-                            .build();
-
-
-                    Response response = client.newCall(request).execute();
-
-                    Message msg = new Message();
-
-                    Bundle bndl = new Bundle();
-                    bndl.putString("json_data", response.body().string());
-                    msg.setData(bndl);
+                urlList.add(url_museums);
+                urlList.add(url_streetArt);
 
 
-                    handler.sendMessage(msg);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                for(String url: urlList) {
+
+                    try {
+
+                        OkHttpClient client = new OkHttpClient();
+
+                        Request request = new Request.Builder()
+                                .url(url)
+                                .get()
+                                .build();
+
+
+                        Response response = client.newCall(request).execute();
+
+                        Message msg = new Message();
+
+                        Bundle bndl = new Bundle();
+                        bndl.putString("json_data", response.body().string());
+                        msg.setData(bndl);
+
+                        handler.sendMessage(msg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
         });
         backGroundThread.start();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        findViewById(R.id.detail_frag_container).setVisibility(View.VISIBLE);
+        btnCloseExtraFrag.setVisibility(View.VISIBLE);
+
+        Object objectClicked = objectLinkedToMarker.get(marker);
+
+        if(objectClicked instanceof Museum){
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance((Museum) objectClicked)).commit();
+        }else if(objectClicked instanceof StreetArt){
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, StreetArtDetailFragment.newInstance()).commit();
+        }
+
+        return true;
     }
 }

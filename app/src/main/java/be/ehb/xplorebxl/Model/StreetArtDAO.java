@@ -17,6 +17,9 @@ public interface StreetArtDAO {
     @Query("SELECT * FROM StreetArt")
     List<StreetArt>getAllStreetArt();
 
+    @Query("SELECT recordId FROM StreetArt")
+    List<String> getStreetArtRecordID();
+
     @Insert
     void insertStreetArt(StreetArt s);
 

@@ -3,6 +3,7 @@ package be.ehb.xplorebxl.Model;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -17,28 +18,34 @@ public class StreetArt implements Serializable {
     @PrimaryKey
     @NonNull
     private String recordId;
-    private String nameOfArt;
-    private String photo;
     private String nameOfArtist;
     private String address;
     private String explanation;
     private String imgUrl;
     private double coordX;
     private double coordY;
+    private boolean hasIMG;
 
     public StreetArt() {
     }
 
-    public StreetArt(@NonNull String recordId, String nameOfArt, String photo, String nameOfArtist, String address, String explanation, String imgID, double coordX, double coordY) {
+    public StreetArt(@NonNull String recordId, String nameOfArtist, String address, String explanation, String imgID, double coordX, double coordY) {
         this.recordId = recordId;
-        this.nameOfArt = nameOfArt;
-        this.photo = photo;
         this.nameOfArtist = nameOfArtist;
-        this.address = address;
+        this.address = address + ", Brussel";
         this.explanation = explanation;
-        this.imgUrl = "https://opendata.brussel.be/explore/dataset/streetart/files/"+imgUrl+"/300/";
+        hasIMG = !TextUtils.isEmpty(imgID);
+        this.imgUrl = hasIMG ? "https://opendata.brussel.be/explore/dataset/streetart/files/"+imgUrl+"/300/" : "";
         this.coordX = coordX;
         this.coordY = coordY;
+    }
+
+    public boolean isHasIMG() {
+        return hasIMG;
+    }
+
+    public void setHasIMG(boolean hasIMG) {
+        this.hasIMG = hasIMG;
     }
 
     public String getImgUrl() {
@@ -55,22 +62,6 @@ public class StreetArt implements Serializable {
 
     public void setRecordId(String recordId) {
         this.recordId = recordId;
-    }
-
-    public String getNameOfArt() {
-        return nameOfArt;
-    }
-
-    public void setNameOfArt(String nameOfArt) {
-        this.nameOfArt = nameOfArt;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
     }
 
     public String getNameOfArtist() {
@@ -117,6 +108,6 @@ public class StreetArt implements Serializable {
 
     @Override
     public String toString() {
-        return nameOfArt;
+        return nameOfArtist;
     }
 }

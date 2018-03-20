@@ -4,27 +4,35 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment">
+    tools:context="be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment"
+    tools:layout_editor_absoluteY="81dp">
 
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
         android:id="@+id/tv_detail_museum_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="Museum aan de stroom"
         android:textAppearance="@android:style/TextAppearance.Material.Large"
-        app:layout_constraintStart_toStartOf="@+id/tv_detail_museum_address"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_detail_museum_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Rolwagenstraat 67, Antwerpen"
-        app:layout_constraintStart_toStartOf="@+id/btn_detail_museum_phone"
+        app:layout_constraintBottom_toTopOf="@+id/btn_detail_museum_phone"
+        app:layout_constraintStart_toStartOf="@+id/tv_detail_museum_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_detail_museum_name" />
 
     <Button
