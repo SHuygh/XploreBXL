@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void drawMarkers() {
-        Log.d("testtest", "drawMarkers: " + map.toString());
         List<Museum> museums = LandMarksDatabase.getInstance(this).getMuseums();
 
         for(Museum element: museums){

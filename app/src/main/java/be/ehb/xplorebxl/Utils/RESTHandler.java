@@ -85,7 +85,6 @@ public class RESTHandler extends Handler {
             e.printStackTrace();
         }
         if(context.map != null) {
-            Log.d(TAG, "handleMessage: DONE DRAWMARKERS");
             context.drawMarkers();
         }
     }

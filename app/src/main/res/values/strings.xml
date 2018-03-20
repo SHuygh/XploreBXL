@@ -14,4 +14,6 @@
     <string name="txt_nav_setting">Settings</string>
     <string name="btn_website">WEBSITE</string>
     <string name="btn_favorites">ADD TO FAVORITES</string>
+    <string name="txt_button_lvstreetart">Streetart</string>
+    <string name="txt_buton_lvMusea">Musea</string>
 </resources>
