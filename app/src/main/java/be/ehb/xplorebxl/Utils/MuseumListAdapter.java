@@ -1,9 +1,13 @@
 package be.ehb.xplorebxl.Utils;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -19,7 +23,8 @@ import be.ehb.xplorebxl.R;
 public class MuseumListAdapter extends BaseAdapter {
 
     private class ViewHolder {
-        TextView tvMuseumName, tvMuseumAddress;
+        Button btnPhone, btnWebsite, btnEmail;
+        TextView tvName, tvAdress;
     }
 
     private Activity context;
@@ -28,7 +33,6 @@ public class MuseumListAdapter extends BaseAdapter {
     public MuseumListAdapter(Activity context) {
         this.context = context;
         items = LandMarksDatabase.getInstance(context).getMuseumDao().getAllMuseums();
-
     }
 
     @Override
@@ -47,16 +51,20 @@ public class MuseumListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int i, View view, final ViewGroup viewGroup) {
 
         ViewHolder mViewHolder;
 
         if (view == null){
-            view = context.getLayoutInflater().inflate(R.layout.row_museum,viewGroup, false);
+            view = context.getLayoutInflater().inflate(R.layout.fragment_museum_detail, viewGroup, false);
             mViewHolder = new ViewHolder();
 
-            mViewHolder.tvMuseumName = view.findViewById(R.id.tv_museum_name);
-            mViewHolder.tvMuseumAddress = view.findViewById(R.id.tv_museum_address);
+            mViewHolder.btnEmail = view.findViewById(R.id.btn_detail_museum_mail);
+            mViewHolder.btnPhone = view.findViewById(R.id.btn_detail_museum_phone);
+            mViewHolder.btnWebsite = view.findViewById(R.id.btn_detail_museum_website);
+
+            mViewHolder.tvAdress = view.findViewById(R.id.tv_detail_museum_address);
+            mViewHolder.tvName = view.findViewById(R.id.tv_detail_museum_name);
 
             view.setTag(mViewHolder);
 
@@ -64,10 +72,60 @@ public class MuseumListAdapter extends BaseAdapter {
             mViewHolder = (ViewHolder) view.getTag();
         }
 
-        Museum currentMuseum = items.get(i);
+        final Museum currentMuseum = items.get(i);
 
-        mViewHolder.tvMuseumName.setText(currentMuseum.getName());
-        mViewHolder.tvMuseumAddress.setText(currentMuseum.getAdres());
+        mViewHolder.tvName.setText(currentMuseum.getName());
+        mViewHolder.tvAdress.setText(currentMuseum.getAdres());
+
+        if(TextUtils.isEmpty(currentMuseum.getTel())){
+            mViewHolder.btnPhone.setVisibility(View.GONE);
+        }else{
+            mViewHolder.btnPhone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String tel = currentMuseum.getTel();
+                    Uri uri = Uri.parse("tel:" + tel);
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    viewGroup.getContext().startActivity(intent);
+                }
+            });
+        }
+
+
+        if(TextUtils.isEmpty(currentMuseum.getEmail())){
+            mViewHolder.btnEmail.setVisibility(View.GONE);
+        }else {
+            mViewHolder.btnEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", currentMuseum.getEmail(), null));
+                    viewGroup.getContext().startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                }
+            });
+        }
+
+        if(TextUtils.isEmpty(currentMuseum.getUrl())){
+            mViewHolder.btnWebsite.setVisibility(View.GONE);
+        }else{
+            mViewHolder.btnWebsite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String url = currentMuseum.getUrl();
+
+                    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                        url = "http://" + url;
+                    }
+
+                    Uri uri = Uri.parse(url);
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+                    viewGroup.getContext().startActivity(intent);
+                }
+            });
+        }
 
 
 

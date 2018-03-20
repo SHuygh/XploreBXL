@@ -1,6 +1,5 @@
 package be.ehb.xplorebxl.View.Activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.NavigationView;
@@ -9,11 +8,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,7 +34,7 @@ import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.RESTHandler;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment;
-import be.ehb.xplorebxl.View.Fragments.ListViewFragment;
+import be.ehb.xplorebxl.View.Fragments.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArtDetailFragment;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -123,7 +120,7 @@ public class MainActivity extends AppCompatActivity
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
         } else if (id == R.id.nav_list) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, ListViewFragment.newInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, MuseumListViewFragment.newInstance()).commit();
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
 
