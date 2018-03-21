@@ -36,10 +36,7 @@ public class StreetArt implements Serializable {
         this.address = address + ", Brussel";
         this.explanation = explanation;
         hasIMG = !TextUtils.isEmpty(imgID);
-        Log.d("testtest", "StreetArt: " + hasIMG);
-        Log.d("testtest", "StreetArt: " + imgID);
         this.imgUrl = hasIMG ? "https://opendata.brussel.be/explore/dataset/streetart/files/"+imgID+"/300/" : "";
-        Log.d("testtest", "StreetArt: " + imgUrl);
         this.coordX = coordX;
         this.coordY = coordY;
     }

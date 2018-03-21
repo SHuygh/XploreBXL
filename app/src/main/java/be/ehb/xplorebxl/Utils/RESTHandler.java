@@ -1,7 +1,9 @@
 package be.ehb.xplorebxl.Utils;
 
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +23,7 @@ import be.ehb.xplorebxl.View.Activities.MainActivity;
 
 public class RESTHandler extends Handler {
     String TAG = "testtest";
+    public static boolean isSucces = true;
 
 
     private final String KEY_PARAMETERS = "parameters",
@@ -63,6 +66,8 @@ public class RESTHandler extends Handler {
 
     @Override
     public void handleMessage(Message msg) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
         String json_data = msg.getData().getString("json_data");
 
         try {
@@ -86,11 +91,14 @@ public class RESTHandler extends Handler {
 
 
         } catch (JSONException e) {
+            sharedPreferences.edit().putBoolean("AppHasDownloadedDataBefore", false).commit();
             e.printStackTrace();
         }
         if(context.map != null) {
             context.drawMarkers();
         }
+        sharedPreferences.edit().putBoolean("AppHasDownloadedDataBefore", true).commit();
+
     }
 
 
