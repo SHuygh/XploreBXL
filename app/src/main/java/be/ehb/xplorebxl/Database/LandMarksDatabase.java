@@ -8,6 +8,8 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.ehb.xplorebxl.Model.Comic;
+import be.ehb.xplorebxl.Model.ComicDAO;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.MuseumDAO;
 import be.ehb.xplorebxl.Model.StreetArt;
@@ -17,7 +19,7 @@ import be.ehb.xplorebxl.Model.StreetArtDAO;
  * Created by TDS-Team on 16/03/2018.
  */
 
-@Database(version = 1, entities = {Museum.class, StreetArt.class})
+@Database(version = 1 , entities = {Museum.class, StreetArt.class, Comic.class})
 public abstract class LandMarksDatabase extends RoomDatabase {
 
     //singleton
@@ -63,6 +65,15 @@ public abstract class LandMarksDatabase extends RoomDatabase {
     public void insertStreetArt(StreetArt s){getStreetArtDao().insertStreetArt(s);}
 
     public void updateStreetArt(StreetArt s){getStreetArtDao().updateStreetArt(s);}
+
+/**Comic**/
+
+
+    public abstract ComicDAO getComicDao();
+    public List<Comic> getAllComics(){return getComicDao().getAllComics();  }
+    public List<String> getComicRecordID(){return getComicDao().getComicRecordID();}
+    public void insertComic(Comic comic){getComicDao().insertComic(comic);}
+    public void updateComic(Comic comic){getComicDao().updateComic(comic);}
 
 
 

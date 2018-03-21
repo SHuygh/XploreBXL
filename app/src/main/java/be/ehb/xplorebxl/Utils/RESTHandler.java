@@ -1,10 +1,7 @@
 package be.ehb.xplorebxl.Utils;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
+import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.View.Activities.MainActivity;
@@ -28,12 +26,14 @@ public class RESTHandler extends Handler {
     private final String KEY_PARAMETERS = "parameters",
                                 KEY_DATASET = "dataset",
                                     NAME_DATASET_MUSEA = "musea-in-brussel",
-                                    NAME_DATASET_STREETART = "streetart";
+                                    NAME_DATASET_STREETART = "streetart",
+                                    NAME_DATASET_COMIC = "comic-book-route";
 
     private final String
             KEY_RECORDS = "records",
                 KEY_RECORDID = "recordid",
                 KEY_FIELDS = "fields",
+                    KEY_ILLUSTRATOR = "auteur_s",
                     KEY_NAME = "naam_van_het_museum",
                     KEY_CITY = "gemeente",
                     KEY_ADRES = "adres",
@@ -45,12 +45,14 @@ public class RESTHandler extends Handler {
 
     private final String
             KEY_PHOTO_OBJECT = "photo",
-                KEY_PHOTOID_STREETART = "id",
+                KEY_PHOTOID = "id",
+            KEY_PERSONNAGE = "personnage_s",
             KEY_ADRESSE = "adresse",
             KEY_LOCATION = "location",
             KEY_ARTISTNAME_STREETART = "naam_van_de_kunstenaar",
             KEY_EXPLENTATION_STREETART = "verduidelijking",
-            KEY_COORDINATES_STREETART = "geocoordinates";
+            KEY_COORDINATES_STREETART = "geocoordinates",
+            KEY_COORDINATES_COMIC = "coordonnees_geographiques";
 
 
     private MainActivity context;
@@ -78,6 +80,8 @@ public class RESTHandler extends Handler {
                 case NAME_DATASET_STREETART:
                     parseStreetArt(records, json_length);
                     break;
+                case NAME_DATASET_COMIC:
+                    parseComics(records, json_length);
             }
 
 
@@ -119,6 +123,36 @@ public class RESTHandler extends Handler {
 
     }
 
+    private void parseComics(JSONArray records, int json_lenght) throws JSONException{
+        for (int i = 0; i < json_lenght; i++){
+
+            JSONObject JSON_Comics = records.getJSONObject(i);
+
+            String recordId = JSON_Comics.getString(KEY_RECORDID);
+            JSONObject fields = JSON_Comics.getJSONObject(KEY_FIELDS);
+                String nameOfIllustrator = fields.getString(KEY_ILLUSTRATOR);
+                String personnage = fields.getString(KEY_PERSONNAGE);
+            String imgId =
+                    (fields.has(KEY_PHOTO_OBJECT))?
+                            fields.getJSONObject(KEY_PHOTO_OBJECT).getString(KEY_PHOTOID):
+                            "";
+            double coordX = fields.getJSONArray(KEY_COORDINATES_COMIC).getDouble(0);
+            double coordY = fields.getJSONArray(KEY_COORDINATES_COMIC).getDouble(1);
+
+            Comic comic = new Comic(recordId, nameOfIllustrator, personnage, imgId, coordX, coordY);
+            ArrayList<String> recordIdList = (ArrayList<String>) LandMarksDatabase.getInstance(context).getComicRecordID();
+
+            if(recordIdList.contains(recordId)){
+                LandMarksDatabase.getInstance(context).updateComic(comic);
+            }else{
+                LandMarksDatabase.getInstance(context).insertComic(comic);
+            }
+
+
+        }
+
+    }
+
 
     private void parseStreetArt(JSONArray records, int json_length) throws JSONException {
         for(int i = 0; i < json_length; i++){
@@ -138,7 +172,7 @@ public class RESTHandler extends Handler {
             String explenation = (fields.has(KEY_EXPLENTATION_STREETART)) ? fields.getString(KEY_EXPLENTATION_STREETART) : "";
             String imgId =
                     (fields.has(KEY_PHOTO_OBJECT))?
-                            fields.getJSONObject(KEY_PHOTO_OBJECT).getString(KEY_PHOTOID_STREETART):
+                            fields.getJSONObject(KEY_PHOTO_OBJECT).getString(KEY_PHOTOID):
                                  "";
             double coordX = (double) fields.getJSONArray(KEY_COORDINATES_STREETART).getDouble(0);
             double coordY = fields.getJSONArray(KEY_COORDINATES_STREETART).getDouble(1);

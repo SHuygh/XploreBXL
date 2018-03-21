@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
+import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
@@ -176,6 +177,20 @@ public class MainActivity extends AppCompatActivity
                     element
             );
         }
+        List<Comic> comicsList = LandMarksDatabase.getInstance(this).getAllComics();
+
+        for (Comic element: comicsList){
+
+            objectLinkedToMarker.put(map.addMarker(
+                    new MarkerOptions()
+                            .title(element.getNameOfIllustrator())
+                            .position(element.getCoord())
+                            .snippet("Click for more information")
+                            .icon(BitmapDescriptorFactory.defaultMarker(10))),
+                            element);
+        }
+
+
         }
 
     private void updateCamera() {
@@ -202,11 +217,13 @@ public class MainActivity extends AppCompatActivity
 
                 String url_museums = "https://opendata.brussel.be/api/records/1.0/search/?dataset=musea-in-brussel&rows=70";
                 String url_streetArt = "https://opendata.brussel.be/api/records/1.0/search/?dataset=streetart&rows=70";
+                String url_comic = "https://opendata.brussel.be/api/records/1.0/search/?dataset=comic-book-route&rows=70";
 
                 ArrayList<String> urlList = new ArrayList<>();
 
                 urlList.add(url_museums);
                 urlList.add(url_streetArt);
+                urlList.add(url_comic);
 
 
                 for(String url: urlList) {
