@@ -1,16 +1,20 @@
 package be.ehb.xplorebxl.View.Activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -90,7 +94,18 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        downloadData();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        if(sharedPreferences.getBoolean("AppHasDownloadedDataBefore", false)){
+            Log.d("testtest", "onCreate: Has previously downloaded REST data");
+
+
+        }else{
+            downloadData();
+        }
+
+
+
 
     }
 
@@ -131,6 +146,9 @@ public class MainActivity extends AppCompatActivity
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
 
+        } else if(id == R.id.nav_update){
+            this.downloadData();
+            Toast.makeText(this, "Data updated", Toast.LENGTH_LONG).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -210,6 +228,7 @@ public class MainActivity extends AppCompatActivity
 
 
     private void downloadData() {
+        Log.d("testtest", "downloadData: ");
         final RESTHandler handler = new RESTHandler(this);
 
         Thread backGroundThread = new Thread(new Runnable() {

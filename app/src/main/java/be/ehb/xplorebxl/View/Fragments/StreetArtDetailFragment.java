@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 
@@ -48,14 +49,13 @@ public class StreetArtDetailFragment extends Fragment {
         tv_Artistname = rootView.findViewById(R.id.tv_detail_streetart_artistname);
         tv_explenation = rootView.findViewById(R.id.tv_detail_streetart_explanation);
 
+
         tv_Artistname.setText(selectedStreetArt.getNameOfArtist());
 
         String explenation = !TextUtils.isEmpty(selectedStreetArt.getExplanation())? selectedStreetArt.getAddress() + ", " + selectedStreetArt.getExplanation() : selectedStreetArt.getAddress();
         tv_explenation.setText(explenation);
 
         if(selectedStreetArt.isHasIMG()) {
-            Log.d("testtest", "onCreateView: image should be loaded");
-            Log.d("testtest", "onCreateView: " + selectedStreetArt.getImgUrl());
             String url = selectedStreetArt.getImgUrl();
 
             Uri uri = Uri.parse(url);
@@ -63,7 +63,6 @@ public class StreetArtDetailFragment extends Fragment {
         }else {
            ivStreetart.setVisibility(View.INVISIBLE);
         }
-
 
 
         return rootView;
