@@ -36,7 +36,7 @@ public class Comic implements Serializable {
         this.nameOfIllustrator = nameOfIllustrator;
         this.personnage = personnage;
         hasIMG = !TextUtils.isEmpty(imgID);
-        this.imgUrl = hasIMG ? "https://opendata.brussel.be/explore/dataset/streetart/files/"+imgID+"/300/" : "";
+        this.imgUrl = hasIMG ? "https://opendata.brussel.be/explore/dataset/comic-book-route/files/"+imgID+"/300/" : "";
         this.coordX = coordX;
         this.coordY = coordY;
     }

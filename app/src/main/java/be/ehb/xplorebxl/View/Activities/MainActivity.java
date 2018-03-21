@@ -34,6 +34,7 @@ import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.RESTHandler;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
+import be.ehb.xplorebxl.View.Fragments.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArtDetailFragment;
@@ -270,6 +271,8 @@ public class MainActivity extends AppCompatActivity
             getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance((Museum) objectClicked)).commit();
         }else if(objectClicked instanceof StreetArt){
             getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, StreetArtDetailFragment.newInstance((StreetArt) objectClicked)).commit();
+        }else if (objectClicked instanceof Comic){
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, ComicDetailFragment.newInstance((Comic) objectClicked)).commit();
         }
 
         return true;
