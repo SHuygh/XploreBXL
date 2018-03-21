@@ -39,9 +39,11 @@ import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.RESTHandler;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.ComicDetailFragment;
+import be.ehb.xplorebxl.View.Fragments.ComicListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArtDetailFragment;
+import be.ehb.xplorebxl.View.Fragments.StreetArtListViewFragment;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -141,6 +143,14 @@ public class MainActivity extends AppCompatActivity
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
 
+        } else if (id == R.id.nav_list_streetart) {
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, StreetArtListViewFragment.newInstance()).commit();
+            findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
+            btnCloseExtraFrag.setVisibility(View.GONE);
+        } else if (id == R.id.nav_list_comics) {
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, ComicListViewFragment.newInstance()).commit();
+            findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
+            btnCloseExtraFrag.setVisibility(View.GONE);
         } else if (id == R.id.nav_about) {
             getFragmentManager().beginTransaction().replace(R.id.frag_container, AboutFragment.newInstance()).commit();
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);

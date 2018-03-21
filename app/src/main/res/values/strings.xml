@@ -16,4 +16,7 @@
     <string name="btn_favorites">ADD TO FAVORITES</string>
     <string name="txt_button_lvstreetart">Streetart</string>
     <string name="txt_buton_lvMusea">Musea</string>
+    <string name="txt_btn_lv_streetart">Streetart</string>
+    <string name="txt_nav_item_list_streetart">List of Streetart</string>
+    <string name="txt_nav_list_comics">List of comic book murals</string>
 </resources>

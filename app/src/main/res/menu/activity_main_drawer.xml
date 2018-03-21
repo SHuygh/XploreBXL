@@ -14,6 +14,12 @@
             android:icon="@android:drawable/ic_menu_agenda"
             android:title="@string/txt_nav_list" />
         <item
+            android:id="@+id/nav_list_streetart"
+            android:title="@string/txt_nav_item_list_streetart" />
+        <item
+            android:id="@+id/nav_list_comics"
+            android:title="@string/txt_nav_list_comics" />
+        <item
             android:id="@+id/nav_about"
             android:icon="@android:drawable/stat_notify_chat"
             android:title="@string/txt_nav_about" />

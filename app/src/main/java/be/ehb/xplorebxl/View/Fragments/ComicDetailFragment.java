@@ -47,8 +47,8 @@ public class ComicDetailFragment extends Fragment {
         tvIllustratorName = rootView.findViewById(R.id.tv_detail_streetart_artistname);
         tvPersonnage = rootView.findViewById(R.id.tv_detail_streetart_explanation);
 
-        tvIllustratorName.setText("Illustrated by: " + selectedComic.getNameOfIllustrator());
-        tvPersonnage.setText("Featuring: " + selectedComic.getPersonnage());
+        tvIllustratorName.setText("Illustrator: " + selectedComic.getNameOfIllustrator());
+        tvPersonnage.setText("Feat. " + selectedComic.getPersonnage());
 
         if (selectedComic.isHasIMG()){
 

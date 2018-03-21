@@ -23,9 +23,9 @@ import be.ehb.xplorebxl.R;
 public class StreetArtListAdapter extends BaseAdapter {
 
     private class ViewHolder{
-        TextView tvRowStreetartArtistName;
-        TextView tvRowStreetartAddress;
-        ImageView ivRowStreetartPhoto;
+        TextView tvStreetartArtistName;
+        TextView tvStreetartAddress;
+        ImageView ivStreetartPhoto;
     }
     private Activity context;
     private List<StreetArt> items;
@@ -57,12 +57,12 @@ public class StreetArtListAdapter extends BaseAdapter {
         ViewHolder mViewHolder;
 
         if (view == null){
-            view = context.getLayoutInflater().inflate(R.layout.row_streetart,viewGroup,false);
+            view = context.getLayoutInflater().inflate(R.layout.fragment_street_art_detail,viewGroup,false);
             mViewHolder = new ViewHolder();
 
-            mViewHolder.tvRowStreetartArtistName = view.findViewById(R.id.tv_row_streetart_artistname);
-            mViewHolder.tvRowStreetartAddress = view.findViewById(R.id.tv_row_streetart_address);
-            mViewHolder.ivRowStreetartPhoto = view.findViewById(R.id.iv_row_streetart);
+            mViewHolder.tvStreetartArtistName = view.findViewById(R.id.tv_detail_streetart_artistname);
+            mViewHolder.tvStreetartAddress = view.findViewById(R.id.tv_detail_streetart_explanation);
+            mViewHolder.ivStreetartPhoto = view.findViewById(R.id.iv_detail_streetart);
 
         }else {
             mViewHolder = (ViewHolder) view.getTag();
@@ -70,17 +70,17 @@ public class StreetArtListAdapter extends BaseAdapter {
 
         StreetArt currentStreetArt = items.get(i);
 
-        mViewHolder.tvRowStreetartArtistName.setText(currentStreetArt.getNameOfArtist());
-        mViewHolder.tvRowStreetartAddress.setText(currentStreetArt.getAddress());
+        mViewHolder.tvStreetartArtistName.setText(currentStreetArt.getNameOfArtist());
+        mViewHolder.tvStreetartAddress.setText(currentStreetArt.getAddress());
 
 
         if(currentStreetArt.isHasIMG()) {
             String url = currentStreetArt.getImgUrl();
 
             Uri uri = Uri.parse(url);
-            Picasso.with(context).load(uri).into(mViewHolder.ivRowStreetartPhoto);
+            Picasso.with(context).load(uri).into(mViewHolder.ivStreetartPhoto);
         }else {
-            mViewHolder.ivRowStreetartPhoto.setVisibility(View.INVISIBLE);
+            mViewHolder.ivStreetartPhoto.setVisibility(View.INVISIBLE);
         }
 
 
