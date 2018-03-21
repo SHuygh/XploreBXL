@@ -65,6 +65,8 @@ public class ComicListAdapter extends BaseAdapter {
             mViewHolder.tvPersonnage = view.findViewById(R.id.tv_detail_streetart_explanation);
             mViewHolder.ivComicMuralPhoto = view.findViewById(R.id.iv_detail_streetart);
 
+            view.setTag(mViewHolder);
+
         }else {
             mViewHolder = (Viewholder) view.getTag();
         }

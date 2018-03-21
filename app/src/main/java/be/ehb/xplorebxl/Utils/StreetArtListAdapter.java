@@ -64,6 +64,8 @@ public class StreetArtListAdapter extends BaseAdapter {
             mViewHolder.tvStreetartAddress = view.findViewById(R.id.tv_detail_streetart_explanation);
             mViewHolder.ivStreetartPhoto = view.findViewById(R.id.iv_detail_streetart);
 
+            view.setTag(mViewHolder);
+
         }else {
             mViewHolder = (ViewHolder) view.getTag();
         }
