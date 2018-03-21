@@ -32,6 +32,12 @@ public class Museum implements Serializable {
 
     public Museum(String recordId, String name, String city, String adres, String url, String tel, String email, double coordX, double coordY) {
         this.recordId = recordId;
+        if(name.contains("(")) {
+           name = name.split("[(]")[0];
+        }
+        if(name.contains("/")) {
+            name = name.split("[/]")[0];
+        }
         this.name = name;
         this.city = city;
         this.adres = adres;
