@@ -20,6 +20,9 @@ public interface ComicDAO {
     @Query("SELECT recordId FROM Comic")
     List<String> getComicRecordID();
 
+    @Query("SELECT imgUrl FROM Comic")
+    List<String> getImgUrl();
+
     @Insert
     void insertComic(Comic comic);
 

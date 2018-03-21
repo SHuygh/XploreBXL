@@ -1,7 +1,13 @@
 package be.ehb.xplorebxl.View.Activities;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -10,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +32,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +69,9 @@ public class MainActivity extends AppCompatActivity
     public GoogleMap map;
     private HashMap<Marker, Object> objectLinkedToMarker;
     private  Button btnCloseExtraFrag;
+    private ArrayList<Target> targetComicList = new ArrayList<>();
+    private ArrayList<Target> targetStreetartList = new ArrayList<>();
+
 
 
     @Override
@@ -99,9 +113,6 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         if(sharedPreferences.getBoolean("AppHasDownloadedDataBefore", false)){
-            Log.d("testtest", "onCreate: Has previously downloaded REST data");
-
-
         }else{
             downloadData();
         }
@@ -238,7 +249,6 @@ public class MainActivity extends AppCompatActivity
 
 
     private void downloadData() {
-        Log.d("testtest", "downloadData: ");
         final RESTHandler handler = new RESTHandler(this);
 
         Thread backGroundThread = new Thread(new Runnable() {
@@ -282,10 +292,86 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
             }
-
-        });
+        }
+        );
         backGroundThread.start();
 
+    }
+
+    public void downloadImgs(List<String> imgs, String type) {
+        ArrayList<String> imgUrlList = (ArrayList<String>) imgs;
+
+        int img_length = imgUrlList.size();
+        for(int i = 0; i < img_length; i++){
+
+            String url = imgUrlList.get(i);
+            if(!TextUtils.isEmpty(url)) {
+                String imgId = url.split("files/")[1].split("[/]")[0];
+
+
+                Uri uri = Uri.parse(url);
+
+                Target target = getTarget(imgId);
+                if(type == "streetart") {
+                    targetStreetartList.add(target);
+                    Picasso.with(getApplicationContext())
+                            .load(uri)
+                            .into(targetStreetartList.get(i));
+                }else if( type == "comic"){
+                    targetComicList.add(target);
+                    Picasso.with(getApplicationContext())
+                            .load(uri)
+                            .into(targetComicList.get(i));
+                }
+
+            }else{
+                Target target = getTarget("");
+                if(type == "streetart") {
+                    targetStreetartList.add(target);
+                }else if( type == "comic"){
+                    targetComicList.add(target);
+                }
+            }
+
+        }
+
+    }
+
+    private Target getTarget(final String imgId) {
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+                        final File directory = cw.getDir("images", MODE_PRIVATE);
+
+                        File file = new File(directory, imgId + ".jpeg");
+                        try {
+                            FileOutputStream ostream = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, ostream);
+                            ostream.flush();
+                            ostream.close();
+                        } catch (IOException e) {
+                            Log.e("IOException", e.getLocalizedMessage());
+                        }
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+
+        return target;
     }
 
     @Override

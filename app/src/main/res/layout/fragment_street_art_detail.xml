@@ -12,9 +12,9 @@
     <ImageView
         android:id="@+id/iv_detail_streetart"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:src="@drawable/common_google_signin_btn_icon_dark"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_globe_44dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

@@ -1,6 +1,7 @@
 package be.ehb.xplorebxl.Database;
 
 import android.arch.persistence.room.Database;
+import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
@@ -60,7 +61,9 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
     public List<StreetArt> getAllStreetArt(){return getStreetArtDao().getAllStreetArt();    }
 
-    public  List<String> getStreetArtRecordID(){return getStreetArtDao().getStreetArtRecordID();}
+    public List<String> getStreetArtRecordID(){return getStreetArtDao().getStreetArtRecordID();}
+
+    public List<String> getStreetArtImgUrl(){return getStreetArtDao().getImgUrl();};
 
     public void insertStreetArt(StreetArt s){getStreetArtDao().insertStreetArt(s);}
 
@@ -70,9 +73,15 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
 
     public abstract ComicDAO getComicDao();
+
     public List<Comic> getAllComics(){return getComicDao().getAllComics();  }
+
     public List<String> getComicRecordID(){return getComicDao().getComicRecordID();}
+
+    public List<String> getComicImgUrl(){return getComicDao().getImgUrl();};
+
     public void insertComic(Comic comic){getComicDao().insertComic(comic);}
+
     public void updateComic(Comic comic){getComicDao().updateComic(comic);}
 
 

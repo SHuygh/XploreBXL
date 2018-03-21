@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,9 +85,12 @@ public class RESTHandler extends Handler {
                     break;
                 case NAME_DATASET_STREETART:
                     parseStreetArt(records, json_length);
+                    context.downloadImgs(LandMarksDatabase.getInstance(context).getStreetArtImgUrl(), "streetart");
                     break;
                 case NAME_DATASET_COMIC:
                     parseComics(records, json_length);
+                    context.downloadImgs(LandMarksDatabase.getInstance(context).getComicImgUrl(), "comic");
+                    break;
             }
 
 
