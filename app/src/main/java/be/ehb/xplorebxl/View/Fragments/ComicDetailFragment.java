@@ -1,6 +1,7 @@
 package be.ehb.xplorebxl.View.Fragments;
 
 import android.app.Fragment;
+import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,8 +14,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.R;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,16 +55,29 @@ public class ComicDetailFragment extends Fragment {
         tvIllustratorName.setText("Illustrator: " + selectedComic.getNameOfIllustrator());
         tvPersonnage.setText("Feat. " + selectedComic.getPersonnage());
 
-        if (selectedComic.isHasIMG()){
+ /*       if (selectedComic.isHasIMG()){
 
             String url = selectedComic.getImgUrl();
             Uri uri = Uri.parse(url);
             Picasso.with(getActivity()).load(uri).into(ivComic);
         }else{
             ivComic.setVisibility(View.INVISIBLE);
+        }*/
+
+        if(selectedComic.isHasIMG()) {
+            String imgId = selectedComic.getImgUrl()
+                    .split("files/")[1]
+                    .split("[/]")[0];
+
+            ContextWrapper cw = new ContextWrapper(getActivity());
+            File directory = cw.getDir("images", MODE_PRIVATE);
+            File file = new File(directory, imgId +".jpeg");
+            Picasso.with(getActivity())
+                    .load(file)
+                    .into(ivComic);
+        }else {
+            ivComic.setVisibility(View.INVISIBLE);
         }
-
-
 
         return rootView;
     }
