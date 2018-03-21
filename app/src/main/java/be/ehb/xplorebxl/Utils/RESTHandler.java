@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,9 +86,12 @@ public class RESTHandler extends Handler {
                     break;
                 case NAME_DATASET_STREETART:
                     parseStreetArt(records, json_length);
+                    context.downloadImgs(LandMarksDatabase.getInstance(context).getStreetArtImgUrl(), "streetart");
                     break;
                 case NAME_DATASET_COMIC:
                     parseComics(records, json_length);
+                    context.downloadImgs(LandMarksDatabase.getInstance(context).getComicImgUrl(), "comic");
+                    break;
             }
 
 
@@ -182,17 +187,20 @@ public class RESTHandler extends Handler {
                     (fields.has(KEY_PHOTO_OBJECT))?
                             fields.getJSONObject(KEY_PHOTO_OBJECT).getString(KEY_PHOTOID):
                                  "";
+
             double coordX = (double) fields.getJSONArray(KEY_COORDINATES_STREETART).getDouble(0);
             double coordY = fields.getJSONArray(KEY_COORDINATES_STREETART).getDouble(1);
 
-            StreetArt streetArt = new StreetArt(recordId, nameOfArtist, adres, explenation, imgId, coordX, coordY);
+            if(!TextUtils.isEmpty(imgId)) {
+                StreetArt streetArt = new StreetArt(recordId, nameOfArtist, adres, explenation, imgId, coordX, coordY);
 
-            ArrayList<String> recordIdList = (ArrayList<String>) LandMarksDatabase.getInstance(context).getStreetArtRecordID();
+                ArrayList<String> recordIdList = (ArrayList<String>) LandMarksDatabase.getInstance(context).getStreetArtRecordID();
 
-            if(recordIdList.contains(recordId)){
-                LandMarksDatabase.getInstance(context).updateStreetArt(streetArt);
-            }else{
-                LandMarksDatabase.getInstance(context).insertStreetArt(streetArt);
+                if (recordIdList.contains(recordId)) {
+                    LandMarksDatabase.getInstance(context).updateStreetArt(streetArt);
+                } else {
+                    LandMarksDatabase.getInstance(context).insertStreetArt(streetArt);
+                }
             }
         }
     }

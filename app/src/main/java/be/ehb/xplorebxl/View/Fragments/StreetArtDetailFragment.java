@@ -2,6 +2,7 @@ package be.ehb.xplorebxl.View.Fragments;
 
 
 import android.app.Fragment;
+import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,9 +16,13 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,10 +61,20 @@ public class StreetArtDetailFragment extends Fragment {
         tv_explenation.setText(explenation);
 
         if(selectedStreetArt.isHasIMG()) {
-            String url = selectedStreetArt.getImgUrl();
+  /*          String url = selectedStreetArt.getImgUrl();
 
             Uri uri = Uri.parse(url);
-            Picasso.with(getActivity()).load(uri).into(ivStreetart);
+            Picasso.with(getActivity()).load(uri).into(ivStreetart);*/
+            String imgId = selectedStreetArt.getImgUrl()
+                                .split("files/")[1]
+                                    .split("[/]")[0];
+
+            ContextWrapper cw = new ContextWrapper(getActivity());
+            File directory = cw.getDir("images", MODE_PRIVATE);
+            File file = new File(directory, imgId +".jpeg");
+            Picasso.with(getActivity())
+                    .load(file)
+                    .into(ivStreetart);
         }else {
            ivStreetart.setVisibility(View.INVISIBLE);
         }

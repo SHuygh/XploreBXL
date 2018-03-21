@@ -1,7 +1,9 @@
 package be.ehb.xplorebxl.Utils;
 
 import android.app.Activity;
+import android.content.ContextWrapper;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,11 +12,14 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Q on 19-3-2018.
@@ -33,7 +38,6 @@ public class StreetArtListAdapter extends BaseAdapter {
     public StreetArtListAdapter(Activity context) {
         this.context = context;
         items = LandMarksDatabase.getInstance(context).getStreetArtDao().getAllStreetArt();
-
     }
 
     @Override
@@ -76,13 +80,30 @@ public class StreetArtListAdapter extends BaseAdapter {
         mViewHolder.tvStreetartAddress.setText(currentStreetArt.getAddress());
 
 
-        if(currentStreetArt.isHasIMG()) {
+ /*       if(currentStreetArt.isHasIMG()) {
             String url = currentStreetArt.getImgUrl();
 
             Uri uri = Uri.parse(url);
             Picasso.with(context).load(uri).into(mViewHolder.ivStreetartPhoto);
         }else {
             mViewHolder.ivStreetartPhoto.setVisibility(View.INVISIBLE);
+        }*/
+
+        if(currentStreetArt.isHasIMG()) {
+
+            String imgId = currentStreetArt.getImgUrl()
+                    .split("files/")[1]
+                    .split("[/]")[0];
+
+            ContextWrapper cw = new ContextWrapper(context);
+            File directory = cw.getDir("images", MODE_PRIVATE);
+            File file = new File(directory, imgId +".jpeg");
+            Picasso.with(context)
+                    .load(file)
+                    .into(mViewHolder.ivStreetartPhoto);
+        }else {
+            //placeholder
+          //  mViewHolder.ivStreetartPhoto.setVisibility(View.INVISIBLE);
         }
 
 

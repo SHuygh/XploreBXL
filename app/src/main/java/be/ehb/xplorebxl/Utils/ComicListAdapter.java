@@ -1,6 +1,7 @@
 package be.ehb.xplorebxl.Utils;
 
 import android.app.Activity;
+import android.content.ContextWrapper;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,15 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Q on 21-3-2018.
@@ -29,7 +33,7 @@ public class ComicListAdapter extends BaseAdapter {
     }
 
     private Activity context;
-    private List<Comic>items;
+    private List<Comic> items;
 
 
     public ComicListAdapter(Activity context) {
@@ -77,11 +81,27 @@ public class ComicListAdapter extends BaseAdapter {
         mViewHolder.tvPersonnage.setText("Feat. " + currentComic.getPersonnage());
 
 
-        if(currentComic.isHasIMG()) {
+/*        if(currentComic.isHasIMG()) {
             String url = currentComic.getImgUrl();
 
             Uri uri = Uri.parse(url);
             Picasso.with(context).load(uri).into(mViewHolder.ivComicMuralPhoto);
+        }else {
+            mViewHolder.ivComicMuralPhoto.setVisibility(View.INVISIBLE);
+        }*/
+
+        if(currentComic.isHasIMG()) {
+
+            String imgId = currentComic.getImgUrl()
+                    .split("files/")[1]
+                    .split("[/]")[0];
+
+            ContextWrapper cw = new ContextWrapper(context);
+            File directory = cw.getDir("images", MODE_PRIVATE);
+            File file = new File(directory, imgId +".jpeg");
+            Picasso.with(context)
+                    .load(file)
+                    .into(mViewHolder.ivComicMuralPhoto);
         }else {
             mViewHolder.ivComicMuralPhoto.setVisibility(View.INVISIBLE);
         }
