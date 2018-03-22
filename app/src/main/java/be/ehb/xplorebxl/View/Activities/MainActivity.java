@@ -1,13 +1,12 @@
 package be.ehb.xplorebxl.View.Activities;
 
-import android.content.Context;
+import android.app.FragmentTransaction;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -64,14 +63,14 @@ import okhttp3.Response;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, MuseumListViewFragment.MuseumListener {
 
     public GoogleMap map;
     private HashMap<Marker, Object> objectLinkedToMarker;
     private  Button btnCloseExtraFrag;
     private ArrayList<Target> targetComicList = new ArrayList<>();
     private ArrayList<Target> targetStreetartList = new ArrayList<>();
-
+    private MapFragment mapFragment;
 
 
     @Override
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity
 
 
         //MAPS
-        MapFragment mapFragment = new MapFragment();
+        mapFragment = new MapFragment();
         mapFragment.getMapAsync(this);
 
         getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
@@ -139,10 +138,6 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
-
-            MapFragment mapFragment = new MapFragment();
-            mapFragment.getMapAsync(this);
-
             getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
             setupMap();
@@ -150,20 +145,20 @@ public class MainActivity extends AppCompatActivity
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
         } else if (id == R.id.nav_list) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, MuseumListViewFragment.newInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, MuseumListViewFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
 
         } else if (id == R.id.nav_list_streetart) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, StreetArtListViewFragment.newInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, StreetArtListViewFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
         } else if (id == R.id.nav_list_comics) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, ComicListViewFragment.newInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, ComicListViewFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
         } else if (id == R.id.nav_about) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, AboutFragment.newInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, AboutFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
 
@@ -391,5 +386,14 @@ public class MainActivity extends AppCompatActivity
         }
 
         return true;
+    }
+
+    @Override
+    public void museumSelected(Museum m) {
+
+
+
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(m.getCoord(),17);
+        map.animateCamera(cu);
     }
 }
