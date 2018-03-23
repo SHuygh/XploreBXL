@@ -60,6 +60,7 @@ import be.ehb.xplorebxl.Utils.RESTHandler;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.ComicListViewFragment;
+import be.ehb.xplorebxl.View.Fragments.ListviewItemListener;
 import be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArtDetailFragment;
@@ -73,7 +74,7 @@ import okhttp3.Response;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, MuseumListViewFragment.MuseumListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, MuseumListViewFragment.MuseumListener, ListviewItemListener {
 
     public GoogleMap map;
     private HashMap<Marker, Object> objectLinkedToMarker;
@@ -457,22 +458,48 @@ public class MainActivity extends AppCompatActivity
         Object objectClicked = objectLinkedToMarker.get(marker);
 
         if(objectClicked instanceof Museum){
-            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance((Museum) objectClicked)).commit();
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance((Museum) objectClicked)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         }else if(objectClicked instanceof StreetArt){
-            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, StreetArtDetailFragment.newInstance((StreetArt) objectClicked)).commit();
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, StreetArtDetailFragment.newInstance((StreetArt) objectClicked)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         }else if (objectClicked instanceof Comic){
-            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, ComicDetailFragment.newInstance((Comic) objectClicked)).commit();
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, ComicDetailFragment.newInstance((Comic) objectClicked)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         }
 
         return true;
     }
 
+
     @Override
     public void museumSelected(Museum m) {
 
+        drawMarkers();
 
-
-        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(m.getCoord(),17);
+        Marker currentMarker = map.addMarker(new MarkerOptions().position(m.getCoord()).icon(BitmapDescriptorFactory.defaultMarker(50)));
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(currentMarker.getPosition(),18);
         map.animateCamera(cu);
+
+
+
+    }
+
+    @Override
+    public void itemSelected(Object o) {
+
+        drawMarkers();
+
+        if (o instanceof StreetArt){
+            Marker currentMarker = map.addMarker(new MarkerOptions().position(((StreetArt) o).getCoord()).icon(BitmapDescriptorFactory.defaultMarker(50)));
+            CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(currentMarker.getPosition(),18);
+            //CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(((StreetArt) o).getCoord(),18);
+            map.animateCamera(cu);
+
+
+
+        }else if (o instanceof Comic){
+            Marker currentMarker = map.addMarker(new MarkerOptions().position(((Comic) o).getCoord()).icon(BitmapDescriptorFactory.defaultMarker(50)));
+            CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(((Comic) o).getCoord(),18);
+            map.animateCamera(cu);
+
+        }
     }
 }
