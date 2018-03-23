@@ -5,8 +5,11 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+import android.location.Location;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import be.ehb.xplorebxl.Model.Comic;
@@ -41,6 +44,37 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
     public List<Museum> getMuseums(){
         return getMuseumDao().getAllMuseums();
+    }
+
+    public List<Museum> getSortedMuseums(final Location location){
+        List<Museum> museumList = getMuseums();
+
+        Collections.sort(museumList, new Comparator<Museum>() {
+            @Override
+            public int compare(Museum museum, Museum t1) {
+                Location loc_museum = new Location("location");
+                    loc_museum.setLatitude(museum.getCoordX());
+                    loc_museum.setLongitude(museum.getCoordY());
+                Location loc_t1 = new Location("location_t1");
+                    loc_t1.setLatitude(t1.getCoordX());
+                    loc_t1.setLongitude(t1.getCoordY());
+                float distance_museum = location.distanceTo(loc_museum);
+                float distance_t1 = location.distanceTo(loc_t1);
+                float difference = distance_museum - distance_t1;
+                int result;
+                if(difference>0){
+                    result = 1;
+                }else if(difference<0){
+                    result = -1;
+                }else{
+                    result = 0;
+                }
+                return result;
+            }
+        });
+
+
+        return museumList;
     }
 
     public List<String> getMuseumRecordID(){
