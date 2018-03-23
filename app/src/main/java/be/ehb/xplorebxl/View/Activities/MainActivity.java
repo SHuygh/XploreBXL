@@ -132,8 +132,6 @@ public class MainActivity extends AppCompatActivity
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
-
-
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -218,7 +216,7 @@ public class MainActivity extends AppCompatActivity
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
         } else if (id == R.id.nav_list) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, MuseumListViewFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, MuseumListViewFragment.newInstance(locationManager)).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
             btnCloseExtraFrag.setVisibility(View.GONE);
 

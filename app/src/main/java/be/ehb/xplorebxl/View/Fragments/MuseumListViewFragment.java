@@ -4,6 +4,7 @@ package be.ehb.xplorebxl.View.Fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,13 +31,15 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
     private Button btn_musea;
     private ListView lv_musea;
     private MuseumListener callback;
+    private LocationManager locationManager;
 
     public MuseumListViewFragment() {
     }
 
 
-    public static MuseumListViewFragment newInstance() {
+    public static MuseumListViewFragment newInstance(LocationManager lm) {
         MuseumListViewFragment fragment = new MuseumListViewFragment();
+        fragment.locationManager = lm;
         return fragment;
     }
 
@@ -64,7 +67,7 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
         btn_musea = rootView.findViewById(R.id.btn_lv_musea);
         lv_musea = rootView.findViewById(R.id.lv_museums);
 
-        museumListAdapter = new MuseumListAdapter(getActivity());
+        museumListAdapter = new MuseumListAdapter(getActivity(), locationManager);
         lv_musea.setAdapter(museumListAdapter);
 
         lv_musea.setOnItemClickListener(this);
