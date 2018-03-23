@@ -111,4 +111,19 @@ public class StreetArt implements Serializable {
     public String toString() {
         return nameOfArtist;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StreetArt streetArt = (StreetArt) o;
+
+        return recordId.equals(streetArt.recordId);
+    }
+
+    @Override
+    public int hashCode() {
+        return recordId.hashCode();
+    }
 }

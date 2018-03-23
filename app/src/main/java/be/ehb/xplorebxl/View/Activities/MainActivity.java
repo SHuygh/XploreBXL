@@ -74,76 +74,50 @@ import okhttp3.Response;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, MuseumListViewFragment.MuseumListener, ListviewItemListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, ListviewItemListener {
+
+    private String TAG = "testtest";
 
     public GoogleMap map;
     private HashMap<Marker, Object> objectLinkedToMarker;
-    private  Button btnCloseExtraFrag;
+    private Button btnCloseExtraFrag;
     private ArrayList<Target> targetComicList = new ArrayList<>();
     private ArrayList<Target> targetStreetartList = new ArrayList<>();
-    LocationManager locationManager;
-    LocationListener locationListener;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
     private MapFragment mapFragment;
+    private Marker selectedMarker;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
+        setupDrawer();
+        setupMaps();
+        setupCloseDetailFrag();
+        checkHasDownloadedBefore();
+        setupLocationServices();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+    }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-
-        //MAPS
-        mapFragment = new MapFragment();
-        mapFragment.getMapAsync(this);
-
-        getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
-
-        objectLinkedToMarker = new HashMap<>();
-
-        btnCloseExtraFrag = findViewById(R.id.btn_main_close);
-
-        btnCloseExtraFrag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
-                btnCloseExtraFrag.setVisibility(View.GONE);
-            }
-        });
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-        if (sharedPreferences.getBoolean("AppHasDownloadedDataBefore", false)) {
-        } else {
-            downloadData();
-        }
-
+    private void setupLocationServices() {
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Museum museum = LandMarksDatabase.getInstance(getApplicationContext()).getMuseums().get(0);
+              /*  Museum museum = LandMarksDatabase.getInstance(getApplicationContext()).getMuseums().get(0);
                 if(museum != null) {
-                    Location locationMuseum = new Location("locationMuseum");
+                   Location locationMuseum = new Location("locationMuseum");
 
                     locationMuseum.setLatitude(museum.getCoordX());
                     locationMuseum.setLongitude(museum.getCoordY());
                     Toast.makeText(getApplicationContext(),
                             "Distance to " + museum.getName() + " is equals to " + location.distanceTo(locationMuseum) + " m", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
 
             @Override
@@ -171,12 +145,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        locationManager.removeUpdates(locationListener);
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1:
@@ -192,6 +160,59 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void checkHasDownloadedBefore() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        if (sharedPreferences.getBoolean("AppHasDownloadedDataBefore", false)) {
+        } else {
+            downloadData();
+        }
+    }
+
+    private void setupCloseDetailFrag() {
+        btnCloseExtraFrag = findViewById(R.id.btn_main_close);
+
+        btnCloseExtraFrag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeDetailFrag();
+            }
+        });
+    }
+
+    private void setupMaps() {
+        mapFragment = new MapFragment();
+        mapFragment.getMapAsync(this);
+
+        getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+
+        objectLinkedToMarker = new HashMap<>();
+    }
+
+    private void setupDrawer() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
+        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        locationManager.removeUpdates(locationListener);
+    }
+
+
+    /*NAVIGATION****NAVIGATION****NAVIGATION****NAVIGATION****NAVIGATION****NAVIGATION****NAVIGATION****NAVIGATION****NAVIGATION****NAVIGATION****NAVIGATION****NAVIGATION*****/
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -202,10 +223,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
@@ -213,29 +232,23 @@ public class MainActivity extends AppCompatActivity
 
             setupMap();
 
-            findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
-            btnCloseExtraFrag.setVisibility(View.GONE);
+            closeDetailFrag();
         } else if (id == R.id.nav_list) {
             getFragmentManager().beginTransaction().replace(R.id.frag_container, MuseumListViewFragment.newInstance(locationManager)).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-            findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
-            btnCloseExtraFrag.setVisibility(View.GONE);
-
+            closeDetailFrag();
         } else if (id == R.id.nav_list_streetart) {
             getFragmentManager().beginTransaction().replace(R.id.frag_container, StreetArtListViewFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-            findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
-            btnCloseExtraFrag.setVisibility(View.GONE);
+            closeDetailFrag();
         } else if (id == R.id.nav_list_comics) {
             getFragmentManager().beginTransaction().replace(R.id.frag_container, ComicListViewFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-            findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
-            btnCloseExtraFrag.setVisibility(View.GONE);
+            closeDetailFrag();
         } else if (id == R.id.nav_about) {
             getFragmentManager().beginTransaction().replace(R.id.frag_container, AboutFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-            findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
-            btnCloseExtraFrag.setVisibility(View.GONE);
+            closeDetailFrag();
 
         } else if (id == R.id.nav_update) {
             this.downloadData();
-            Toast.makeText(this, "Data updated", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Updating Data...", Toast.LENGTH_LONG).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -243,6 +256,14 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void closeDetailFrag() {
+        findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
+        btnCloseExtraFrag.setVisibility(View.GONE);
+        cancelSelectedMarker();
+    }
+
+
+    /*MAP METHODS****MAP METHODS****MAP METHODS****MAP METHODS****MAP METHODS****MAP METHODS****MAP METHODS****MAP METHODS****MAP METHODS****MAP METHODS****MAP METHODS****MAP METHODS*****/
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -320,7 +341,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
+/*GET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA****/
     private void downloadData() {
         final RESTHandler handler = new RESTHandler(this);
 
@@ -447,9 +468,63 @@ public class MainActivity extends AppCompatActivity
         return target;
     }
 
+    /*MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT*/
+
     @Override
     public boolean onMarkerClick(Marker marker) {
+        updateSelectedMarker(marker);
+        return true;
+    }
 
+    @Override
+    public void itemSelected(Object o) {
+        Marker marker = null;
+
+        LOOP: for(Marker element: objectLinkedToMarker.keySet()){
+            if(o.equals(objectLinkedToMarker.get(element))){
+                marker = element;
+                break LOOP;
+            }
+        }
+
+        if(marker != null) {
+            updateSelectedMarker(marker);
+        }
+    }
+
+    public void updateSelectedMarker(Marker marker) {
+        cancelSelectedMarker();
+
+        selectedMarker = marker;
+
+        marker.setIcon(BitmapDescriptorFactory.defaultMarker(50));
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom((marker.getPosition()),18);
+        map.animateCamera(cu);
+
+        openDetailFragment(marker);
+    }
+
+    public void cancelSelectedMarker() {
+        if(selectedMarker != null){
+
+            Object o = objectLinkedToMarker.get(selectedMarker);
+
+            float hue = 0;
+            if(o instanceof Museum){
+                hue = 180;
+            }else if(o instanceof StreetArt){
+                hue = 90;
+            }else if(o instanceof Comic){
+                hue = 10;
+            }
+            selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker(hue));
+
+            selectedMarker = null;
+
+        }
+    }
+
+    public void openDetailFragment(Marker marker) {
         findViewById(R.id.detail_frag_container).setVisibility(View.VISIBLE);
         btnCloseExtraFrag.setVisibility(View.VISIBLE);
 
@@ -462,42 +537,7 @@ public class MainActivity extends AppCompatActivity
         }else if (objectClicked instanceof Comic){
             getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, ComicDetailFragment.newInstance((Comic) objectClicked)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         }
-
-        return true;
     }
 
 
-    @Override
-    public void museumSelected(Museum m) {
-
-        drawMarkers();
-
-        Marker currentMarker = map.addMarker(new MarkerOptions().position(m.getCoord()).icon(BitmapDescriptorFactory.defaultMarker(50)));
-        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(currentMarker.getPosition(),18);
-        map.animateCamera(cu);
-
-
-
-    }
-
-    @Override
-    public void itemSelected(Object o) {
-
-        drawMarkers();
-
-        if (o instanceof StreetArt){
-            Marker currentMarker = map.addMarker(new MarkerOptions().position(((StreetArt) o).getCoord()).icon(BitmapDescriptorFactory.defaultMarker(50)));
-            CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(currentMarker.getPosition(),18);
-            //CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(((StreetArt) o).getCoord(),18);
-            map.animateCamera(cu);
-
-
-
-        }else if (o instanceof Comic){
-            Marker currentMarker = map.addMarker(new MarkerOptions().position(((Comic) o).getCoord()).icon(BitmapDescriptorFactory.defaultMarker(50)));
-            CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(((Comic) o).getCoord(),18);
-            map.animateCamera(cu);
-
-        }
-    }
 }

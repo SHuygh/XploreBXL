@@ -24,14 +24,13 @@ import be.ehb.xplorebxl.Utils.MuseumListAdapter;
 
 public class MuseumListViewFragment extends Fragment implements AdapterView.OnItemClickListener{
 
-    public interface MuseumListener {
-        public void museumSelected(Museum m);
-    }
+
     private MuseumListAdapter museumListAdapter;
     private Button btn_musea;
     private ListView lv_musea;
-    private MuseumListener callback;
     private LocationManager locationManager;
+
+    private ListviewItemListener callback;
 
     public MuseumListViewFragment() {
     }
@@ -48,14 +47,14 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        callback = (MuseumListener) context;
+        callback = (ListviewItemListener) context;
     }
 
     //voor oudere android versies:
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        callback = (MuseumListener) activity;
+        callback = (ListviewItemListener) activity;
     }
 
     @Override
@@ -79,7 +78,7 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
         Museum selectedMuseum = (Museum) museumListAdapter.getItem(i);
-        callback.museumSelected(selectedMuseum);
+        callback.itemSelected(selectedMuseum);
         getActivity().onBackPressed();
 
     }

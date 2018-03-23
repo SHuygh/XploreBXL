@@ -106,4 +106,19 @@ public class Comic implements Serializable {
     public String toString() {
         return personnage;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Comic comic = (Comic) o;
+
+        return recordId.equals(comic.recordId);
+    }
+
+    @Override
+    public int hashCode() {
+        return recordId.hashCode();
+    }
 }

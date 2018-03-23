@@ -131,4 +131,18 @@ public class Museum implements Serializable {
         return name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Museum museum = (Museum) o;
+
+        return recordId.equals(museum.recordId);
+    }
+
+    @Override
+    public int hashCode() {
+        return recordId.hashCode();
+    }
 }
