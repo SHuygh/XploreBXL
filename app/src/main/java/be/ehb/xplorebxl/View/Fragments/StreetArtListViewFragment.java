@@ -13,7 +13,8 @@ import android.widget.ListView;
 
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.Utils.StreetArtListAdapter;
+import be.ehb.xplorebxl.Utils.ListviewItemListener;
+import be.ehb.xplorebxl.Utils.Adapter.StreetArtListAdapter;
 
 /**
  * A simple {@link Fragment} subclass.

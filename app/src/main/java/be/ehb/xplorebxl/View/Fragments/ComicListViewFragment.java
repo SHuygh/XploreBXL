@@ -13,7 +13,8 @@ import android.widget.ListView;
 
 import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.Utils.ComicListAdapter;
+import be.ehb.xplorebxl.Utils.Adapter.ComicListAdapter;
+import be.ehb.xplorebxl.Utils.ListviewItemListener;
 
 /**
  * A simple {@link Fragment} subclass.

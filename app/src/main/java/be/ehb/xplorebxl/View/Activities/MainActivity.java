@@ -3,18 +3,12 @@ package be.ehb.xplorebxl.View.Activities;
 import android.Manifest;
 import android.content.Context;
 import android.app.FragmentTransaction;
-import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -24,7 +18,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,14 +33,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.security.Provider;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,18 +42,15 @@ import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.Utils.RESTHandler;
+import be.ehb.xplorebxl.Utils.Downloader;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.ComicListViewFragment;
-import be.ehb.xplorebxl.View.Fragments.ListviewItemListener;
+import be.ehb.xplorebxl.Utils.ListviewItemListener;
 import be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArtDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArtListViewFragment;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by TDS-Team on 16/03/2018.
@@ -76,13 +59,12 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, ListviewItemListener {
 
+    private Downloader downloader;
     private String TAG = "testtest";
 
     public GoogleMap map;
     private HashMap<Marker, Object> objectLinkedToMarker;
     private Button btnCloseExtraFrag;
-    private ArrayList<Target> targetComicList = new ArrayList<>();
-    private ArrayList<Target> targetStreetartList = new ArrayList<>();
     private LocationManager locationManager;
     private LocationListener locationListener;
     private MapFragment mapFragment;
@@ -94,12 +76,19 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        downloader = Downloader.getInstance(this);
+
         setupDrawer();
         setupMaps();
         setupCloseDetailFrag();
         checkHasDownloadedBefore();
         setupLocationServices();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private void setupLocationServices() {
@@ -109,15 +98,6 @@ public class MainActivity extends AppCompatActivity
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-              /*  Museum museum = LandMarksDatabase.getInstance(getApplicationContext()).getMuseums().get(0);
-                if(museum != null) {
-                   Location locationMuseum = new Location("locationMuseum");
-
-                    locationMuseum.setLatitude(museum.getCoordX());
-                    locationMuseum.setLongitude(museum.getCoordY());
-                    Toast.makeText(getApplicationContext(),
-                            "Distance to " + museum.getName() + " is equals to " + location.distanceTo(locationMuseum) + " m", Toast.LENGTH_SHORT).show();
-                }*/
             }
 
             @Override
@@ -132,7 +112,6 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onProviderDisabled(String s) {
-
             }
         };
 
@@ -140,7 +119,7 @@ public class MainActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
             locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+                    LocationManager.GPS_PROVIDER, 1000, 5, locationListener);
         }
     }
 
@@ -165,7 +144,7 @@ public class MainActivity extends AppCompatActivity
 
         if (sharedPreferences.getBoolean("AppHasDownloadedDataBefore", false)) {
         } else {
-            downloadData();
+            downloader.downloadData();
         }
     }
 
@@ -247,7 +226,7 @@ public class MainActivity extends AppCompatActivity
             closeDetailFrag();
 
         } else if (id == R.id.nav_update) {
-            this.downloadData();
+            downloader.downloadData();
             Toast.makeText(this, "Updating Data...", Toast.LENGTH_LONG).show();
         }
 
@@ -267,13 +246,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        drawMarkers();
 
         setupMap();
 
     }
 
     private void setupMap() {
-        drawMarkers();
         //map.setOnInfoWindowClickListener(this);
         map.setOnMarkerClickListener(this);
         updateCamera();
@@ -341,137 +320,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-/*GET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA***ET ALL REST DATA****/
-    private void downloadData() {
-        final RESTHandler handler = new RESTHandler(this);
-
-        Thread backGroundThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                String url_museums = "https://opendata.brussel.be/api/records/1.0/search/?dataset=musea-in-brussel&rows=70";
-                String url_streetArt = "https://opendata.brussel.be/api/records/1.0/search/?dataset=streetart&rows=70";
-                String url_comic = "https://opendata.brussel.be/api/records/1.0/search/?dataset=comic-book-route&rows=70";
-
-                ArrayList<String> urlList = new ArrayList<>();
-
-                urlList.add(url_museums);
-                urlList.add(url_streetArt);
-                urlList.add(url_comic);
-
-
-                for(String url: urlList) {
-
-                    try {
-
-                        OkHttpClient client = new OkHttpClient();
-
-                        Request request = new Request.Builder()
-                                .url(url)
-                                .get()
-                                .build();
-
-
-                        Response response = client.newCall(request).execute();
-
-                        Message msg = new Message();
-
-                        Bundle bndl = new Bundle();
-                        bndl.putString("json_data", response.body().string());
-                        msg.setData(bndl);
-
-                        handler.sendMessage(msg);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        );
-        backGroundThread.start();
-
-    }
-//BASED ON http://www.codexpedia.com/android/android-download-and-save-image-through-picasso/
-    public void downloadImgs(List<String> imgs, String type) {
-        ArrayList<String> imgUrlList = (ArrayList<String>) imgs;
-
-        int img_length = imgUrlList.size();
-        for(int i = 0; i < img_length; i++){
-
-            String url = imgUrlList.get(i);
-            if(!TextUtils.isEmpty(url)) {
-                String imgId = url.split("files/")[1].split("[/]")[0];
-
-
-                Uri uri = Uri.parse(url);
-
-                Target target = getTarget(imgId);
-                if(type == "streetart") {
-                    targetStreetartList.add(target);
-                    Picasso.with(getApplicationContext())
-                            .load(uri)
-                            .into(targetStreetartList.get(i));
-                }else if( type == "comic"){
-                    targetComicList.add(target);
-                    Picasso.with(getApplicationContext())
-                            .load(uri)
-                            .into(targetComicList.get(i));
-                }
-
-            }else{
-                Target target = getTarget("");
-                if(type == "streetart") {
-                    targetStreetartList.add(target);
-                }else if( type == "comic"){
-                    targetComicList.add(target);
-                }
-            }
-
-        }
-
-    }
-
-    private Target getTarget(final String imgId) {
-        Target target = new Target() {
-            @Override
-            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-                        final File directory = cw.getDir("images", MODE_PRIVATE);
-
-                        File file = new File(directory, imgId + ".jpeg");
-                        try {
-                            FileOutputStream ostream = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, ostream);
-                            ostream.flush();
-                            ostream.close();
-                        } catch (IOException e) {
-                            Log.e("IOException", e.getLocalizedMessage());
-                        }
-                    }
-                }).start();
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
-        return target;
-    }
-
     /*MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT***MARKER SELECT*/
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        Log.d(TAG, "onMarkerClick: " + marker.getTitle());
         updateSelectedMarker(marker);
         return true;
     }
@@ -493,6 +346,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void updateSelectedMarker(Marker marker) {
+        Log.d(TAG, "updateSelectedMarker: ");
         cancelSelectedMarker();
 
         selectedMarker = marker;
@@ -505,8 +359,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void cancelSelectedMarker() {
+        Log.d(TAG, "cancelSelectedMarker: ");
         if(selectedMarker != null){
-
+            Log.d(TAG, "cancelSelectedMarker: selectedmarker going to be cleared");
             Object o = objectLinkedToMarker.get(selectedMarker);
 
             float hue = 0;

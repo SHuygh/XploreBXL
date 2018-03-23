@@ -1,14 +1,17 @@
-package be.ehb.xplorebxl.Utils;
+package be.ehb.xplorebxl.Utils.Adapter;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -33,19 +36,18 @@ public class MuseumListAdapter extends BaseAdapter {
     }
 
     private Activity context;
-    private LocationManager locationManager;
     private List<Museum> items;
     private Location location;
 
     public MuseumListAdapter(Activity context, LocationManager lm) {
         this.context = context;
-        this.locationManager = lm;
         if (lm != null && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Log.d("testtest", "MuseumListAdapter: last location" + location);
             if(location != null) {
                 items = LandMarksDatabase.getInstance(context).getSortedMuseums(location);
             }else{
-                items = LandMarksDatabase.getInstance(context).getMuseumDao().getAllMuseums();
+                    items = LandMarksDatabase.getInstance(context).getMuseumDao().getAllMuseums();
             }
         }else {
             items = LandMarksDatabase.getInstance(context).getMuseumDao().getAllMuseums();
@@ -100,7 +102,9 @@ public class MuseumListAdapter extends BaseAdapter {
             loc_museum.setLatitude(currentMuseum.getCoordX());
             loc_museum.setLongitude(currentMuseum.getCoordY());
             float distance_museum = location.distanceTo(loc_museum);
-            mViewHolder.tvDistance.setText(distance_museum + " m");
+
+            distance_museum = distance_museum/1000;
+            mViewHolder.tvDistance.setText(String.format("%.2f km", distance_museum));
 
         }else {
             mViewHolder.tvDistance.setText("");

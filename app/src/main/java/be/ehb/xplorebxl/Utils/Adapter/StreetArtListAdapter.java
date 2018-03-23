@@ -1,4 +1,4 @@
-package be.ehb.xplorebxl.Utils;
+package be.ehb.xplorebxl.Utils.Adapter;
 
 import android.app.Activity;
 import android.content.ContextWrapper;
