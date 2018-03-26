@@ -1,4 +1,4 @@
-package be.ehb.xplorebxl.Model;
+package be.ehb.xplorebxl.Database.DAO;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -6,6 +6,8 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import java.util.List;
+
+import be.ehb.xplorebxl.Model.Museum;
 
 /**
  * Created by Q on 18-3-2018.

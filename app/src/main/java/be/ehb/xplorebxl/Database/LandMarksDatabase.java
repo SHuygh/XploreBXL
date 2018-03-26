@@ -10,12 +10,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import be.ehb.xplorebxl.Database.DAO.ComicDAO;
+import be.ehb.xplorebxl.Database.DAO.MuseumDAO;
+import be.ehb.xplorebxl.Database.DAO.StreetArtDAO;
 import be.ehb.xplorebxl.Model.Comic;
-import be.ehb.xplorebxl.Model.ComicDAO;
 import be.ehb.xplorebxl.Model.Museum;
-import be.ehb.xplorebxl.Model.MuseumDAO;
 import be.ehb.xplorebxl.Model.StreetArt;
-import be.ehb.xplorebxl.Model.StreetArtDAO;
 
 /**
  * Created by TDS-Team on 16/03/2018.

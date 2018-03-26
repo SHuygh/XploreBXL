@@ -1,4 +1,4 @@
-package be.ehb.xplorebxl.View.Fragments;
+package be.ehb.xplorebxl.View.Fragments.StreetArt;
 
 
 import android.app.Activity;

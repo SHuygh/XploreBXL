@@ -1,4 +1,4 @@
-package be.ehb.xplorebxl.View.Fragments;
+package be.ehb.xplorebxl.View.Fragments.Comic;
 
 
 import android.app.Activity;

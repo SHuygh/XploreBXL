@@ -3,7 +3,6 @@ package be.ehb.xplorebxl.View.Activities;
 import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -24,7 +23,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -40,7 +38,6 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,12 +49,12 @@ import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.Downloader;
 import be.ehb.xplorebxl.Utils.ListviewItemListener;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
-import be.ehb.xplorebxl.View.Fragments.ComicDetailFragment;
-import be.ehb.xplorebxl.View.Fragments.ComicListViewFragment;
-import be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment;
-import be.ehb.xplorebxl.View.Fragments.MuseumListViewFragment;
-import be.ehb.xplorebxl.View.Fragments.StreetArtDetailFragment;
-import be.ehb.xplorebxl.View.Fragments.StreetArtListViewFragment;
+import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
+import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
+import be.ehb.xplorebxl.View.Fragments.Museum.MuseumDetailFragment;
+import be.ehb.xplorebxl.View.Fragments.Museum.MuseumListViewFragment;
+import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtDetailFragment;
+import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtListViewFragment;
 
 /**
  * Created by TDS-Team on 16/03/2018.

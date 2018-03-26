@@ -1,13 +1,11 @@
-package be.ehb.xplorebxl.View.Fragments;
+package be.ehb.xplorebxl.View.Fragments.StreetArt;
 
 
 import android.app.Fragment;
 import android.content.ContextWrapper;
-import android.net.Uri;
 import android.os.Bundle;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +16,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
-import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 

@@ -4,7 +4,7 @@
     android:id="@+id/frameLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="be.ehb.xplorebxl.View.Fragments.StreetArtListViewFragment"
+    tools:context="be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtListViewFragment"
     tools:layout_editor_absoluteY="81dp">
 
     <!-- TODO: Update blank fragment layout -->

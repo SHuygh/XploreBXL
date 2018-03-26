@@ -1,10 +1,9 @@
-package be.ehb.xplorebxl.View.Fragments;
+package be.ehb.xplorebxl.View.Fragments.Museum;
 
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;

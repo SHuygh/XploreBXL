@@ -1,7 +1,6 @@
-package be.ehb.xplorebxl.View.Fragments;
+package be.ehb.xplorebxl.View.Fragments.Museum;
 
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,10 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.View.Activities.MainActivity;
 
 /**
  * Created by TDS-Team on 16/03/2018.

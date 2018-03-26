@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="8dp"
-    tools:context="be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment"
+    tools:context="be.ehb.xplorebxl.View.Fragments.Museum.MuseumDetailFragment"
     tools:layout_editor_absoluteY="81dp">
 
     <!-- TODO: Update blank fragment layout -->

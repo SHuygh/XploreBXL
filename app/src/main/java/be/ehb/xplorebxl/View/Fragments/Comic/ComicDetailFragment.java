@@ -1,11 +1,9 @@
-package be.ehb.xplorebxl.View.Fragments;
+package be.ehb.xplorebxl.View.Fragments.Comic;
 
 import android.app.Fragment;
 import android.content.ContextWrapper;
-import android.net.Uri;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
