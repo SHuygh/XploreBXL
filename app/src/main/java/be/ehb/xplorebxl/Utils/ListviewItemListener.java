@@ -6,5 +6,5 @@ package be.ehb.xplorebxl.Utils;
 
 public interface ListviewItemListener {
 
-    public void itemSelected (Object o);
+    void itemSelected(Object o);
 }

@@ -26,19 +26,13 @@ public class StreetArtListViewFragment extends Fragment {
 
     private ListviewItemListener callback;
 
-    private LocationManager locationManager;
-
-
 
     public StreetArtListViewFragment() {
         // Required empty public constructor
     }
 
-    public static StreetArtListViewFragment newInstance (LocationManager lm){
-        StreetArtListViewFragment fragment = new StreetArtListViewFragment();
-        fragment.locationManager = lm;
-
-        return fragment;
+    public static StreetArtListViewFragment newInstance (){
+       return new StreetArtListViewFragment();
     }
 
 
@@ -62,7 +56,7 @@ public class StreetArtListViewFragment extends Fragment {
 
         lvStreetart = rootView.findViewById(R.id.lv_streetart);
 
-        final StreetArtListAdapter streetArtListAdapter = new StreetArtListAdapter(getActivity(), locationManager);
+        final StreetArtListAdapter streetArtListAdapter = new StreetArtListAdapter(getActivity());
 
         lvStreetart.setAdapter(streetArtListAdapter);
 

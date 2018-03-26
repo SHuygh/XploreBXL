@@ -24,6 +24,7 @@ import java.io.File;
 
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.LocationUtil;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -43,18 +44,10 @@ public class StreetArtDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static StreetArtDetailFragment newInstance(StreetArt streetArt, LocationManager lm, Activity context) {
+    public static StreetArtDetailFragment newInstance(StreetArt streetArt) {
         StreetArtDetailFragment fragment = new StreetArtDetailFragment();
         fragment.selectedStreetArt = streetArt;
-
-        if (lm != null && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fragment.location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-            if(fragment.location == null){
-                fragment.location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-
-        }
+        fragment.location = LocationUtil.getInstance().getLocation();
 
         return fragment;
     }
@@ -78,14 +71,8 @@ public class StreetArtDetailFragment extends Fragment {
         tv_explenation.setText(explenation);
 
         if (location != null){
-            tvDistance.setVisibility(View.VISIBLE);
-            Location loc_streetart = new Location("location");
-            loc_streetart.setLatitude(selectedStreetArt.getCoordX());
-            loc_streetart.setLongitude(selectedStreetArt.getCoordY());
-            float distance_streetart = location.distanceTo(loc_streetart);
-
-            distance_streetart = distance_streetart/1000;
-           tvDistance.setText(String.format("%.2f km", distance_streetart));
+            float distance = LocationUtil.getInstance().getDistance(selectedStreetArt.getCoordX(), selectedStreetArt.getCoordY(), location);
+            tvDistance.setText(String.format("%.2f km", distance));
 
         }else {
             tvDistance.setVisibility(View.GONE);

@@ -28,20 +28,14 @@ public class ComicListViewFragment extends Fragment {
 
     private ListviewItemListener callback;
 
-    private LocationManager locationManager;
-
 
     public ComicListViewFragment() {
         // Required empty public constructor
     }
 
 
-    public static ComicListViewFragment newInstance(LocationManager lm) {
-        ComicListViewFragment fragment = new ComicListViewFragment();
-        fragment.locationManager = lm;
-
-
-        return fragment;
+    public static ComicListViewFragment newInstance() {
+        return new ComicListViewFragment();
     }
 
 
@@ -65,7 +59,7 @@ public class ComicListViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_comic_list_view, container, false);
         lvComics = rootView.findViewById(R.id.lv_comics);
 
-        final ComicListAdapter comicListAdapter = new ComicListAdapter(getActivity(), locationManager);
+        final ComicListAdapter comicListAdapter = new ComicListAdapter(getActivity());
         lvComics.setAdapter(comicListAdapter);
 
         lvComics.setOnItemClickListener(new AdapterView.OnItemClickListener() {

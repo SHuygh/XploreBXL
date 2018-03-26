@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.LocationUtil;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -40,19 +42,12 @@ public class ComicListAdapter extends BaseAdapter {
     private Activity context;
     private List<Comic> items;
     private Location location;
+    private Viewholder mViewHolder;
 
 
-
-    public ComicListAdapter(Activity context, LocationManager lm) {
+    public ComicListAdapter(Activity context) {
         this.context = context;
-        if (lm != null && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-            if(location == null){
-                location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-
-        }
+        location = LocationUtil.getInstance().getLocation();
         items = LandMarksDatabase.getInstance(context).getSortedCommic(location);
     }
 
@@ -74,43 +69,55 @@ public class ComicListAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-        Viewholder mViewHolder;
 
         if (view == null){
-            view = context.getLayoutInflater().inflate(R.layout.fragment_street_art_detail,viewGroup,false);
-            mViewHolder = new Viewholder();
-
-            mViewHolder.tvArtistName = view.findViewById(R.id.tv_detail_streetart_artistname);
-            mViewHolder.tvPersonnage = view.findViewById(R.id.tv_detail_streetart_explanation);
-            mViewHolder.ivComicMuralPhoto = view.findViewById(R.id.iv_detail_streetart);
-            mViewHolder.tvDistance = view.findViewById(R.id.tv_detail_streetart_distance);
-
-            view.setTag(mViewHolder);
-
+            view = setupView(viewGroup);
         }else {
             mViewHolder = (Viewholder) view.getTag();
         }
 
         Comic currentComic = items.get(i);
 
-        mViewHolder.tvArtistName.setText("Illustrator: " + currentComic.getNameOfIllustrator());
-        mViewHolder.tvPersonnage.setText("Feat. " + currentComic.getPersonnage());
+        mViewHolder.tvArtistName.setText(String.format("Illustrator: %s", currentComic.getNameOfIllustrator()));
+        mViewHolder.tvPersonnage.setText(String.format("Feat. %s", currentComic.getPersonnage()));
+
+        setupDistance(mViewHolder, currentComic);
+
+        setupImgView(mViewHolder, currentComic);
+
+        return view;
+    }
+
+    @NonNull
+    private View setupView(ViewGroup viewGroup) {
+        View view;
+        view = context.getLayoutInflater().inflate(R.layout.fragment_street_art_detail,viewGroup,false);
+        mViewHolder = new Viewholder();
+
+        mViewHolder.tvArtistName = view.findViewById(R.id.tv_detail_streetart_artistname);
+        mViewHolder.tvPersonnage = view.findViewById(R.id.tv_detail_streetart_explanation);
+        mViewHolder.ivComicMuralPhoto = view.findViewById(R.id.iv_detail_streetart);
+        mViewHolder.tvDistance = view.findViewById(R.id.tv_detail_streetart_distance);
+
+        view.setTag(mViewHolder);
+        return view;
+    }
+
+    private void setupDistance(Viewholder mViewHolder, Comic currentComic) {
+        //If location != null calculate distance and fill the textview with distance in km
 
         if (location != null){
-            Location loc_comic = new Location("location");
-            loc_comic.setLatitude(currentComic.getCoordX());
-            loc_comic.setLongitude(currentComic.getCoordY());
-            float distance_comic = location.distanceTo(loc_comic);
-
-            distance_comic = distance_comic/1000;
-            mViewHolder.tvDistance.setText(String.format("%.2f km", distance_comic));
-
+            float distance = LocationUtil.getInstance().getDistance(currentComic.getCoordX(), currentComic.getCoordY(), location);
+            mViewHolder.tvDistance.setText(String.format("%.2f km", distance));
         }else {
             mViewHolder.tvDistance.setVisibility(View.GONE);
         }
+    }
 
-
+    private void setupImgView(Viewholder mViewHolder, Comic currentComic) {
         if(currentComic.isHasIMG()) {
+            mViewHolder.ivComicMuralPhoto.setVisibility(View.VISIBLE);
+
 
             String imgId = currentComic.getImgUrl()
                     .split("files/")[1]
@@ -125,7 +132,5 @@ public class ComicListAdapter extends BaseAdapter {
         }else {
             mViewHolder.ivComicMuralPhoto.setVisibility(View.INVISIBLE);
         }
-
-        return view;
     }
 }

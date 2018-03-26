@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,6 +24,7 @@ import java.util.List;
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.LocationUtil;
 
 /**
  * Created by TDS-Team on 16/03/2018.
@@ -38,21 +40,15 @@ public class MuseumListAdapter extends BaseAdapter {
     private Activity context;
     private List<Museum> items;
     private Location location;
+    private ViewHolder mViewHolder;
 
-    public MuseumListAdapter(Activity context, LocationManager lm) {
+
+    public MuseumListAdapter(Activity context) {
         this.context = context;
-        if (lm != null && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-            if(location == null){
-                location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-
-        }
+        location = LocationUtil.getInstance().getLocation();
         items = LandMarksDatabase.getInstance(context).getSortedMuseums(location);
 
     }
-
 
     @Override
     public int getCount() {
@@ -72,22 +68,8 @@ public class MuseumListAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, final ViewGroup viewGroup) {
 
-        ViewHolder mViewHolder;
-
         if (view == null) {
-            view = context.getLayoutInflater().inflate(R.layout.fragment_museum_detail, viewGroup, false);
-            mViewHolder = new ViewHolder();
-
-            mViewHolder.btnEmail = view.findViewById(R.id.btn_detail_museum_mail);
-            mViewHolder.btnPhone = view.findViewById(R.id.btn_detail_museum_phone);
-            mViewHolder.btnWebsite = view.findViewById(R.id.btn_detail_museum_website);
-
-            mViewHolder.tvAdress = view.findViewById(R.id.tv_detail_museum_address);
-            mViewHolder.tvName = view.findViewById(R.id.tv_detail_museum_name);
-            mViewHolder.tvDistance = view.findViewById(R.id.tv_detail_museum_distance);
-
-            view.setTag(mViewHolder);
-
+            view = setupView(viewGroup);
         } else {
             mViewHolder = (ViewHolder) view.getTag();
         }
@@ -97,49 +79,20 @@ public class MuseumListAdapter extends BaseAdapter {
         mViewHolder.tvName.setText(currentMuseum.getName());
         mViewHolder.tvAdress.setText(currentMuseum.getAdres());
 
-        if (location != null){
-            Location loc_museum = new Location("location");
-            loc_museum.setLatitude(currentMuseum.getCoordX());
-            loc_museum.setLongitude(currentMuseum.getCoordY());
-            float distance_museum = location.distanceTo(loc_museum);
+        setupDistance(currentMuseum);
 
-            distance_museum = distance_museum/1000;
-            mViewHolder.tvDistance.setText(String.format("%.2f km", distance_museum));
+        setupButtons(viewGroup, currentMuseum);
 
-        }else {
-            mViewHolder.tvDistance.setText("");
-        }
+        return view;
+    }
 
+    private void setupButtons(final ViewGroup viewGroup, final Museum currentMuseum) {
+        setupBtnPhone(viewGroup, currentMuseum);
+        setupBtnEmail(viewGroup, currentMuseum);
+        setupBtnWebsite(viewGroup, currentMuseum);
+    }
 
-        if(TextUtils.isEmpty(currentMuseum.getTel())){
-            mViewHolder.btnPhone.setVisibility(View.GONE);
-        }else{
-            mViewHolder.btnPhone.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String tel = currentMuseum.getTel();
-                    Uri uri = Uri.parse("tel:" + tel);
-
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    viewGroup.getContext().startActivity(intent);
-                }
-            });
-        }
-
-
-        if(TextUtils.isEmpty(currentMuseum.getEmail())){
-            mViewHolder.btnEmail.setVisibility(View.GONE);
-        }else {
-            mViewHolder.btnEmail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                            "mailto", currentMuseum.getEmail(), null));
-                    viewGroup.getContext().startActivity(Intent.createChooser(emailIntent, "Send email..."));
-                }
-            });
-        }
-
+    private void setupBtnWebsite(final ViewGroup viewGroup, final Museum currentMuseum) {
         if(TextUtils.isEmpty(currentMuseum.getUrl())){
             mViewHolder.btnWebsite.setVisibility(View.GONE);
         }else{
@@ -160,10 +113,65 @@ public class MuseumListAdapter extends BaseAdapter {
                 }
             });
         }
+    }
 
+    private void setupBtnEmail(final ViewGroup viewGroup, final Museum currentMuseum) {
+        if(TextUtils.isEmpty(currentMuseum.getEmail())){
+            mViewHolder.btnEmail.setVisibility(View.GONE);
+        }else {
+            mViewHolder.btnEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", currentMuseum.getEmail(), null));
+                    viewGroup.getContext().startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                }
+            });
+        }
+    }
 
+    private void setupBtnPhone(final ViewGroup viewGroup, final Museum currentMuseum) {
+        if(TextUtils.isEmpty(currentMuseum.getTel())){
+            mViewHolder.btnPhone.setVisibility(View.GONE);
+        }else{
+            mViewHolder.btnPhone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String tel = currentMuseum.getTel();
+                    Uri uri = Uri.parse("tel:" + tel);
 
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    viewGroup.getContext().startActivity(intent);
+                }
+            });
+        }
+    }
 
+    private void setupDistance(Museum currentMuseum) {
+        if (location != null){
+            float distance = LocationUtil.getInstance().getDistance(currentMuseum.getCoordX(), currentMuseum.getCoordY(), location);
+            mViewHolder.tvDistance.setText(String.format("%.2f km", distance));
+
+        }else {
+            mViewHolder.tvDistance.setText("");
+        }
+    }
+
+    @NonNull
+    private View setupView(ViewGroup viewGroup) {
+        View view;
+        view = context.getLayoutInflater().inflate(R.layout.fragment_museum_detail, viewGroup, false);
+        mViewHolder = new ViewHolder();
+
+        mViewHolder.btnEmail = view.findViewById(R.id.btn_detail_museum_mail);
+        mViewHolder.btnPhone = view.findViewById(R.id.btn_detail_museum_phone);
+        mViewHolder.btnWebsite = view.findViewById(R.id.btn_detail_museum_website);
+
+        mViewHolder.tvAdress = view.findViewById(R.id.tv_detail_museum_address);
+        mViewHolder.tvName = view.findViewById(R.id.tv_detail_museum_name);
+        mViewHolder.tvDistance = view.findViewById(R.id.tv_detail_museum_distance);
+
+        view.setTag(mViewHolder);
         return view;
     }
 }
