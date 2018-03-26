@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/pu_musea"
+        android:title="Musea" />
+
+    <item
+        android:id="@+id/pu_graffiti"
+        android:title="@string/pu_graffiti" />
+    <item
+        android:id="@+id/pu_streetart"
+        android:title="@string/pu_streetart" />
+
+</menu>

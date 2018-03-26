@@ -1,13 +1,11 @@
 package be.ehb.xplorebxl.Database;
 
 import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.location.Location;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -23,7 +21,7 @@ import be.ehb.xplorebxl.Model.StreetArtDAO;
  * Created by TDS-Team on 16/03/2018.
  */
 
-@Database(version = 1 , entities = {Museum.class, StreetArt.class, Comic.class})
+@Database(entities = {Museum.class, StreetArt.class, Comic.class}, version = 1 ,exportSchema = false)
 public abstract class LandMarksDatabase extends RoomDatabase {
 
     //singleton

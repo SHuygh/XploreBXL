@@ -1,10 +1,11 @@
 package be.ehb.xplorebxl.View.Activities;
 
 import android.Manifest;
-import android.content.Context;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,9 +20,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -31,6 +34,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -43,10 +47,10 @@ import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.Downloader;
+import be.ehb.xplorebxl.Utils.ListviewItemListener;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.ComicListViewFragment;
-import be.ehb.xplorebxl.Utils.ListviewItemListener;
 import be.ehb.xplorebxl.View.Fragments.MuseumDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArtDetailFragment;
@@ -149,6 +153,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupCloseDetailFrag() {
+
         btnCloseExtraFrag = findViewById(R.id.btn_main_close);
 
         btnCloseExtraFrag.setOnClickListener(new View.OnClickListener() {
@@ -246,6 +251,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+
+        /** Map Styling  **/
+
+        try {
+            // Customise the styling of the base map using a JSON object defined
+         // in a raw resource file.
+         boolean success = googleMap.setMapStyle(
+         MapStyleOptions.loadRawResourceStyle(
+         this, R.raw.style_json));
+
+         if (!success) {
+         Log.e(TAG, "Style parsing failed.");
+         }
+         } catch (Resources.NotFoundException e) {
+         Log.e(TAG, "Can't find style. Error: ", e);
+         }
+
+
+
         drawMarkers();
 
         setupMap();
@@ -302,6 +326,7 @@ public class MainActivity extends AppCompatActivity
                             .icon(BitmapDescriptorFactory.defaultMarker(10))),
                             element);
         }
+
 
 
         }
@@ -361,7 +386,7 @@ public class MainActivity extends AppCompatActivity
     public void cancelSelectedMarker() {
         Log.d(TAG, "cancelSelectedMarker: ");
         if(selectedMarker != null){
-            Log.d(TAG, "cancelSelectedMarker: selectedmarker going to be cleared");
+            Log.d(TAG, "cancelSelectedMarker: selected marker going to be cleared");
             Object o = objectLinkedToMarker.get(selectedMarker);
 
             float hue = 0;
@@ -394,5 +419,45 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.mi_marker_filter){
+
+            PopupMenu popup = new PopupMenu(this, findViewById(R.id.mi_marker_filter));
+            popup.getMenuInflater().inflate(R.menu.marker_list, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+
+                if(item.getTitle().equals("Musea")) {
+
+
+                    objectLinkedToMarker.containsValue("museums");
+
+                    Log.d(TAG, "onMenuItemClick: gyugjg");
+
+
+            }
+
+                    return true;
+                }
+            });
+            popup.show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
 }

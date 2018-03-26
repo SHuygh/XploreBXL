@@ -1,6 +1,7 @@
 package be.ehb.xplorebxl.Model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
@@ -27,6 +28,7 @@ public class Museum implements Serializable {
     private double coordX;
     private double coordY;
 
+    @Ignore
     public Museum() {
     }
 

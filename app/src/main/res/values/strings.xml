@@ -19,4 +19,8 @@
     <string name="txt_btn_lv_streetart">Streetart</string>
     <string name="txt_nav_item_list_streetart">List of Streetart</string>
     <string name="txt_nav_list_comics">List of comic book murals</string>
+    <string name="mi_filter">Filter</string>
+    <string name="pu_musea">Musea</string>
+    <string name="pu_streetart">Streetart</string>
+    <string name="pu_graffiti">Graffiti</string>
 </resources>
