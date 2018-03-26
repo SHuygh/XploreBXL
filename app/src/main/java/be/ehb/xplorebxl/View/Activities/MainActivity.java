@@ -424,11 +424,11 @@ public class MainActivity extends AppCompatActivity
 
 
         if(objectClicked instanceof Museum){
-            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance((Museum) objectClicked)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance((Museum) objectClicked, locationManager, this)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         }else if(objectClicked instanceof StreetArt){
-            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, StreetArtDetailFragment.newInstance((StreetArt) objectClicked)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, StreetArtDetailFragment.newInstance((StreetArt) objectClicked, locationManager, this)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         }else if (objectClicked instanceof Comic){
-            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, ComicDetailFragment.newInstance((Comic) objectClicked)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, ComicDetailFragment.newInstance((Comic) objectClicked, locationManager, this)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         }
     }
 
