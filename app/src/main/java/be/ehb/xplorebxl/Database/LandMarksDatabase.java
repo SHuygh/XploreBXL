@@ -45,34 +45,38 @@ public abstract class LandMarksDatabase extends RoomDatabase {
     }
 
     public List<Museum> getSortedMuseums(final Location location){
-        List<Museum> museumList = getMuseums();
+        if(location != null) {
+            List<Museum> museumList = getMuseums();
 
-        Collections.sort(museumList, new Comparator<Museum>() {
-            @Override
-            public int compare(Museum museum, Museum t1) {
-                Location loc_museum = new Location("location");
+            Collections.sort(museumList, new Comparator<Museum>() {
+                @Override
+                public int compare(Museum museum, Museum t1) {
+                    Location loc_museum = new Location("location");
                     loc_museum.setLatitude(museum.getCoordX());
                     loc_museum.setLongitude(museum.getCoordY());
-                Location loc_t1 = new Location("location_t1");
+                    Location loc_t1 = new Location("location_t1");
                     loc_t1.setLatitude(t1.getCoordX());
                     loc_t1.setLongitude(t1.getCoordY());
-                float distance_museum = location.distanceTo(loc_museum);
-                float distance_t1 = location.distanceTo(loc_t1);
-                float difference = distance_museum - distance_t1;
-                int result;
-                if(difference>0){
-                    result = 1;
-                }else if(difference<0){
-                    result = -1;
-                }else{
-                    result = 0;
+                    float distance_museum = location.distanceTo(loc_museum);
+                    float distance_t1 = location.distanceTo(loc_t1);
+                    float difference = distance_museum - distance_t1;
+                    int result;
+                    if (difference > 0) {
+                        result = 1;
+                    } else if (difference < 0) {
+                        result = -1;
+                    } else {
+                        result = 0;
+                    }
+                    return result;
                 }
-                return result;
-            }
-        });
+            });
 
 
-        return museumList;
+            return museumList;
+        }else{
+            return getMuseums();
+        }
     }
 
     public List<String> getMuseumRecordID(){
@@ -91,6 +95,41 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
     public abstract StreetArtDAO getStreetArtDao();
 
+
+    public List<StreetArt> getSortedStreetArt(final Location location){
+        if(location != null) {
+            List<StreetArt> StreetartList = getAllStreetArt();
+
+            Collections.sort(StreetartList, new Comparator<StreetArt>() {
+                @Override
+                public int compare(StreetArt streetArt, StreetArt t1) {
+                    Location loc_streetart = new Location("location");
+                    loc_streetart.setLatitude(streetArt.getCoordX());
+                    loc_streetart.setLongitude(streetArt.getCoordY());
+                    Location loc_t1 = new Location("location_t1");
+                    loc_t1.setLatitude(t1.getCoordX());
+                    loc_t1.setLongitude(t1.getCoordY());
+                    float distance_streetArt = location.distanceTo(loc_streetart);
+                    float distance_t1 = location.distanceTo(loc_t1);
+                    float difference = distance_streetArt - distance_t1;
+                    int result;
+                    if (difference > 0) {
+                        result = 1;
+                    } else if (difference < 0) {
+                        result = -1;
+                    } else {
+                        result = 0;
+                    }
+                    return result;
+                }
+            });
+
+            return StreetartList;
+        }else{
+            return getAllStreetArt();
+        }
+    }
+
     public List<StreetArt> getAllStreetArt(){return getStreetArtDao().getAllStreetArt();    }
 
     public List<String> getStreetArtRecordID(){return getStreetArtDao().getStreetArtRecordID();}
@@ -107,6 +146,40 @@ public abstract class LandMarksDatabase extends RoomDatabase {
     public abstract ComicDAO getComicDao();
 
     public List<Comic> getAllComics(){return getComicDao().getAllComics();  }
+
+    public List<Comic> getSortedCommic(final Location location){
+        if(location != null) {
+            List<Comic> ComicsList = getAllComics();
+
+            Collections.sort(ComicsList, new Comparator<Comic>() {
+                @Override
+                public int compare(Comic comic, Comic t1) {
+                    Location loc_comic = new Location("location");
+                    loc_comic.setLatitude(comic.getCoordX());
+                    loc_comic.setLongitude(comic.getCoordY());
+                    Location loc_t1 = new Location("location_t1");
+                    loc_t1.setLatitude(t1.getCoordX());
+                    loc_t1.setLongitude(t1.getCoordY());
+                    float distance_comic = location.distanceTo(loc_comic);
+                    float distance_t1 = location.distanceTo(loc_t1);
+                    float difference = distance_comic - distance_t1;
+                    int result;
+                    if (difference > 0) {
+                        result = 1;
+                    } else if (difference < 0) {
+                        result = -1;
+                    } else {
+                        result = 0;
+                    }
+                    return result;
+                }
+            });
+
+            return ComicsList;
+        }else{
+            return getAllComics();
+        }
+    }
 
     public List<String> getComicRecordID(){return getComicDao().getComicRecordID();}
 

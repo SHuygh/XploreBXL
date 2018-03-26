@@ -3,6 +3,7 @@ package be.ehb.xplorebxl.View.Activities;
 import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -24,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity
 
     public GoogleMap map;
     private HashMap<Marker, Object> objectLinkedToMarker;
-    private Button btnCloseExtraFrag;
+    private ImageButton btnCloseExtraFrag;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private MapFragment mapFragment;
@@ -88,11 +91,6 @@ public class MainActivity extends AppCompatActivity
         checkHasDownloadedBefore();
         setupLocationServices();
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     private void setupLocationServices() {
@@ -218,16 +216,28 @@ public class MainActivity extends AppCompatActivity
 
             closeDetailFrag();
         } else if (id == R.id.nav_list) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, MuseumListViewFragment.newInstance(locationManager)).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frag_container, MuseumListViewFragment.newInstance(locationManager))
+                    .addToBackStack("back")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             closeDetailFrag();
         } else if (id == R.id.nav_list_streetart) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, StreetArtListViewFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frag_container, StreetArtListViewFragment.newInstance(locationManager))
+                    .addToBackStack("back")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             closeDetailFrag();
         } else if (id == R.id.nav_list_comics) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, ComicListViewFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frag_container, ComicListViewFragment.newInstance(locationManager))
+                    .addToBackStack("back")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             closeDetailFrag();
         } else if (id == R.id.nav_about) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, AboutFragment.newInstance()).addToBackStack("back").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frag_container, AboutFragment.newInstance())
+                    .addToBackStack("back")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             closeDetailFrag();
 
         } else if (id == R.id.nav_update) {
@@ -292,14 +302,15 @@ public class MainActivity extends AppCompatActivity
         List<Museum> museums = LandMarksDatabase.getInstance(this).getMuseums();
 
         for(Museum element: museums){
-           objectLinkedToMarker.put(map.addMarker(
-                   new MarkerOptions()
-                    .title(element.getName())
-                    .position(element.getCoord())
-                    .snippet("Click for more information")
-                    .icon(BitmapDescriptorFactory.defaultMarker(180))),
-                   element
-                   );
+
+            Marker marker = map.addMarker(
+                    new MarkerOptions()
+                            .title(element.getName())
+                            .position(element.getCoord())
+                            .snippet("Click for more information")
+                            .icon(BitmapDescriptorFactory.defaultMarker(180)));
+
+            objectLinkedToMarker.put(marker,element);
             }
 
          List<StreetArt> streetArtList = LandMarksDatabase.getInstance(this).getAllStreetArt();
@@ -314,6 +325,7 @@ public class MainActivity extends AppCompatActivity
                     element
             );
         }
+
         List<Comic> comicsList = LandMarksDatabase.getInstance(this).getAllComics();
 
         for (Comic element: comicsList){
@@ -349,14 +361,17 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Log.d(TAG, "onMarkerClick: " + marker.getTitle());
         updateSelectedMarker(marker);
+
+
         return true;
     }
+
 
     @Override
     public void itemSelected(Object o) {
         Marker marker = null;
+        getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
         LOOP: for(Marker element: objectLinkedToMarker.keySet()){
             if(o.equals(objectLinkedToMarker.get(element))){
@@ -371,7 +386,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void updateSelectedMarker(Marker marker) {
-        Log.d(TAG, "updateSelectedMarker: ");
+
         cancelSelectedMarker();
 
         selectedMarker = marker;
@@ -384,9 +399,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void cancelSelectedMarker() {
-        Log.d(TAG, "cancelSelectedMarker: ");
+
         if(selectedMarker != null){
-            Log.d(TAG, "cancelSelectedMarker: selected marker going to be cleared");
+
             Object o = objectLinkedToMarker.get(selectedMarker);
 
             float hue = 0;
@@ -410,6 +425,7 @@ public class MainActivity extends AppCompatActivity
 
         Object objectClicked = objectLinkedToMarker.get(marker);
 
+
         if(objectClicked instanceof Museum){
             getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, MuseumDetailFragment.newInstance((Museum) objectClicked)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         }else if(objectClicked instanceof StreetArt){
@@ -418,6 +434,8 @@ public class MainActivity extends AppCompatActivity
             getFragmentManager().beginTransaction().replace(R.id.detail_frag_container, ComicDetailFragment.newInstance((Comic) objectClicked)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         }
     }
+
+    /*FILTER MARKERS***FILTER MARKERS***FILTER MARKERS***FILTER MARKERS***FILTER MARKERS***FILTER MARKERS***FILTER MARKERS***FILTER MARKERS***FILTER MARKERS***FILTER MARKERS***FILTER MARKERS***/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -430,7 +448,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        int id = item.getItemId();
+        final int id = item.getItemId();
         if (id == R.id.mi_marker_filter){
 
             PopupMenu popup = new PopupMenu(this, findViewById(R.id.mi_marker_filter));
@@ -441,15 +459,22 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
 
-                if(item.getTitle().equals("Musea")) {
-
-
-                    objectLinkedToMarker.containsValue("museums");
-
-                    Log.d(TAG, "onMenuItemClick: gyugjg");
-
-
-            }
+                    switch (item.getItemId()){
+                        case R.id.pu_all:
+                            for(Marker element: objectLinkedToMarker.keySet()){
+                                    element.setVisible(true);
+                            }
+                            break;
+                        case R.id.pu_musea:
+                            filterMarker(Museum.class);
+                            break;
+                        case R.id.pu_comic:
+                            filterMarker(Comic.class);
+                            break;
+                        case R.id.pu_streetart:
+                            filterMarker(StreetArt.class);
+                            break;
+                    }
 
                     return true;
                 }
@@ -458,6 +483,18 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void filterMarker(Class cls) {
+
+        for(Marker element: objectLinkedToMarker.keySet()){
+            if(objectLinkedToMarker.get(element).getClass().equals(cls)){
+                element.setVisible(true);
+            }else{
+                element.setVisible(false);
+            }
+        }
+
     }
 
 }

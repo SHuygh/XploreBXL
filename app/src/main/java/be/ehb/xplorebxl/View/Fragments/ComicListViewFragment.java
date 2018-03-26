@@ -3,6 +3,7 @@ package be.ehb.xplorebxl.View.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -27,14 +28,18 @@ public class ComicListViewFragment extends Fragment {
 
     private ListviewItemListener callback;
 
+    private LocationManager locationManager;
+
 
     public ComicListViewFragment() {
         // Required empty public constructor
     }
 
 
-    public static ComicListViewFragment newInstance() {
+    public static ComicListViewFragment newInstance(LocationManager lm) {
         ComicListViewFragment fragment = new ComicListViewFragment();
+        fragment.locationManager = lm;
+
 
         return fragment;
     }
@@ -60,7 +65,7 @@ public class ComicListViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_comic_list_view, container, false);
         lvComics = rootView.findViewById(R.id.lv_comics);
 
-        final ComicListAdapter comicListAdapter = new ComicListAdapter(getActivity());
+        final ComicListAdapter comicListAdapter = new ComicListAdapter(getActivity(), locationManager);
         lvComics.setAdapter(comicListAdapter);
 
         lvComics.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -68,7 +73,6 @@ public class ComicListViewFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Comic selectedComic = (Comic) comicListAdapter.getItem(i);
                 callback.itemSelected(selectedComic);
-                getActivity().onBackPressed();
             }
         });
 

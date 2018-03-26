@@ -43,16 +43,16 @@ public class MuseumListAdapter extends BaseAdapter {
         this.context = context;
         if (lm != null && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            Log.d("testtest", "MuseumListAdapter: last location" + location);
-            if(location != null) {
-                items = LandMarksDatabase.getInstance(context).getSortedMuseums(location);
-            }else{
-                    items = LandMarksDatabase.getInstance(context).getMuseumDao().getAllMuseums();
+
+            if(location == null){
+                location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
-        }else {
-            items = LandMarksDatabase.getInstance(context).getMuseumDao().getAllMuseums();
+
         }
+        items = LandMarksDatabase.getInstance(context).getSortedMuseums(location);
+
     }
+
 
     @Override
     public int getCount() {

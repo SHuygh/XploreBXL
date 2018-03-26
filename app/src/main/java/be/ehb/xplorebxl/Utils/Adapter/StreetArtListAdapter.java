@@ -1,8 +1,13 @@
 package be.ehb.xplorebxl.Utils.Adapter;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContextWrapper;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,14 +35,25 @@ public class StreetArtListAdapter extends BaseAdapter {
     private class ViewHolder{
         TextView tvStreetartArtistName;
         TextView tvStreetartAddress;
+        TextView tvDistance;
         ImageView ivStreetartPhoto;
     }
     private Activity context;
     private List<StreetArt> items;
+    private Location location;
 
-    public StreetArtListAdapter(Activity context) {
+
+    public StreetArtListAdapter(Activity context, LocationManager lm) {
         this.context = context;
-        items = LandMarksDatabase.getInstance(context).getStreetArtDao().getAllStreetArt();
+        if (lm != null && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if(location == null){
+                location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+
+        }
+        items = LandMarksDatabase.getInstance(context).getSortedStreetArt(location);
     }
 
     @Override
@@ -67,6 +83,8 @@ public class StreetArtListAdapter extends BaseAdapter {
             mViewHolder.tvStreetartArtistName = view.findViewById(R.id.tv_detail_streetart_artistname);
             mViewHolder.tvStreetartAddress = view.findViewById(R.id.tv_detail_streetart_explanation);
             mViewHolder.ivStreetartPhoto = view.findViewById(R.id.iv_detail_streetart);
+            mViewHolder.tvDistance = view.findViewById(R.id.tv_detail_streetart_distance);
+
 
             view.setTag(mViewHolder);
 
@@ -79,15 +97,18 @@ public class StreetArtListAdapter extends BaseAdapter {
         mViewHolder.tvStreetartArtistName.setText(currentStreetArt.getNameOfArtist());
         mViewHolder.tvStreetartAddress.setText(currentStreetArt.getAddress());
 
+        if (location != null){
+            Location loc_streetart = new Location("location");
+            loc_streetart.setLatitude(currentStreetArt.getCoordX());
+            loc_streetart.setLongitude(currentStreetArt.getCoordY());
+            float distance_streetart = location.distanceTo(loc_streetart);
 
- /*       if(currentStreetArt.isHasIMG()) {
-            String url = currentStreetArt.getImgUrl();
+            distance_streetart = distance_streetart/1000;
+            mViewHolder.tvDistance.setText(String.format("%.2f km", distance_streetart));
 
-            Uri uri = Uri.parse(url);
-            Picasso.with(context).load(uri).into(mViewHolder.ivStreetartPhoto);
         }else {
-            mViewHolder.ivStreetartPhoto.setVisibility(View.INVISIBLE);
-        }*/
+            mViewHolder.tvDistance.setVisibility(View.GONE);
+        }
 
         if(currentStreetArt.isHasIMG()) {
 

@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
     <item
-        android:id="@+id/pu_musea"
-        android:title="Musea" />
+        android:id="@+id/pu_all"
+        android:title="@string/pu_all" />
 
     <item
-        android:id="@+id/pu_graffiti"
-        android:title="@string/pu_graffiti" />
+        android:id="@+id/pu_musea"
+        android:title="@string/pu_musea" />
+
+    <item
+        android:id="@+id/pu_comic"
+        android:title="@string/pu_comic" />
     <item
         android:id="@+id/pu_streetart"
         android:title="@string/pu_streetart" />

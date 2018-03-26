@@ -61,10 +61,7 @@ public class StreetArtDetailFragment extends Fragment {
         tv_explenation.setText(explenation);
 
         if(selectedStreetArt.isHasIMG()) {
-  /*          String url = selectedStreetArt.getImgUrl();
 
-            Uri uri = Uri.parse(url);
-            Picasso.with(getActivity()).load(uri).into(ivStreetart);*/
             String imgId = selectedStreetArt.getImgUrl()
                                 .split("files/")[1]
                                     .split("[/]")[0];

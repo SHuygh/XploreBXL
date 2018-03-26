@@ -3,6 +3,7 @@ package be.ehb.xplorebxl.View.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -25,13 +26,18 @@ public class StreetArtListViewFragment extends Fragment {
 
     private ListviewItemListener callback;
 
+    private LocationManager locationManager;
+
+
 
     public StreetArtListViewFragment() {
         // Required empty public constructor
     }
 
-    public static StreetArtListViewFragment newInstance (){
+    public static StreetArtListViewFragment newInstance (LocationManager lm){
         StreetArtListViewFragment fragment = new StreetArtListViewFragment();
+        fragment.locationManager = lm;
+
         return fragment;
     }
 
@@ -56,7 +62,7 @@ public class StreetArtListViewFragment extends Fragment {
 
         lvStreetart = rootView.findViewById(R.id.lv_streetart);
 
-        final StreetArtListAdapter streetArtListAdapter = new StreetArtListAdapter(getActivity());
+        final StreetArtListAdapter streetArtListAdapter = new StreetArtListAdapter(getActivity(), locationManager);
 
         lvStreetart.setAdapter(streetArtListAdapter);
 
@@ -65,7 +71,6 @@ public class StreetArtListViewFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 StreetArt selectedStreetart = (StreetArt) streetArtListAdapter.getItem(i);
                 callback.itemSelected(selectedStreetart);
-                getActivity().onBackPressed();
 
             }
         });

@@ -80,7 +80,6 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
 
         Museum selectedMuseum = (Museum) museumListAdapter.getItem(i);
         callback.itemSelected(selectedMuseum);
-        getActivity().onBackPressed();
 
     }
 
