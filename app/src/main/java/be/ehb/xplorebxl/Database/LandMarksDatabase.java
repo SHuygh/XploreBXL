@@ -30,7 +30,6 @@ public abstract class LandMarksDatabase extends RoomDatabase {
     public static LandMarksDatabase getInstance (Context context){
         if (instance == null){
             instance = Room.databaseBuilder(context, LandMarksDatabase.class, "landMarks.db").allowMainThreadQueries().build();
-
         }
         return instance;
     }
@@ -44,6 +43,8 @@ public abstract class LandMarksDatabase extends RoomDatabase {
         return getMuseumDao().getAllMuseums();
     }
 
+    /**If Location is not null, returns the list of items from Room sorted by distance to user,
+     * else returns the non sorted list*/
     public List<Museum> getSortedMuseums(final Location location){
         if(location != null) {
             List<Museum> museumList = getMuseums();
@@ -54,20 +55,21 @@ public abstract class LandMarksDatabase extends RoomDatabase {
                     Location loc_museum = new Location("location");
                     loc_museum.setLatitude(museum.getCoordX());
                     loc_museum.setLongitude(museum.getCoordY());
+
                     Location loc_t1 = new Location("location_t1");
                     loc_t1.setLatitude(t1.getCoordX());
                     loc_t1.setLongitude(t1.getCoordY());
+
                     float distance_museum = location.distanceTo(loc_museum);
                     float distance_t1 = location.distanceTo(loc_t1);
+
                     float difference = distance_museum - distance_t1;
+
                     int result;
-                    if (difference > 0) {
-                        result = 1;
-                    } else if (difference < 0) {
-                        result = -1;
-                    } else {
-                        result = 0;
-                    }
+                    if (difference > 0) { result = 1;
+                    } else if (difference < 0) { result = -1;
+                    } else {result = 0; }
+
                     return result;
                 }
             });
@@ -95,7 +97,8 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
     public abstract StreetArtDAO getStreetArtDao();
 
-
+    /**If Location is not null, returns the list of items from Room sorted by distance to user,
+     * else returns the non sorted list*/
     public List<StreetArt> getSortedStreetArt(final Location location){
         if(location != null) {
             List<StreetArt> StreetartList = getAllStreetArt();
@@ -103,23 +106,25 @@ public abstract class LandMarksDatabase extends RoomDatabase {
             Collections.sort(StreetartList, new Comparator<StreetArt>() {
                 @Override
                 public int compare(StreetArt streetArt, StreetArt t1) {
+
                     Location loc_streetart = new Location("location");
                     loc_streetart.setLatitude(streetArt.getCoordX());
                     loc_streetart.setLongitude(streetArt.getCoordY());
+
                     Location loc_t1 = new Location("location_t1");
                     loc_t1.setLatitude(t1.getCoordX());
                     loc_t1.setLongitude(t1.getCoordY());
+
                     float distance_streetArt = location.distanceTo(loc_streetart);
                     float distance_t1 = location.distanceTo(loc_t1);
+
                     float difference = distance_streetArt - distance_t1;
+
                     int result;
-                    if (difference > 0) {
-                        result = 1;
-                    } else if (difference < 0) {
-                        result = -1;
-                    } else {
-                        result = 0;
-                    }
+                    if (difference > 0) { result = 1;
+                    } else if (difference < 0) { result = -1;
+                    } else { result = 0;}
+
                     return result;
                 }
             });
@@ -134,7 +139,7 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
     public List<String> getStreetArtRecordID(){return getStreetArtDao().getStreetArtRecordID();}
 
-    public List<String> getStreetArtImgUrl(){return getStreetArtDao().getImgUrl();};
+    public List<String> getStreetArtImgUrl(){return getStreetArtDao().getImgUrl();}
 
     public void insertStreetArt(StreetArt s){getStreetArtDao().insertStreetArt(s);}
 
@@ -147,6 +152,8 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
     public List<Comic> getAllComics(){return getComicDao().getAllComics();  }
 
+    /**If Location is not null, returns the list of items from Room sorted by distance to user,
+     * else returns the non sorted list*/
     public List<Comic> getSortedCommic(final Location location){
         if(location != null) {
             List<Comic> ComicsList = getAllComics();
@@ -157,20 +164,21 @@ public abstract class LandMarksDatabase extends RoomDatabase {
                     Location loc_comic = new Location("location");
                     loc_comic.setLatitude(comic.getCoordX());
                     loc_comic.setLongitude(comic.getCoordY());
+
                     Location loc_t1 = new Location("location_t1");
                     loc_t1.setLatitude(t1.getCoordX());
                     loc_t1.setLongitude(t1.getCoordY());
+
                     float distance_comic = location.distanceTo(loc_comic);
                     float distance_t1 = location.distanceTo(loc_t1);
+
                     float difference = distance_comic - distance_t1;
+
                     int result;
-                    if (difference > 0) {
-                        result = 1;
-                    } else if (difference < 0) {
-                        result = -1;
-                    } else {
-                        result = 0;
-                    }
+                    if (difference > 0) { result = 1;
+                    } else if (difference < 0) { result = -1;
+                    } else {result = 0;}
+
                     return result;
                 }
             });
@@ -183,56 +191,10 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
     public List<String> getComicRecordID(){return getComicDao().getComicRecordID();}
 
-    public List<String> getComicImgUrl(){return getComicDao().getImgUrl();};
+    public List<String> getComicImgUrl(){return getComicDao().getImgUrl();}
 
     public void insertComic(Comic comic){getComicDao().insertComic(comic);}
 
     public void updateComic(Comic comic){getComicDao().updateComic(comic);}
-
-
-
-
-   /* ArrayList<Museum> museums;
-
-    private static final LandMarksDatabase INSTANCE = new LandMarksDatabase();
-
-    private LandMarksDatabase() {
-        museums = new ArrayList<>();
-
-        museums.add(new Museum("9e20aaa554aabb6b8da0f37ff1b45e125849c349",
-                "Archief en Museum voor het Vlaams Leven te Brussel",
-                "Brussel", "Arduinkaai 28", "http://www.amvb.be",
-                "telephone_telefoon", "info@amvb.be",
-                50.8552703, 4.34897509));
-
-        museums.add(new Museum("fbf48a0216f8e9814629179e06b3518bf4db6152",
-                "Art & marges museum",
-                "Brussel", "Arduinkaai 28", "http://www.amvb.be",
-                "telephone_telefoon", "info@amvb.be",
-                50.8347929,4.34647749));
-
-        museums.add(new Museum("efc644b8cb0c1b4d003f62d12afb1e602146baf8",
-                "Belgisch Museum van de Vrijmetselarij",
-                "Brussel", "Arduinkaai 28", "http://www.amvb.be",
-                "telephone_telefoon", "info@amvb.be",
-                50.8529947,4.3515889));
-
-        museums.add(new Museum("c1b3d92b8b7a92214ecd32834c41579461707e51",
-                "BELvue museum",
-                "Brussel", "Arduinkaai 28", "http://www.amvb.be",
-                "telephone_telefoon", "info@amvb.be",
-                50.84261069,4.3606882));
-
-    }
-
-    public ArrayList<Museum> getMuseums(){
-        return museums;
-    }
-
-    public static LandMarksDatabase getInstance(){
-        return INSTANCE;
-    }
-
-    */
 
 }

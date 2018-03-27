@@ -1,9 +1,16 @@
 package be.ehb.xplorebxl.View.Fragments.Comic;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContextWrapper;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +23,7 @@ import java.io.File;
 
 import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.LocationUtil;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -26,7 +34,9 @@ public class ComicDetailFragment extends Fragment {
 
     private Comic selectedComic;
     private ImageView ivComic;
-    private TextView tvIllustratorName, tvPersonnage;
+    private TextView tvIllustratorName, tvPersonnage, tvDistance;
+
+    private Location location;
 
 
     public ComicDetailFragment() {
@@ -36,6 +46,8 @@ public class ComicDetailFragment extends Fragment {
     public static ComicDetailFragment newInstance (Comic comic){
         ComicDetailFragment fragment = new ComicDetailFragment();
         fragment.selectedComic = comic;
+        fragment.location = LocationUtil.getInstance().getLocation();
+
         return fragment;
     }
 
@@ -44,24 +56,20 @@ public class ComicDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_street_art_detail,container,false);
+        View rootView = setupView(inflater, container);
 
-        ivComic = rootView.findViewById(R.id.iv_detail_streetart);
-        tvIllustratorName = rootView.findViewById(R.id.tv_detail_streetart_artistname);
-        tvPersonnage = rootView.findViewById(R.id.tv_detail_streetart_explanation);
 
-        tvIllustratorName.setText("Illustrator: " + selectedComic.getNameOfIllustrator());
-        tvPersonnage.setText("Feat. " + selectedComic.getPersonnage());
+        tvIllustratorName.setText(String.format("Illustrator: %s", selectedComic.getNameOfIllustrator()));
+        tvPersonnage.setText(String.format("Feat. %s", selectedComic.getPersonnage()));
 
- /*       if (selectedComic.isHasIMG()){
+        setupDistance();
 
-            String url = selectedComic.getImgUrl();
-            Uri uri = Uri.parse(url);
-            Picasso.with(getActivity()).load(uri).into(ivComic);
-        }else{
-            ivComic.setVisibility(View.INVISIBLE);
-        }*/
+        setupImgView();
 
+        return rootView;
+    }
+
+    public void setupImgView() {
         if(selectedComic.isHasIMG()) {
             String imgId = selectedComic.getImgUrl()
                     .split("files/")[1]
@@ -76,7 +84,27 @@ public class ComicDetailFragment extends Fragment {
         }else {
             ivComic.setVisibility(View.INVISIBLE);
         }
+    }
 
+    public void setupDistance() {
+        if (location != null){
+            tvDistance.setVisibility(View.VISIBLE);
+            float distance = LocationUtil.getInstance().getDistance(selectedComic.getCoordX(), selectedComic.getCoordY(), location);
+            tvDistance.setText(String.format("%.2f km", distance));
+
+        }else {
+            tvDistance.setVisibility(View.GONE);
+        }
+    }
+
+    @NonNull
+    public View setupView(LayoutInflater inflater, ViewGroup container) {
+        View rootView = inflater.inflate(R.layout.fragment_street_art_detail,container,false);
+
+        ivComic = rootView.findViewById(R.id.iv_detail_streetart);
+        tvIllustratorName = rootView.findViewById(R.id.tv_detail_streetart_artistname);
+        tvPersonnage = rootView.findViewById(R.id.tv_detail_streetart_explanation);
+        tvDistance = rootView.findViewById(R.id.tv_detail_streetart_distance);
         return rootView;
     }
 

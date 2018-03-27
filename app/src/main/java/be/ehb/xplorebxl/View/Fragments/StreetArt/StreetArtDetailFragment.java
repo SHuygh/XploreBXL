@@ -1,10 +1,16 @@
 package be.ehb.xplorebxl.View.Fragments.StreetArt;
 
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContextWrapper;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +24,7 @@ import java.io.File;
 
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.LocationUtil;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -28,7 +35,10 @@ public class StreetArtDetailFragment extends Fragment {
 
     private StreetArt selectedStreetArt;
     private ImageView ivStreetart;
-    private TextView tv_Artistname, tv_explenation;
+    private TextView tv_Artistname, tv_explenation, tvDistance;
+
+    private Location location;
+
 
     public StreetArtDetailFragment() {
         // Required empty public constructor
@@ -37,6 +47,8 @@ public class StreetArtDetailFragment extends Fragment {
     public static StreetArtDetailFragment newInstance(StreetArt streetArt) {
         StreetArtDetailFragment fragment = new StreetArtDetailFragment();
         fragment.selectedStreetArt = streetArt;
+        fragment.location = LocationUtil.getInstance().getLocation();
+
         return fragment;
     }
 
@@ -50,12 +62,21 @@ public class StreetArtDetailFragment extends Fragment {
         ivStreetart = rootView.findViewById(R.id.iv_detail_streetart);
         tv_Artistname = rootView.findViewById(R.id.tv_detail_streetart_artistname);
         tv_explenation = rootView.findViewById(R.id.tv_detail_streetart_explanation);
+        tvDistance = rootView.findViewById(R.id.tv_detail_streetart_distance);
 
 
         tv_Artistname.setText(selectedStreetArt.getNameOfArtist());
 
         String explenation = !TextUtils.isEmpty(selectedStreetArt.getExplanation())? selectedStreetArt.getAddress() + ", " + selectedStreetArt.getExplanation() : selectedStreetArt.getAddress();
         tv_explenation.setText(explenation);
+
+        if (location != null){
+            float distance = LocationUtil.getInstance().getDistance(selectedStreetArt.getCoordX(), selectedStreetArt.getCoordY(), location);
+            tvDistance.setText(String.format("%.2f km", distance));
+
+        }else {
+            tvDistance.setVisibility(View.GONE);
+        }
 
         if(selectedStreetArt.isHasIMG()) {
 

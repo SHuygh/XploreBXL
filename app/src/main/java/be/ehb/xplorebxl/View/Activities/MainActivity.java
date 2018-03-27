@@ -48,6 +48,7 @@ import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.Downloader;
 import be.ehb.xplorebxl.Utils.ListviewItemListener;
+import be.ehb.xplorebxl.Utils.LocationUtil;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
@@ -69,10 +70,9 @@ public class MainActivity extends AppCompatActivity
     public GoogleMap map;
     private HashMap<Marker, Object> objectLinkedToMarker;
     private ImageButton btnCloseExtraFrag;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
     private MapFragment mapFragment;
     private Marker selectedMarker;
+    private Menu menu;
 
 
     @Override
@@ -80,70 +80,20 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        downloader = Downloader.getInstance(this);
+        downloader = Downloader.getInstance();
 
         setupDrawer();
         setupMaps();
         setupCloseDetailFrag();
         checkHasDownloadedBefore();
-        setupLocationServices();
-
-    }
-
-    private void setupLocationServices() {
-        locationManager = (LocationManager)
-                getSystemService(Context.LOCATION_SERVICE);
-
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-            }
-        };
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else {
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, 1000, 5, locationListener);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 1:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(this, "No GPS LOCATION", Toast.LENGTH_LONG).show();
-                        return;
-                    } else {
-                        locationManager.requestLocationUpdates(
-                                LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
-                    }
-                }
-        }
+        LocationUtil.getInstance().setupLocationServices(this);
     }
 
     private void checkHasDownloadedBefore() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        if (sharedPreferences.getBoolean("AppHasDownloadedDataBefore", false)) {
-        } else {
-            downloader.downloadData();
+        if (!sharedPreferences.getBoolean("AppHasDownloadedDataBefore", false)) {
+            downloader.downloadData(this);
         }
     }
 
@@ -186,7 +136,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        locationManager.removeUpdates(locationListener);
+        LocationUtil.getInstance().removeUpdates();
     }
 
 
@@ -194,7 +144,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -203,46 +153,53 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
             getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
-
+            menu.setGroupVisible(R.id.mg_filter, true);
             setupMap();
-
             closeDetailFrag();
         } else if (id == R.id.nav_list) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, MuseumListViewFragment.newInstance(locationManager))
+                    .replace(R.id.frag_container, MuseumListViewFragment.newInstance())
                     .addToBackStack("back")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            menu.setGroupVisible(R.id.mg_filter, false);
+
             closeDetailFrag();
         } else if (id == R.id.nav_list_streetart) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, StreetArtListViewFragment.newInstance(locationManager))
+                    .replace(R.id.frag_container, StreetArtListViewFragment.newInstance())
                     .addToBackStack("back")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            menu.setGroupVisible(R.id.mg_filter, false);
+
             closeDetailFrag();
         } else if (id == R.id.nav_list_comics) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, ComicListViewFragment.newInstance(locationManager))
+                    .replace(R.id.frag_container, ComicListViewFragment.newInstance())
                     .addToBackStack("back")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            menu.setGroupVisible(R.id.mg_filter, false);
+
             closeDetailFrag();
         } else if (id == R.id.nav_about) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.frag_container, AboutFragment.newInstance())
                     .addToBackStack("back")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            menu.setGroupVisible(R.id.mg_filter, false);
+
             closeDetailFrag();
 
         } else if (id == R.id.nav_update) {
-            downloader.downloadData();
+            downloader.downloadData(this);
             Toast.makeText(this, "Updating Data...", Toast.LENGTH_LONG).show();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -259,7 +216,26 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        /** Map Styling  **/
+
+        drawMarkers();
+
+        setupMap();
+
+    }
+
+    private void setupMap() {
+        loadInMapStyle(map);
+
+        map.setOnMarkerClickListener(this);
+        updateCamera();
+        if (!(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+            map.setMyLocationEnabled(true);
+            map.getUiSettings().setMyLocationButtonEnabled(true);
+        }
+
+    }
+
+    public void loadInMapStyle(GoogleMap googleMap) {
 
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -274,28 +250,13 @@ public class MainActivity extends AppCompatActivity
          } catch (Resources.NotFoundException e) {
          Log.e(TAG, "Can't find style. Error: ", e);
          }
-
-
-
-        drawMarkers();
-
-        setupMap();
-
-    }
-
-    private void setupMap() {
-        //map.setOnInfoWindowClickListener(this);
-        map.setOnMarkerClickListener(this);
-        updateCamera();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        }else {
-            map.setMyLocationEnabled(true);
-            map.getUiSettings().setMyLocationButtonEnabled(true);
-        }
-
     }
 
     public void drawMarkers() {
+        if(objectLinkedToMarker.size()>0){
+            clearMapBeforeDraw();
+        }
+
         List<Museum> museums = LandMarksDatabase.getInstance(this).getMuseums();
 
         for(Museum element: museums){
@@ -304,20 +265,18 @@ public class MainActivity extends AppCompatActivity
                     new MarkerOptions()
                             .title(element.getName())
                             .position(element.getCoord())
-                            .snippet("Click for more information")
                             .icon(BitmapDescriptorFactory.defaultMarker(180)));
 
             objectLinkedToMarker.put(marker,element);
             }
 
-         List<StreetArt> streetArtList = LandMarksDatabase.getInstance(this).getAllStreetArt();
+        List<StreetArt> streetArtList = LandMarksDatabase.getInstance(this).getAllStreetArt();
 
         for(StreetArt element: streetArtList){
             objectLinkedToMarker.put(map.addMarker(
                     new MarkerOptions()
                             .title(element.getNameOfArtist())
                             .position(element.getCoord())
-                            .snippet("Click for more information")
                             .icon(BitmapDescriptorFactory.defaultMarker(90))),
                     element
             );
@@ -331,14 +290,16 @@ public class MainActivity extends AppCompatActivity
                     new MarkerOptions()
                             .title(element.getNameOfIllustrator())
                             .position(element.getCoord())
-                            .snippet("Click for more information")
                             .icon(BitmapDescriptorFactory.defaultMarker(10))),
                             element);
         }
 
-
-
         }
+
+    private void clearMapBeforeDraw() {
+        map.clear();
+        objectLinkedToMarker.clear();
+    }
 
     private void updateCamera() {
 
@@ -348,7 +309,6 @@ public class MainActivity extends AppCompatActivity
             LatLng coord = museums.get(0).getCoord();
                 if(coord != null){
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coord, 13);
-
                     map.animateCamera(cameraUpdate);
                 }
         }
@@ -359,8 +319,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onMarkerClick(Marker marker) {
         updateSelectedMarker(marker);
-
-
         return true;
     }
 
@@ -370,10 +328,10 @@ public class MainActivity extends AppCompatActivity
         Marker marker = null;
         getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
-        LOOP: for(Marker element: objectLinkedToMarker.keySet()){
-            if(o.equals(objectLinkedToMarker.get(element))){
+        for (Marker element : objectLinkedToMarker.keySet()) {
+            if (o.equals(objectLinkedToMarker.get(element))) {
                 marker = element;
-                break LOOP;
+                break;
             }
         }
 
@@ -439,6 +397,7 @@ public class MainActivity extends AppCompatActivity
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        this.menu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 

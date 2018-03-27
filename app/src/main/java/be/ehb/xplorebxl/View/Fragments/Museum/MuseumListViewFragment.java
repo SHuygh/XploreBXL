@@ -28,7 +28,6 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
     private MuseumListAdapter museumListAdapter;
     private Button btn_musea;
     private ListView lv_musea;
-    private LocationManager locationManager;
 
     private ListviewItemListener callback;
 
@@ -36,10 +35,8 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
     }
 
 
-    public static MuseumListViewFragment newInstance(LocationManager lm) {
-        MuseumListViewFragment fragment = new MuseumListViewFragment();
-        fragment.locationManager = lm;
-        return fragment;
+    public static MuseumListViewFragment newInstance() {
+        return new MuseumListViewFragment();
     }
 
 
@@ -66,7 +63,7 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
         btn_musea = rootView.findViewById(R.id.btn_lv_musea);
         lv_musea = rootView.findViewById(R.id.lv_museums);
 
-        museumListAdapter = new MuseumListAdapter(getActivity(), locationManager);
+        museumListAdapter = new MuseumListAdapter(getActivity());
         lv_musea.setAdapter(museumListAdapter);
 
         lv_musea.setOnItemClickListener(this);

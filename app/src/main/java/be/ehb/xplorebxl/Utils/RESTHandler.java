@@ -62,7 +62,7 @@ public class RESTHandler extends Handler {
     private MainActivity context;
     private Downloader downloader;
 
-    public RESTHandler(MainActivity context) {
+    RESTHandler(MainActivity context) {
         this.context = context;
         downloader = Downloader.getInstance();
     }
@@ -87,23 +87,25 @@ public class RESTHandler extends Handler {
                     break;
                 case NAME_DATASET_STREETART:
                     parseStreetArt(records, json_length);
-                    downloader.downloadImgs(LandMarksDatabase.getInstance(context).getStreetArtImgUrl(), "streetart");
+                    downloader.downloadImgs(LandMarksDatabase.getInstance(context).getStreetArtImgUrl(), "streetart", context);
                     break;
                 case NAME_DATASET_COMIC:
                     parseComics(records, json_length);
-                    downloader.downloadImgs(LandMarksDatabase.getInstance(context).getComicImgUrl(), "comic");
+                    downloader.downloadImgs(LandMarksDatabase.getInstance(context).getComicImgUrl(), "comic", context);
                     break;
             }
 
 
         } catch (JSONException e) {
-            sharedPreferences.edit().putBoolean("AppHasDownloadedDataBefore", false).commit();
+            //if there was an error, the app will try to redownload data upon next onCreate of mainactivity
+            sharedPreferences.edit().putBoolean("AppHasDownloadedDataBefore", false).apply();
             e.printStackTrace();
         }
+        //redrawmarkers after download
         if(context.map != null) {
             context.drawMarkers();
         }
-        sharedPreferences.edit().putBoolean("AppHasDownloadedDataBefore", true).commit();
+        sharedPreferences.edit().putBoolean("AppHasDownloadedDataBefore", true).apply();
 
     }
 
@@ -189,7 +191,7 @@ public class RESTHandler extends Handler {
                             fields.getJSONObject(KEY_PHOTO_OBJECT).getString(KEY_PHOTOID):
                                  "";
 
-            double coordX = (double) fields.getJSONArray(KEY_COORDINATES_STREETART).getDouble(0);
+            double coordX = fields.getJSONArray(KEY_COORDINATES_STREETART).getDouble(0);
             double coordY = fields.getJSONArray(KEY_COORDINATES_STREETART).getDouble(1);
 
             if(!TextUtils.isEmpty(imgId)) {
