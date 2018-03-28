@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -70,7 +71,8 @@ public class MainActivity extends AppCompatActivity
     private MapFragment mapFragment;
     private Marker selectedMarker;
     private Menu menu;
-    private FloatingActionButton fab;
+    private FloatingActionButton floatingActionButton;
+    private FrameLayout fab_container;
 
 
     @Override
@@ -81,11 +83,11 @@ public class MainActivity extends AppCompatActivity
         downloader = Downloader.getInstance();
 
         setupDrawer();
-        setupMaps();
+        setupMapFragment();
         setupCloseDetailFrag();
         checkHasDownloadedBefore();
         LocationUtil.getInstance().setupLocationServices(this);
-        onFabBtnClick();
+        setupFAB();
     }
 
     private void checkHasDownloadedBefore() {
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void setupMaps() {
+    private void setupMapFragment() {
         mapFragment = new MapFragment();
         mapFragment.getMapAsync(this);
 
@@ -168,6 +170,7 @@ public class MainActivity extends AppCompatActivity
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             menu.setGroupVisible(R.id.mg_filter, false);
 
+            closeFABFrag();
             closeDetailFrag();
         } else if (id == R.id.nav_list_streetart) {
             getFragmentManager().beginTransaction()
@@ -176,6 +179,7 @@ public class MainActivity extends AppCompatActivity
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             menu.setGroupVisible(R.id.mg_filter, false);
 
+            closeFABFrag();
             closeDetailFrag();
         } else if (id == R.id.nav_list_comics) {
             getFragmentManager().beginTransaction()
@@ -184,6 +188,7 @@ public class MainActivity extends AppCompatActivity
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             menu.setGroupVisible(R.id.mg_filter, false);
 
+            closeFABFrag();
             closeDetailFrag();
         } else if (id == R.id.nav_about) {
             getFragmentManager().beginTransaction()
@@ -192,8 +197,8 @@ public class MainActivity extends AppCompatActivity
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             menu.setGroupVisible(R.id.mg_filter, false);
 
+            closeFABFrag();
             closeDetailFrag();
-
         } else if (id == R.id.nav_update) {
             downloader.downloadData(this);
             Toast.makeText(this, "Updating Data...", Toast.LENGTH_LONG).show();
@@ -202,6 +207,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void closeFABFrag() {
+        floatingActionButton.setVisibility(View.GONE);
+        fab_container.setVisibility(View.GONE);
     }
 
     public void closeDetailFrag() {
@@ -225,6 +235,8 @@ public class MainActivity extends AppCompatActivity
 
     private void setupMap() {
         loadInMapStyle(map);
+
+        floatingActionButton.setVisibility(View.VISIBLE);
 
         map.setOnMarkerClickListener(this);
         updateCamera();
@@ -454,23 +466,24 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void onFabBtnClick(){
+    public void setupFAB(){
 
-       fab = findViewById(R.id.fab);
+       floatingActionButton = findViewById(R.id.fab);
+       fab_container = findViewById(R.id.fab_frag_container);
 
-       fab.setOnClickListener(new View.OnClickListener() {
+       floatingActionButton.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
 
-               Log.d(TAG, "onClick: uiehidejdsoi TJAN");
-               getFragmentManager().beginTransaction()
-                       .replace(R.id.fab_frag_container, new FabFragment())
-                       .addToBackStack("back")
-                       .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                       .commit();
-
-               Log.d(TAG, "onClick: uiehidejdsoi Daan");
-
+               if(fab_container.getVisibility() == View.GONE) {
+                    fab_container.setVisibility(View.VISIBLE);
+                   getFragmentManager().beginTransaction()
+                           .replace(R.id.fab_frag_container, new FabFragment())
+                           .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                           .commit();
+               }else{
+                   fab_container.setVisibility(View.GONE);
+               }
 
            }
        });
