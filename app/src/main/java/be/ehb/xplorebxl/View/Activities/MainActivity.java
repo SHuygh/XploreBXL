@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -52,6 +53,7 @@ import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.FabFragment;
 import be.ehb.xplorebxl.View.Fragments.Museum.MuseumDetailFragment;
+import be.ehb.xplorebxl.View.Fragments.Museum.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtListViewFragment;
 
@@ -87,7 +89,11 @@ public class MainActivity extends AppCompatActivity
         setupCloseDetailFrag();
         checkHasDownloadedBefore();
         LocationUtil.getInstance().setupLocationServices(this);
+
+
+
         setupFAB();
+
     }
 
     private void checkHasDownloadedBefore() {
@@ -155,58 +161,64 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
 
-        if (id == R.id.nav_map) {
-            getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
-            menu.setGroupVisible(R.id.mg_filter, true);
-            setupMap();
-            closeDetailFrag();
 
-        } else if (id == R.id.nav_list) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, new FabFragment())
-                    .addToBackStack("back")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-            menu.setGroupVisible(R.id.mg_filter, false);
+            int id = item.getItemId();
 
-            closeFABFrag();
-            closeDetailFrag();
-        } else if (id == R.id.nav_list_streetart) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, StreetArtListViewFragment.newInstance())
-                    .addToBackStack("back")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-            menu.setGroupVisible(R.id.mg_filter, false);
+            if (id == R.id.nav_map) {
+                getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+                menu.setGroupVisible(R.id.mg_filter, true);
+                setupMap();
+                closeDetailFrag();
 
-            closeFABFrag();
-            closeDetailFrag();
-        } else if (id == R.id.nav_list_comics) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, ComicListViewFragment.newInstance())
-                    .addToBackStack("back")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-            menu.setGroupVisible(R.id.mg_filter, false);
+            } else if (id == R.id.nav_list) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.frag_container, MuseumListViewFragment.newInstance())
+                        .addToBackStack("back")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                menu.setGroupVisible(R.id.mg_filter, false);
 
-            closeFABFrag();
-            closeDetailFrag();
-        } else if (id == R.id.nav_about) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, AboutFragment.newInstance())
-                    .addToBackStack("back")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-            menu.setGroupVisible(R.id.mg_filter, false);
+                closeFABFrag();
+                closeDetailFrag();
+            } else if (id == R.id.nav_list_streetart) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.frag_container, StreetArtListViewFragment.newInstance())
+                        .addToBackStack("back")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                menu.setGroupVisible(R.id.mg_filter, false);
 
-            closeFABFrag();
-            closeDetailFrag();
-        } else if (id == R.id.nav_update) {
-            downloader.downloadData(this);
-            Toast.makeText(this, "Updating Data...", Toast.LENGTH_LONG).show();
-        }
+                closeFABFrag();
+                closeDetailFrag();
+            } else if (id == R.id.nav_list_comics) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.frag_container, ComicListViewFragment.newInstance())
+                        .addToBackStack("back")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                menu.setGroupVisible(R.id.mg_filter, false);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+                closeFABFrag();
+                closeDetailFrag();
+            } else if (id == R.id.nav_about) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.frag_container, AboutFragment.newInstance())
+                        .addToBackStack("back")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                menu.setGroupVisible(R.id.mg_filter, false);
+
+                closeFABFrag();
+                closeDetailFrag();
+            } else if (id == R.id.nav_update) {
+                downloader.downloadData(this);
+                Toast.makeText(this, "Updating Data...", Toast.LENGTH_LONG).show();
+            }
+
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+
+
+
         return true;
+
     }
 
     private void closeFABFrag() {
@@ -236,7 +248,11 @@ public class MainActivity extends AppCompatActivity
     private void setupMap() {
         loadInMapStyle(map);
 
-        floatingActionButton.setVisibility(View.VISIBLE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            floatingActionButton.setVisibility(View.GONE);
+        }
+
+
 
         map.setOnMarkerClickListener(this);
         updateCamera();
