@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, ListviewItemListener {
 
     private Downloader downloader;
-    private String TAG = "testtest";
+    private String TAG = "testtesttest";
 
     public GoogleMap map;
     private HashMap<Marker, Object> objectLinkedToMarker;
