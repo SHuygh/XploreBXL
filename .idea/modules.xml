@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\Q\AndroidStudioProjects\XploreBXL15\XploreBXL.iml" filepath="C:\Users\Q\AndroidStudioProjects\XploreBXL15\XploreBXL.iml" />
       <module fileurl="file://$PROJECT_DIR$/XploreBXL.iml" filepath="$PROJECT_DIR$/XploreBXL.iml" />
+      <module fileurl="file://C:\Users\Q\AndroidStudioProjects\XploreBXL15\XploreBXL.iml" filepath="C:\Users\Q\AndroidStudioProjects\XploreBXL15\XploreBXL.iml" />
       <module fileurl="file://$PROJECT_DIR$/XploreBXL15.iml" filepath="$PROJECT_DIR$/XploreBXL15.iml" />
-      <module fileurl="file://$PROJECT_DIR$/XploreBXL2.iml" filepath="$PROJECT_DIR$/XploreBXL2.iml" />
       <module fileurl="file://C:\Users\Q\AndroidStudioProjects\XploreBXL15\XploreBXL2.iml" filepath="C:\Users\Q\AndroidStudioProjects\XploreBXL15\XploreBXL2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/XploreBXL2.iml" filepath="$PROJECT_DIR$/XploreBXL2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
