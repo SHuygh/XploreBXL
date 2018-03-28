@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 closeDetailFrag();
+                fabDirections.setVisibility(View.GONE);
             }
         });
     }
