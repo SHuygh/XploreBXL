@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity
     private Marker selectedMarker;
     private Menu menu;
     private FloatingActionButton floatingActionButton;
+    private FloatingActionButton fabDirections;
     private FrameLayout fab_container;
     private int filterId;
     private Polyline route;
@@ -365,18 +366,6 @@ public class MainActivity extends AppCompatActivity
         fab_container.setVisibility(View.GONE);
         updateSelectedMarker(marker);
 
-        Object object = objectLinkedToMarker.get(marker);
-
-        if(object instanceof Museum){
-            getDirections(((Museum) object).getCoord());
-
-        }else if(object instanceof StreetArt){
-            getDirections(((StreetArt) object).getCoord());
-
-        }else if(object instanceof Comic){
-            getDirections(((Comic) object).getCoord());
-        }
-
         return true;
     }
 
@@ -391,6 +380,7 @@ public class MainActivity extends AppCompatActivity
             floatingActionButton.setVisibility(View.GONE);
         }else{
             floatingActionButton.setVisibility(View.VISIBLE);
+            fabDirections.setVisibility(View.VISIBLE);
         }
 
         Marker marker = null;
@@ -412,6 +402,8 @@ public class MainActivity extends AppCompatActivity
     public void updateSelectedMarker(Marker marker) {
 
         cancelSelectedMarker();
+
+        fabDirections.setVisibility(View.VISIBLE);
 
         selectedMarker = marker;
 
@@ -550,12 +542,34 @@ public class MainActivity extends AppCompatActivity
                if(fab_container.getVisibility() == View.GONE) {
                     closeDetailFrag();
                     fab_container.setVisibility(View.VISIBLE);
+                    fabDirections.setVisibility(View.GONE);
                    getFragmentManager().beginTransaction()
                            .replace(R.id.fab_frag_container,FabFragment.newInstance(filterId))
                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                            .commit();
                }else{
                    fab_container.setVisibility(View.GONE);
+               }
+
+           }
+       });
+
+       fabDirections = findViewById(R.id.fab_route);
+
+       fabDirections.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+
+               Object object = objectLinkedToMarker.get(selectedMarker);
+
+               if(object instanceof Museum){
+                   getDirections(((Museum) object).getCoord());
+
+               }else if(object instanceof StreetArt){
+                   getDirections(((StreetArt) object).getCoord());
+
+               }else if(object instanceof Comic){
+                   getDirections(((Comic) object).getCoord());
                }
 
            }
