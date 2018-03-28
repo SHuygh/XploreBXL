@@ -91,7 +91,6 @@ public class ComicDetailFragment extends Fragment {
             tvDistance.setVisibility(View.VISIBLE);
             float distance = LocationUtil.getInstance().getDistance(selectedComic.getCoordX(), selectedComic.getCoordY(), location);
             tvDistance.setText(String.format("%.2f km", distance));
-
         }else {
             tvDistance.setVisibility(View.GONE);
         }

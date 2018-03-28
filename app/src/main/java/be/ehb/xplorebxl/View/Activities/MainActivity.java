@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -52,6 +53,7 @@ import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.FabFragment;
 import be.ehb.xplorebxl.View.Fragments.Museum.MuseumDetailFragment;
+import be.ehb.xplorebxl.View.Fragments.Museum.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtListViewFragment;
 
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, ListviewItemListener {
 
     private Downloader downloader;
-    private String TAG = "testtest";
+    private String TAG = "testtesttest";
 
     public GoogleMap map;
     private HashMap<Marker, Object> objectLinkedToMarker;
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity
     private Menu menu;
     private FloatingActionButton floatingActionButton;
     private FrameLayout fab_container;
+    private int filterId;
 
 
     @Override
@@ -82,12 +85,18 @@ public class MainActivity extends AppCompatActivity
 
         downloader = Downloader.getInstance();
 
+        filterId = R.id.pu_all;
+
         setupDrawer();
         setupMapFragment();
         setupCloseDetailFrag();
         checkHasDownloadedBefore();
         LocationUtil.getInstance().setupLocationServices(this);
+
+
+
         setupFAB();
+
     }
 
     private void checkHasDownloadedBefore() {
@@ -165,7 +174,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_list) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, new FabFragment())
+                    .replace(R.id.frag_container, new MuseumListViewFragment())
                     .addToBackStack("back")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             menu.setGroupVisible(R.id.mg_filter, false);
@@ -236,7 +245,13 @@ public class MainActivity extends AppCompatActivity
     private void setupMap() {
         loadInMapStyle(map);
 
-        floatingActionButton.setVisibility(View.VISIBLE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            floatingActionButton.setVisibility(View.GONE);
+        }else{
+            floatingActionButton.setVisibility(View.VISIBLE);
+        }
+
+
 
         map.setOnMarkerClickListener(this);
         updateCamera();
@@ -330,6 +345,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        fab_container.setVisibility(View.GONE);
         updateSelectedMarker(marker);
         return true;
     }
@@ -337,6 +353,16 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void itemSelected(Object o) {
+
+        menu.setGroupVisible(R.id.mg_filter, true);
+
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            floatingActionButton.setVisibility(View.GONE);
+        }else{
+            floatingActionButton.setVisibility(View.VISIBLE);
+        }
+
         Marker marker = null;
         getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
@@ -348,6 +374,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if(marker != null) {
+            fab_container.setVisibility(View.GONE);
             updateSelectedMarker(marker);
         }
     }
@@ -359,7 +386,7 @@ public class MainActivity extends AppCompatActivity
         selectedMarker = marker;
 
         marker.setIcon(BitmapDescriptorFactory.defaultMarker(50));
-        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom((marker.getPosition()),18);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom((marker.getPosition()),16);
         map.animateCamera(cu);
 
         openDetailFragment(marker);
@@ -427,7 +454,9 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
 
-                    switch (item.getItemId()){
+                    filterId = item.getItemId();
+
+                    switch (filterId){
                         case R.id.pu_all:
                             for(Marker element: objectLinkedToMarker.keySet()){
                                     element.setVisible(true);
@@ -442,6 +471,15 @@ public class MainActivity extends AppCompatActivity
                         case R.id.pu_streetart:
                             filterMarker(StreetArt.class);
                             break;
+                    }
+
+                    if(fab_container.getVisibility() == View.VISIBLE) {
+
+                        getFragmentManager().beginTransaction()
+                                .replace(R.id.fab_frag_container,FabFragment.newInstance(filterId))
+                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .commit();
+
                     }
 
                     return true;
@@ -476,9 +514,10 @@ public class MainActivity extends AppCompatActivity
            public void onClick(View v) {
 
                if(fab_container.getVisibility() == View.GONE) {
+                    closeDetailFrag();
                     fab_container.setVisibility(View.VISIBLE);
                    getFragmentManager().beginTransaction()
-                           .replace(R.id.fab_frag_container, new FabFragment())
+                           .replace(R.id.fab_frag_container,FabFragment.newInstance(filterId))
                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                            .commit();
                }else{
@@ -489,18 +528,5 @@ public class MainActivity extends AppCompatActivity
        });
 
     }
-
-
-    /*else if (id == R.id.nav_list) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, new FabFragment())
-                    .addToBackStack("back")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-            menu.setGroupVisible(R.id.mg_filter, false);
-
-            closeDetailFrag();
-        }*/
-
-
 
 }
