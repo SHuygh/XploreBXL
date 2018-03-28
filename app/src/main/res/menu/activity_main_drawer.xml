@@ -26,6 +26,6 @@
     </group>
     <item
         android:id="@+id/nav_update"
-        android:title="Update Data" />
+        android:title="@string/txt_nav_item_update_data" />
 
 </menu>

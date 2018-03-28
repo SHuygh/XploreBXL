@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity
             closeDetailFrag();
         } else if (id == R.id.nav_update) {
             downloader.downloadData(this);
-            Toast.makeText(this, "Updating Data...", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.txt_toast_update_data, Toast.LENGTH_LONG).show();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
