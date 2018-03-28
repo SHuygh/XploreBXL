@@ -78,8 +78,9 @@ public class ComicListAdapter extends BaseAdapter {
 
         Comic currentComic = items.get(i);
 
-        mViewHolder.tvArtistName.setText(String.format("Illustrator: %s", currentComic.getNameOfIllustrator()));
-        mViewHolder.tvPersonnage.setText(String.format("Feat. %s", currentComic.getPersonnage()));
+        mViewHolder.tvArtistName.setText(context.getText(R.string.txt_detail_illustrator) + currentComic.getNameOfIllustrator());
+
+        mViewHolder.tvPersonnage.setText(context.getText(R.string.txt_detail_featuring) + currentComic.getPersonnage());
 
         setupDistance(mViewHolder, currentComic);
 

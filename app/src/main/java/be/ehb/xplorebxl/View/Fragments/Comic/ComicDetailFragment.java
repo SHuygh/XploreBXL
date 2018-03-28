@@ -58,9 +58,10 @@ public class ComicDetailFragment extends Fragment {
 
         View rootView = setupView(inflater, container);
 
+        tvIllustratorName.setText(getString(R.string.txt_detail_illustrator) + selectedComic.getNameOfIllustrator());
 
-        tvIllustratorName.setText(String.format("Illustrator: %s", selectedComic.getNameOfIllustrator()));
-        tvPersonnage.setText(String.format("Feat. %s", selectedComic.getPersonnage()));
+        tvPersonnage.setText(getString(R.string.txt_detail_featuring) + selectedComic.getPersonnage());
+
 
         setupDistance();
 
