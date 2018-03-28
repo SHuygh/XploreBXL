@@ -5,9 +5,6 @@ import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -35,25 +32,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -62,7 +45,6 @@ import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.Utils.DirectionsParser;
 import be.ehb.xplorebxl.Utils.Downloader;
 import be.ehb.xplorebxl.Utils.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
@@ -80,7 +62,7 @@ import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtListViewFragment;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, ListviewItemListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, ListviewItemListener, StartBtnListener {
 
     private Downloader downloader;
     private String TAG = "testtesttest";
@@ -95,6 +77,7 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fabDirections;
     private FrameLayout fab_container;
     private int filterId;
+    private Toolbar toolbar;
     private Polyline route;
 
 
@@ -103,11 +86,15 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getFragmentManager().beginTransaction().replace(R.id.frag_container, LauncherFragment.newInstance()).commit();
+
+
         downloader = Downloader.getInstance();
 
         filterId = R.id.pu_all;
 
         setupDrawer();
+        toolbar.setVisibility(View.GONE);
         setupMapFragment();
         setupCloseDetailFrag();
         checkHasDownloadedBefore();
@@ -142,13 +129,13 @@ public class MainActivity extends AppCompatActivity
         mapFragment = new MapFragment();
         mapFragment.getMapAsync(this);
 
-        getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+        //getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
         objectLinkedToMarker = new HashMap<>();
     }
 
     private void setupDrawer() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
@@ -717,4 +704,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onStartClick() {
+        getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+        toolbar.setVisibility(View.VISIBLE);
+
+        floatingActionButton.setVisibility(View.VISIBLE);
+    }
 }
