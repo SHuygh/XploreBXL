@@ -12,7 +12,7 @@
     <FrameLayout
         android:id="@+id/fab_frag_container"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="120dp"
         android:background="@android:color/background_light"
         android:clickable="true"
         android:foregroundGravity="top"

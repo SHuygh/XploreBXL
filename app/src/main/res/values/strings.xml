@@ -25,4 +25,8 @@
     <string name="pu_comic">Comic</string>
     <string name="pu_all">All</string>
     <string name="txt_distance">3.25\\nkm</string>
+
+    <string name="title_activity_launcher">LauncherActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

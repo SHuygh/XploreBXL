@@ -2,16 +2,13 @@ package be.ehb.xplorebxl.View.Activities;
 
 import android.Manifest;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -52,8 +49,8 @@ import be.ehb.xplorebxl.Utils.LocationUtil;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
+import be.ehb.xplorebxl.View.Fragments.FabFragment;
 import be.ehb.xplorebxl.View.Fragments.Museum.MuseumDetailFragment;
-import be.ehb.xplorebxl.View.Fragments.Museum.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtListViewFragment;
 
@@ -73,6 +70,7 @@ public class MainActivity extends AppCompatActivity
     private MapFragment mapFragment;
     private Marker selectedMarker;
     private Menu menu;
+    private FloatingActionButton fab;
 
 
     @Override
@@ -87,6 +85,7 @@ public class MainActivity extends AppCompatActivity
         setupCloseDetailFrag();
         checkHasDownloadedBefore();
         LocationUtil.getInstance().setupLocationServices(this);
+        onFabBtnClick();
     }
 
     private void checkHasDownloadedBefore() {
@@ -161,9 +160,10 @@ public class MainActivity extends AppCompatActivity
             menu.setGroupVisible(R.id.mg_filter, true);
             setupMap();
             closeDetailFrag();
+
         } else if (id == R.id.nav_list) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, MuseumListViewFragment.newInstance())
+                    .replace(R.id.frag_container, new FabFragment())
                     .addToBackStack("back")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             menu.setGroupVisible(R.id.mg_filter, false);
@@ -452,5 +452,42 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
+
+    public void onFabBtnClick(){
+
+       fab = findViewById(R.id.fab);
+
+       fab.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+
+               Log.d(TAG, "onClick: uiehidejdsoi TJAN");
+               getFragmentManager().beginTransaction()
+                       .replace(R.id.fab_frag_container, new FabFragment())
+                       .addToBackStack("back")
+                       .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                       .commit();
+
+               Log.d(TAG, "onClick: uiehidejdsoi Daan");
+
+
+           }
+       });
+
+    }
+
+
+    /*else if (id == R.id.nav_list) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frag_container, new FabFragment())
+                    .addToBackStack("back")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            menu.setGroupVisible(R.id.mg_filter, false);
+
+            closeDetailFrag();
+        }*/
+
+
 
 }
