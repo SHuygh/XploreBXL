@@ -45,6 +45,7 @@ import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.Adapter.StartBtnListener;
 import be.ehb.xplorebxl.Utils.Downloader;
 import be.ehb.xplorebxl.Utils.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
@@ -52,6 +53,7 @@ import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.FabFragment;
+import be.ehb.xplorebxl.View.Fragments.LauncherFragment;
 import be.ehb.xplorebxl.View.Fragments.Museum.MuseumDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Museum.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtDetailFragment;
@@ -62,7 +64,7 @@ import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtListViewFragment;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, ListviewItemListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, ListviewItemListener, StartBtnListener {
 
     private Downloader downloader;
     private String TAG = "testtesttest";
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton floatingActionButton;
     private FrameLayout fab_container;
     private int filterId;
+    private Toolbar toolbar;
 
 
     @Override
@@ -83,11 +86,15 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getFragmentManager().beginTransaction().replace(R.id.frag_container, LauncherFragment.newInstance()).commit();
+
+
         downloader = Downloader.getInstance();
 
         filterId = R.id.pu_all;
 
         setupDrawer();
+        toolbar.setVisibility(View.GONE);
         setupMapFragment();
         setupCloseDetailFrag();
         checkHasDownloadedBefore();
@@ -123,13 +130,13 @@ public class MainActivity extends AppCompatActivity
         mapFragment = new MapFragment();
         mapFragment.getMapAsync(this);
 
-        getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+        //getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
         objectLinkedToMarker = new HashMap<>();
     }
 
     private void setupDrawer() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
@@ -529,4 +536,11 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onStartClick() {
+        getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+        toolbar.setVisibility(View.VISIBLE);
+
+        floatingActionButton.setVisibility(View.VISIBLE);
+    }
 }
