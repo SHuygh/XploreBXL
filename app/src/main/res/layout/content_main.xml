@@ -60,11 +60,10 @@
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="32dp"
         android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/circle"
-        android:layout_marginRight="32dp"
-        android:focusable="true" />
+        app:srcCompat="@drawable/circle" />
 
     <FrameLayout
         android:id="@+id/fab_frag_container"

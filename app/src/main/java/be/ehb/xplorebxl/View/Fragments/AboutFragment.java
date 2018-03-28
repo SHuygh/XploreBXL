@@ -1,6 +1,7 @@
 package be.ehb.xplorebxl.View.Fragments;
 
 
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import be.ehb.xplorebxl.R;
 
 public class AboutFragment extends android.app.Fragment {
 
+    private ImageView ivLogo;
+
     public AboutFragment() {
         // Required empty public constructor
     }
@@ -31,16 +34,22 @@ public class AboutFragment extends android.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+
         View rootView = inflater.inflate(R.layout.fragment_about, container, false);
 
-        ImageView iv_test = rootView.findViewById(R.id.iv_test);
+
+
+        /*ImageView ivLogo = rootView.findViewById(R.id.iv_logo);
 
 
 
         Uri uri;
 
         uri = Uri.parse("https://opendata.brussel.be/explore/dataset/streetart/files/e25418821200a0f7c8f9f81b22d21691/300/");
-        Picasso.with(getActivity()).load(uri).into(iv_test);
+        Picasso.with(getActivity()).load(uri).into(ivLogo);*/
+
 
         return rootView;
     }
