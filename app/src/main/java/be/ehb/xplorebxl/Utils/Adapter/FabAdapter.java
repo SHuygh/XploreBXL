@@ -14,10 +14,15 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
+import be.ehb.xplorebxl.Database.LandMarksDatabase;
+import be.ehb.xplorebxl.Model.Comic;
+import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.LocationUtil;
 import be.ehb.xplorebxl.Utils.OnItemClickListener;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -27,13 +32,13 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class FabAdapter extends RecyclerView.Adapter<FabAdapter.CustomViewHolder> {
-    private List<StreetArt> streetArtList;
+    private ArrayList<Object> items;
     private Context mContext;
 
     private OnItemClickListener onItemClickListener;
 
-    public FabAdapter(List<StreetArt> streetArtList, Context mContext) {
-        this.streetArtList = streetArtList;
+    public FabAdapter(Context mContext) {
+        this.items = LandMarksDatabase.getInstance(mContext).getSortedList(LocationUtil.getInstance().getLocation());
         this.mContext = mContext;
     }
 
@@ -46,8 +51,22 @@ public class FabAdapter extends RecyclerView.Adapter<FabAdapter.CustomViewHolder
 
     @Override
     public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
-        StreetArt streetArt = streetArtList.get(i);
+        Object currentObject = items.get(i);
 
+        if(currentObject instanceof Museum){
+            setupView(customViewHolder, (Museum) currentObject);
+        }else if(currentObject instanceof StreetArt){
+            setupView(customViewHolder, (StreetArt) currentObject);
+        }else if(currentObject instanceof Comic){
+            setupView(customViewHolder, (Comic) currentObject);
+        }else{
+            customViewHolder.textView.setText("ERROR");
+        }
+
+
+    }
+
+    public void setupView(CustomViewHolder customViewHolder, StreetArt streetArt) {
         //Render image using Picasso library
         if(streetArt.isHasIMG()) {
 
@@ -58,25 +77,41 @@ public class FabAdapter extends RecyclerView.Adapter<FabAdapter.CustomViewHolder
             ContextWrapper cw = new ContextWrapper(mContext);
             File directory = cw.getDir("images", MODE_PRIVATE);
             File file = new File(directory, imgId +".jpeg");
+
             Picasso.with(mContext)
                     .load(file)
                     .into(customViewHolder.imageView);
         }
-        /*
-        if (!TextUtils.isEmpty(streetArt.getImgUrl())) {
-            Picasso.with(mContext).load(streetArt.getImgUrl())
-                    .error(R.drawable.placeholder)
-                    .placeholder(R.drawable.placeholder)
+
+        customViewHolder.textView.setText(streetArt.getNameOfArtist());
+    }
+
+    public void setupView(CustomViewHolder customViewHolder, Comic comic) {
+        //Render image using Picasso library
+        if(comic.isHasIMG()) {
+
+            String imgId = comic.getImgUrl()
+                    .split("files/")[1]
+                    .split("[/]")[0];
+
+            ContextWrapper cw = new ContextWrapper(mContext);
+            File directory = cw.getDir("images", MODE_PRIVATE);
+            File file = new File(directory, imgId +".jpeg");
+            Picasso.with(mContext)
+                    .load(file)
                     .into(customViewHolder.imageView);
         }
-*/
-        //Setting text view title
-        customViewHolder.textView.setText(Html.fromHtml(streetArt.getNameOfArtist()));
+
+        customViewHolder.textView.setText(comic.getPersonnage());
+    }
+
+    public void setupView(CustomViewHolder customViewHolder, Museum museum) {
+        customViewHolder.textView.setText(museum.getName());
     }
 
     @Override
     public int getItemCount() {
-        return (null != streetArtList ? streetArtList.size() : 0);
+        return (null != items ? items.size() : 0);
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
@@ -85,8 +120,8 @@ public class FabAdapter extends RecyclerView.Adapter<FabAdapter.CustomViewHolder
 
         public CustomViewHolder(View view) {
             super(view);
-            this.imageView = (ImageView) view.findViewById(R.id.thumbnail);
-            this.textView = (TextView) view.findViewById(R.id.title);
+            this.imageView = view.findViewById(R.id.thumbnail);
+            this.textView = view.findViewById(R.id.title);
         }
     }
 
@@ -97,6 +132,8 @@ public class FabAdapter extends RecyclerView.Adapter<FabAdapter.CustomViewHolder
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
+
+
 }
 
 

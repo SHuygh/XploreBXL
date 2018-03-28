@@ -60,9 +60,7 @@ public class FabFragment extends Fragment {
 
         rvStreetart = rootView.findViewById(R.id.fab_recyclerview);
 
-        //final FabAdapter fabAdapter = new FabAdapter(getActivity(), rvStreetart, locationManager);
-
-        FabAdapter fabAdapter = new FabAdapter(LandMarksDatabase.getInstance(getActivity()).getStreetArtDao().getAllStreetArt(), getActivity());
+        FabAdapter fabAdapter = new FabAdapter(getActivity());
         rvStreetart.setAdapter(fabAdapter);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -73,10 +71,3 @@ public class FabFragment extends Fragment {
 
 }
 
-/*         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar); */

@@ -6,6 +6,9 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.location.Location;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -197,4 +200,65 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
     public void updateComic(Comic comic){getComicDao().updateComic(comic);}
 
+    public ArrayList<Object> getSortedList(final Location location){
+
+        ArrayList<Object> list = new ArrayList<>();
+
+        list.addAll(getAllComics());
+        list.addAll(getAllStreetArt());
+        list.addAll(getMuseums());
+
+        if(location != null) {
+
+            Collections.sort(list, new Comparator<Object>() {
+                @Override
+                public int compare(Object o, Object t1) {
+
+                    LatLng latlng_o, latlng_t1;
+
+                    latlng_o = getLatlng(o);
+                    latlng_t1 = getLatlng(t1);
+
+                    Location location1 = new Location("location");
+                    location1.setLatitude(latlng_o.latitude);
+                    location1.setLongitude(latlng_o.longitude);
+
+                    Location loc_t1 = new Location("location_t1");
+                    loc_t1.setLatitude(latlng_t1.latitude);
+                    loc_t1.setLongitude(latlng_t1.longitude);
+
+                    float distance = location.distanceTo(location1);
+                    float distance_t1 = location.distanceTo(loc_t1);
+
+                    float difference = distance - distance_t1;
+
+                    int result;
+
+                    if (difference > 0) { result = 1;
+                    } else if (difference < 0) { result = -1;
+                    } else {result = 0;}
+
+                    return result;
+                }
+
+                private LatLng getLatlng(Object o) {
+
+                    LatLng latLng;
+
+                    //check if object is instanceof from Museum, Comic or streetart and get coordinates
+                    if(o instanceof Museum){ latLng = new LatLng(((Museum) o).getCoordX(), ((Museum) o).getCoordY());
+                    }else if(o instanceof Comic){ latLng = new LatLng(((Comic) o).getCoordX(), ((Comic) o).getCoordY());
+                    }else{ latLng = new LatLng(((StreetArt) o).getCoordX(), ((StreetArt) o).getCoordY()); }
+
+                    return latLng;
+                }
+            });
+
+
+        }
+
+        return list;
+    }
+
 }
+

@@ -1,44 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:cardview="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="190dp"
     android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
     cardview:cardCornerRadius="2dp"
     cardview:cardElevation="3dp"
     cardview:cardUseCompatPadding="true">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="5dp">
 
         <ImageView
             android:id="@+id/thumbnail"
-            android:layout_width="match_parent"
+            android:layout_width="180dp"
             android:layout_height="180dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/placeholder" />
+            android:src="@drawable/placeholder"
+            cardview:layout_constraintBottom_toBottomOf="parent"
+            cardview:layout_constraintEnd_toEndOf="parent"
+            cardview:layout_constraintLeft_toLeftOf="parent"
+            cardview:layout_constraintStart_toStartOf="parent"
+            cardview:layout_constraintTop_toTopOf="parent"
+            cardview:srcCompat="@drawable/ic_globe_44dp" />
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/thumbnail"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
+            android:background="@color/cardview_light_background"
             android:maxLines="3"
-            android:padding="8dp"
+            android:padding="2dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:singleLine="true"
+            android:text="Museum"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="#444"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            cardview:layout_constraintBottom_toBottomOf="@+id/thumbnail"
+            cardview:layout_constraintEnd_toEndOf="parent"
+            cardview:layout_constraintStart_toStartOf="@+id/thumbnail" />
 
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
