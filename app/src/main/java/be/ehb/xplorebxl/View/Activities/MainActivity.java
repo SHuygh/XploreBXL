@@ -5,6 +5,9 @@ import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,7 +39,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,6 +61,8 @@ import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.StartBtnListener;
+import be.ehb.xplorebxl.Utils.DirectionsParser;
 import be.ehb.xplorebxl.Utils.Downloader;
 import be.ehb.xplorebxl.Utils.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
@@ -52,6 +70,7 @@ import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.FabFragment;
+import be.ehb.xplorebxl.View.Fragments.LauncherFragment;
 import be.ehb.xplorebxl.View.Fragments.Museum.MuseumDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Museum.MuseumListViewFragment;
 import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtDetailFragment;
@@ -637,7 +656,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public class TaskRequestDirections extends AsyncTask<String, Void, String>{
+    public class TaskRequestDirections extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
