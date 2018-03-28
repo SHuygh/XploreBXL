@@ -1,6 +1,7 @@
 package be.ehb.xplorebxl.Utils.Adapter;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -12,11 +13,14 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.OnItemClickListener;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Millmaster on 26/03/2018.
@@ -45,13 +49,27 @@ public class FabAdapter extends RecyclerView.Adapter<FabAdapter.CustomViewHolder
         StreetArt streetArt = streetArtList.get(i);
 
         //Render image using Picasso library
+        if(streetArt.isHasIMG()) {
+
+            String imgId = streetArt.getImgUrl()
+                    .split("files/")[1]
+                    .split("[/]")[0];
+
+            ContextWrapper cw = new ContextWrapper(mContext);
+            File directory = cw.getDir("images", MODE_PRIVATE);
+            File file = new File(directory, imgId +".jpeg");
+            Picasso.with(mContext)
+                    .load(file)
+                    .into(customViewHolder.imageView);
+        }
+        /*
         if (!TextUtils.isEmpty(streetArt.getImgUrl())) {
             Picasso.with(mContext).load(streetArt.getImgUrl())
                     .error(R.drawable.placeholder)
                     .placeholder(R.drawable.placeholder)
                     .into(customViewHolder.imageView);
         }
-
+*/
         //Setting text view title
         customViewHolder.textView.setText(Html.fromHtml(streetArt.getNameOfArtist()));
     }
