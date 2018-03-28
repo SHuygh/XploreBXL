@@ -49,5 +49,24 @@
             cardview:layout_constraintStart_toStartOf="@+id/thumbnail" />
 
 
+        <TextView
+            android:id="@+id/tv_fab_distance"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/circle"
+            android:paddingTop="2dp"
+            android:text="3.2 km"
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            cardview:layout_constraintStart_toStartOf="parent"
+            cardview:layout_constraintTop_toTopOf="parent" /> 
+
+
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

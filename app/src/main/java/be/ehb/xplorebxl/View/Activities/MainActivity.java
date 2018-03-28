@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity
     private Menu menu;
     private FloatingActionButton floatingActionButton;
     private FrameLayout fab_container;
+    private int filterId;
 
 
     @Override
@@ -83,6 +84,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         downloader = Downloader.getInstance();
+
+        filterId = R.id.pu_all;
 
         setupDrawer();
         setupMapFragment();
@@ -161,64 +164,58 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
 
+        if (id == R.id.nav_map) {
+            getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
+            menu.setGroupVisible(R.id.mg_filter, true);
+            setupMap();
+            closeDetailFrag();
 
-            int id = item.getItemId();
+        } else if (id == R.id.nav_list) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frag_container, new MuseumListViewFragment())
+                    .addToBackStack("back")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            menu.setGroupVisible(R.id.mg_filter, false);
 
-            if (id == R.id.nav_map) {
-                getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
-                menu.setGroupVisible(R.id.mg_filter, true);
-                setupMap();
-                closeDetailFrag();
+            closeFABFrag();
+            closeDetailFrag();
+        } else if (id == R.id.nav_list_streetart) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frag_container, StreetArtListViewFragment.newInstance())
+                    .addToBackStack("back")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            menu.setGroupVisible(R.id.mg_filter, false);
 
-            } else if (id == R.id.nav_list) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.frag_container, MuseumListViewFragment.newInstance())
-                        .addToBackStack("back")
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-                menu.setGroupVisible(R.id.mg_filter, false);
+            closeFABFrag();
+            closeDetailFrag();
+        } else if (id == R.id.nav_list_comics) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frag_container, ComicListViewFragment.newInstance())
+                    .addToBackStack("back")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            menu.setGroupVisible(R.id.mg_filter, false);
 
-                closeFABFrag();
-                closeDetailFrag();
-            } else if (id == R.id.nav_list_streetart) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.frag_container, StreetArtListViewFragment.newInstance())
-                        .addToBackStack("back")
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-                menu.setGroupVisible(R.id.mg_filter, false);
+            closeFABFrag();
+            closeDetailFrag();
+        } else if (id == R.id.nav_about) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frag_container, AboutFragment.newInstance())
+                    .addToBackStack("back")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+            menu.setGroupVisible(R.id.mg_filter, false);
 
-                closeFABFrag();
-                closeDetailFrag();
-            } else if (id == R.id.nav_list_comics) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.frag_container, ComicListViewFragment.newInstance())
-                        .addToBackStack("back")
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-                menu.setGroupVisible(R.id.mg_filter, false);
+            closeFABFrag();
+            closeDetailFrag();
+        } else if (id == R.id.nav_update) {
+            downloader.downloadData(this);
+            Toast.makeText(this, "Updating Data...", Toast.LENGTH_LONG).show();
+        }
 
-                closeFABFrag();
-                closeDetailFrag();
-            } else if (id == R.id.nav_about) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.frag_container, AboutFragment.newInstance())
-                        .addToBackStack("back")
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-                menu.setGroupVisible(R.id.mg_filter, false);
-
-                closeFABFrag();
-                closeDetailFrag();
-            } else if (id == R.id.nav_update) {
-                downloader.downloadData(this);
-                Toast.makeText(this, "Updating Data...", Toast.LENGTH_LONG).show();
-            }
-
-            DrawerLayout drawer = findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
-
-
-
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
         return true;
-
     }
 
     private void closeFABFrag() {
@@ -250,6 +247,8 @@ public class MainActivity extends AppCompatActivity
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
             floatingActionButton.setVisibility(View.GONE);
+        }else{
+            floatingActionButton.setVisibility(View.VISIBLE);
         }
 
 
@@ -346,6 +345,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        fab_container.setVisibility(View.GONE);
         updateSelectedMarker(marker);
         return true;
     }
@@ -353,6 +353,16 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void itemSelected(Object o) {
+
+        menu.setGroupVisible(R.id.mg_filter, true);
+
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            floatingActionButton.setVisibility(View.GONE);
+        }else{
+            floatingActionButton.setVisibility(View.VISIBLE);
+        }
+
         Marker marker = null;
         getFragmentManager().beginTransaction().replace(R.id.frag_container, mapFragment).commit();
 
@@ -364,6 +374,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if(marker != null) {
+            fab_container.setVisibility(View.GONE);
             updateSelectedMarker(marker);
         }
     }
@@ -375,7 +386,7 @@ public class MainActivity extends AppCompatActivity
         selectedMarker = marker;
 
         marker.setIcon(BitmapDescriptorFactory.defaultMarker(50));
-        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom((marker.getPosition()),18);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom((marker.getPosition()),16);
         map.animateCamera(cu);
 
         openDetailFragment(marker);
@@ -443,7 +454,9 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
 
-                    switch (item.getItemId()){
+                    filterId = item.getItemId();
+
+                    switch (filterId){
                         case R.id.pu_all:
                             for(Marker element: objectLinkedToMarker.keySet()){
                                     element.setVisible(true);
@@ -458,6 +471,15 @@ public class MainActivity extends AppCompatActivity
                         case R.id.pu_streetart:
                             filterMarker(StreetArt.class);
                             break;
+                    }
+
+                    if(fab_container.getVisibility() == View.VISIBLE) {
+
+                        getFragmentManager().beginTransaction()
+                                .replace(R.id.fab_frag_container,FabFragment.newInstance(filterId))
+                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .commit();
+
                     }
 
                     return true;
@@ -492,9 +514,10 @@ public class MainActivity extends AppCompatActivity
            public void onClick(View v) {
 
                if(fab_container.getVisibility() == View.GONE) {
+                    closeDetailFrag();
                     fab_container.setVisibility(View.VISIBLE);
                    getFragmentManager().beginTransaction()
-                           .replace(R.id.fab_frag_container, new FabFragment())
+                           .replace(R.id.fab_frag_container,FabFragment.newInstance(filterId))
                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                            .commit();
                }else{
@@ -505,18 +528,5 @@ public class MainActivity extends AppCompatActivity
        });
 
     }
-
-
-    /*else if (id == R.id.nav_list) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, new FabFragment())
-                    .addToBackStack("back")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-            menu.setGroupVisible(R.id.mg_filter, false);
-
-            closeDetailFrag();
-        }*/
-
-
 
 }

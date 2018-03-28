@@ -19,6 +19,7 @@ import be.ehb.xplorebxl.Database.DAO.StreetArtDAO;
 import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
+import be.ehb.xplorebxl.R;
 
 /**
  * Created by TDS-Team on 16/03/2018.
@@ -200,13 +201,27 @@ public abstract class LandMarksDatabase extends RoomDatabase {
 
     public void updateComic(Comic comic){getComicDao().updateComic(comic);}
 
-    public ArrayList<Object> getSortedList(final Location location){
+    public ArrayList<Object> getSortedList(final Location location, int filterId){
 
         ArrayList<Object> list = new ArrayList<>();
 
-        list.addAll(getAllComics());
-        list.addAll(getAllStreetArt());
-        list.addAll(getMuseums());
+        switch (filterId){
+            case R.id.pu_all:
+                list.addAll(getAllComics());
+                list.addAll(getAllStreetArt());
+                list.addAll(getMuseums());
+                break;
+            case R.id.pu_musea:
+                list.addAll(getMuseums());
+                break;
+            case R.id.pu_comic:
+                list.addAll(getAllComics());
+                break;
+            case R.id.pu_streetart:
+                list.addAll(getAllStreetArt());
+                break;
+        }
+
 
         if(location != null) {
 
