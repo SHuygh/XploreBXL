@@ -19,6 +19,9 @@ public interface FavouritesDAO {
     @Query("SELECT recordId FROM Favourites")
     List<String> getAllRecordID();
 
+    @Query("SELECT * FROM Favourites")
+    List<Favourites> getAllFavourites();
+
     @Insert
     void insertFav(Favourites f);
 

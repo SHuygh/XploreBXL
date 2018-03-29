@@ -2,6 +2,7 @@ package be.ehb.xplorebxl.Model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 /**
  * Created by huyghstijn on 29/03/2018.
@@ -11,8 +12,8 @@ public class Favourites {
 
     public final static String TYPE_MUSEUM = "museum", TYPE_STREETART = "streetart", TYPE_COMIC = "comic";
 
-    @PrimaryKey(autoGenerate = true)
-    private long id;
+    @PrimaryKey
+    @NonNull
     private String recordId;
     private String type;
 
@@ -41,15 +42,12 @@ public class Favourites {
 
         Favourites that = (Favourites) o;
 
-        return id == that.id;
+        return recordId.equals(that.recordId);
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    @Override
+    public int hashCode() {
+        return recordId.hashCode();
     }
 
     public String getRecordId() {
@@ -68,8 +66,5 @@ public class Favourites {
         this.type = type;
     }
 
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
+
 }

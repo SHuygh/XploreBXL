@@ -7,6 +7,7 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.Museum;
 
 /**
@@ -20,6 +21,9 @@ public interface MuseumDAO {
 
     @Query("SELECT recordId FROM Museum")
     List<String> getMuseumRecordID();
+
+    @Query("SELECT * FROM Museum WHERE recordId LIKE :id")
+    List<Museum> getMuseumOnId(String id);
 
     @Insert
     void insertMuseum(Museum m);

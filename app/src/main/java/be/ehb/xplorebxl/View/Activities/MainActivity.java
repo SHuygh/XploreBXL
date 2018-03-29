@@ -34,6 +34,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -98,6 +99,12 @@ public class MainActivity extends AppCompatActivity
     private int filterId;
     private Toolbar toolbar;
     private Polyline route;
+    private BitmapDescriptor
+            IC_MUSEUM,
+            IC_STREETART,
+            IC_COMIC,
+            IC_SELECTED,
+            IC_FAV;
 
 
     @Override
@@ -106,7 +113,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         getFragmentManager().beginTransaction().replace(R.id.frag_container, LauncherFragment.newInstance()).commit();
-
 
         downloader = Downloader.getInstance();
 
@@ -261,6 +267,11 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
+        IC_MUSEUM = BitmapDescriptorFactory.defaultMarker(180);
+        IC_STREETART = BitmapDescriptorFactory.defaultMarker(90);
+        IC_COMIC = BitmapDescriptorFactory.defaultMarker(10);
+        IC_SELECTED = BitmapDescriptorFactory.defaultMarker(50);
+        IC_FAV = BitmapDescriptorFactory.defaultMarker(270);
 
         drawMarkers();
 
@@ -310,7 +321,8 @@ public class MainActivity extends AppCompatActivity
             clearMapBeforeDraw();
         }
 
-        List<Museum> museums = LandMarksDatabase.getInstance(this).getMuseums();
+        LandMarksDatabase landMarksDatabase = LandMarksDatabase.getInstance(this);
+        List<Museum> museums = landMarksDatabase.getMuseums();
 
         for(Museum element: museums){
 
@@ -318,33 +330,43 @@ public class MainActivity extends AppCompatActivity
                     new MarkerOptions()
                             .title(element.getName())
                             .position(element.getCoord())
-                            .icon(BitmapDescriptorFactory.defaultMarker(180)));
+                            .icon(IC_MUSEUM));
 
             objectLinkedToMarker.put(marker,element);
+            if(landMarksDatabase.checkFav(element)){
+                marker.setIcon(IC_FAV);
+            }
             }
 
-        List<StreetArt> streetArtList = LandMarksDatabase.getInstance(this).getAllStreetArt();
+        List<StreetArt> streetArtList = landMarksDatabase.getAllStreetArt();
 
         for(StreetArt element: streetArtList){
-            objectLinkedToMarker.put(map.addMarker(
+
+            Marker marker = map.addMarker(
                     new MarkerOptions()
                             .title(element.getNameOfArtist())
                             .position(element.getCoord())
-                            .icon(BitmapDescriptorFactory.defaultMarker(90))),
-                    element
-            );
+                            .icon(IC_STREETART));
+            objectLinkedToMarker.put(marker, element);
+
+            if(landMarksDatabase.checkFav(element)){
+                marker.setIcon(IC_FAV);
+            }
         }
 
-        List<Comic> comicsList = LandMarksDatabase.getInstance(this).getAllComics();
+        List<Comic> comicsList = landMarksDatabase.getAllComics();
 
         for (Comic element: comicsList){
 
-            objectLinkedToMarker.put(map.addMarker(
+            Marker marker = map.addMarker(
                     new MarkerOptions()
                             .title(element.getNameOfIllustrator())
                             .position(element.getCoord())
-                            .icon(BitmapDescriptorFactory.defaultMarker(10))),
-                            element);
+                            .icon(IC_COMIC));
+            objectLinkedToMarker.put(marker, element);
+            if(landMarksDatabase.checkFav(element)){
+                marker.setIcon(IC_FAV);
+            }
         }
 
         }
@@ -377,11 +399,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onMarkerClick(Marker marker) {
         fab_container.setVisibility(View.GONE);
+        switchFav(marker);
         updateSelectedMarker(marker);
 
         return true;
     }
 
+    private void switchFav(Marker marker) {
+        Object o = objectLinkedToMarker.get(marker);
+
+        boolean fav = LandMarksDatabase.getInstance(this).switchFav(o);
+
+        if(fav) {
+            marker.setIcon(IC_FAV);
+        }else{
+            if(o instanceof Museum){marker.setIcon(IC_MUSEUM);
+            }else if(o instanceof StreetArt){marker.setIcon(IC_STREETART);
+            }else{marker.setIcon(IC_COMIC);}
+        }
+    }
 
     @Override
     public void itemSelected(Object o) {
@@ -424,7 +460,7 @@ public class MainActivity extends AppCompatActivity
 
         selectedMarker = marker;
 
-        marker.setIcon(BitmapDescriptorFactory.defaultMarker(50));
+        marker.setIcon(IC_SELECTED);
         CameraUpdate cu = CameraUpdateFactory.newLatLngZoom((marker.getPosition()),16);
         map.animateCamera(cu);
 
@@ -437,15 +473,17 @@ public class MainActivity extends AppCompatActivity
 
             Object o = objectLinkedToMarker.get(selectedMarker);
 
-            float hue = 0;
-            if(o instanceof Museum){
-                hue = 180;
-            }else if(o instanceof StreetArt){
-                hue = 90;
-            }else if(o instanceof Comic){
-                hue = 10;
+            if(LandMarksDatabase.getInstance(this).checkFav(o)) {
+                selectedMarker.setIcon(IC_FAV);
+            }else {
+                if (o instanceof Museum) {
+                    selectedMarker.setIcon(IC_MUSEUM);
+                } else if (o instanceof StreetArt) {
+                    selectedMarker.setIcon(IC_STREETART);
+                } else if (o instanceof Comic) {
+                    selectedMarker.setIcon(IC_COMIC);
+                }
             }
-            selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker(hue));
 
             selectedMarker = null;
 
@@ -509,6 +547,19 @@ public class MainActivity extends AppCompatActivity
                             break;
                         case R.id.pu_streetart:
                             filterMarker(StreetArt.class);
+                            break;
+                        case R.id.pu_fav:
+                            //TODO filter markers on favourites
+                            for(Marker element: objectLinkedToMarker.keySet()){
+                                element.setVisible(false);
+                            }
+                            for(Object o: LandMarksDatabase.getInstance(getApplicationContext()).getAllFavObjects()){
+                                for(Marker marker: objectLinkedToMarker.keySet()){
+                                    if(objectLinkedToMarker.get(marker).equals(o)){
+                                        marker.setVisible(true);
+                                    }
+                                }
+                            }
                             break;
                     }
 

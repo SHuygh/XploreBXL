@@ -27,7 +27,7 @@ import be.ehb.xplorebxl.R;
  * Created by TDS-Team on 16/03/2018.
  */
 
-@Database(entities = {Museum.class, StreetArt.class, Comic.class}, version = 1 ,exportSchema = false)
+@Database(entities = {Museum.class, StreetArt.class, Comic.class, Favourites.class}, version = 1 ,exportSchema = false)
 public abstract class LandMarksDatabase extends RoomDatabase {
 
     //singleton
@@ -47,45 +47,99 @@ public abstract class LandMarksDatabase extends RoomDatabase {
         return getFavouritesDAO().getAllRecordID();
     }
 
-    public void insertFav(Favourites f){
-        getFavouritesDAO().insertFav(f);
+    public List<Favourites> getAllFav(){
+        return getFavouritesDAO().getAllFavourites();
     }
 
-    public void insertFav(Comic c){
+    public boolean switchFav(Object o){
+        if(o instanceof Museum){
+            return switchFav((Museum) o);
+        }else if(o instanceof StreetArt){
+            return switchFav((StreetArt) o);
+        }else if(o instanceof Comic){
+            return switchFav((Comic) o);
+        }
+        return false;
+    }
+
+    public boolean switchFav(Comic c){
         Favourites f = new Favourites(c);
-        insertFav(f);
+        return switchFav(f);
     }
 
-    public void insertFav(StreetArt s){
+    public boolean switchFav(StreetArt s){
         Favourites f = new Favourites(s);
-        insertFav(f);
+        return switchFav(f);
     }
 
-    public void insertFav(Museum m){
+    public boolean switchFav(Museum m){
         Favourites f = new Favourites(m);
-        insertFav(f);
+        return switchFav(f);
     }
 
-    public void deleteFav(Favourites f){
+    private boolean switchFav(Favourites f){
+        if(getAllFav().contains(f)){
+            deleteFav(f);
+            return false;
+        }else{
+            insertFav(f);
+            return true;
+        }
+    }
+
+    public boolean checkFav(Object o){
+        List<String> recordIdList = getFavRecordId();
+        String recordId = "";
+        if(o instanceof Museum){
+            recordId = ((Museum) o).getRecordId();
+        }else if(o instanceof StreetArt){
+            recordId = ((StreetArt) o).getRecordId();
+        }else if(o instanceof Comic){
+            recordId = ((Comic) o).getRecordId();
+        }
+
+        return recordIdList.contains(recordId);
+
+    }
+    private void deleteFav(Favourites f){
         getFavouritesDAO().deleteFav(f);
     }
 
-    public void deletetFav(Comic c){
-        Favourites f = new Favourites(c);
-        deleteFav(f);
-    }
-
-    public void deleteFav(StreetArt s){
-        Favourites f = new Favourites(s);
-        deleteFav(f);
-    }
-
-    public void deleteFav(Museum m){
-        Favourites f = new Favourites(m);
-        deleteFav(f);
+    private void insertFav(Favourites f){
+        getFavouritesDAO().insertFav(f);
     }
 
 
+    public ArrayList<Object> getAllFavObjects(){
+        List<Favourites> favList = getAllFav();
+        ArrayList<Object> objectList = new ArrayList<>();
+
+        for(Favourites fav: favList){
+            if(fav.getType().equals(Favourites.TYPE_MUSEUM)){
+                List<Museum> list = getMuseumDao().getMuseumOnId(fav.getRecordId());
+                if(list != null) {
+                    Museum m = list.get(0);
+                    objectList.add(m);
+                }
+
+            }else if(fav.getType().equals(Favourites.TYPE_COMIC)){
+                List<Comic> list = getComicDao().getComicOnId(fav.getRecordId());
+                if(list != null) {
+                    Comic c = list.get(0);
+                    objectList.add(c);
+                }
+            }else if(fav.getType().equals(Favourites.TYPE_STREETART)){
+                List<StreetArt> list = getStreetArtDao().getStreetArtOnId(fav.getRecordId());
+                if(list != null) {
+                    StreetArt s = list.get(0);
+                    objectList.add(s);
+                }
+            }
+        }
+
+        return objectList;
+
+    }
 
 /**MUSEUM**/
 
@@ -267,6 +321,9 @@ public abstract class LandMarksDatabase extends RoomDatabase {
                 break;
             case R.id.pu_streetart:
                 list.addAll(getAllStreetArt());
+                break;
+            case R.id.pu_fav:
+                list.addAll(getAllFavObjects());
                 break;
         }
 

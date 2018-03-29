@@ -22,6 +22,9 @@ public interface ComicDAO {
     @Query("SELECT recordId FROM Comic")
     List<String> getComicRecordID();
 
+    @Query("SELECT * FROM Comic WHERE recordId LIKE :id")
+    List<Comic> getComicOnId(String id);
+
     @Query("SELECT imgUrl FROM Comic")
     List<String> getImgUrl();
 
