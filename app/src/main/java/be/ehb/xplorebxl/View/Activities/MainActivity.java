@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -21,12 +20,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -68,8 +65,8 @@ import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.DirectionsParser;
 import be.ehb.xplorebxl.Utils.Downloader;
 import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
-import be.ehb.xplorebxl.Utils.LocationUtil;
 import be.ehb.xplorebxl.Utils.Listener.StartBtnListener;
+import be.ehb.xplorebxl.Utils.LocationUtil;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
@@ -116,6 +113,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         getFragmentManager().beginTransaction().replace(R.id.frag_container, LauncherFragment.newInstance()).commit();
 
@@ -544,21 +543,31 @@ public class MainActivity extends AppCompatActivity
 
                     switch (filterId){
                         case R.id.pu_all:
+
+                            getSupportActionBar().setTitle(getString(R.string.app_name));
+
+
                             for(Marker element: objectLinkedToMarker.keySet()){
                                     element.setVisible(true);
                             }
                             break;
                         case R.id.pu_musea:
+                            getSupportActionBar().setTitle(getString(R.string.pu_musea));
+
                             filterMarker(Museum.class);
                             break;
                         case R.id.pu_comic:
+                            getSupportActionBar().setTitle(getString(R.string.pu_comic));
+
                             filterMarker(Comic.class);
                             break;
                         case R.id.pu_streetart:
+                            getSupportActionBar().setTitle(getString(R.string.pu_streetart));
+
                             filterMarker(StreetArt.class);
                             break;
                         case R.id.pu_fav:
-                            //TODO filter markers on favourites
+                            getSupportActionBar().setTitle(getString(R.string.pu_favourites));
                             for(Marker element: objectLinkedToMarker.keySet()){
                                 element.setVisible(false);
                             }
