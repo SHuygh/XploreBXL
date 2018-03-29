@@ -9,7 +9,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="txt_nav_map">Map</string>
-    <string name="txt_nav_list">List</string>
+    <string name="txt_nav_list">Musea</string>
     <string name="txt_nav_about">About</string>
     <string name="txt_nav_setting">Settings</string>
     <string name="btn_website">WEBSITE</string>
@@ -17,8 +17,8 @@
     <string name="txt_button_lvstreetart">Streetart</string>
     <string name="txt_buton_lvMusea">Musea</string>
     <string name="txt_btn_lv_streetart">Streetart</string>
-    <string name="txt_nav_item_list_streetart">List of Streetart</string>
-    <string name="txt_nav_list_comics">List of comic book murals</string>
+    <string name="txt_nav_item_list_streetart">Street Art</string>
+    <string name="txt_nav_list_comics">Comic Book Murals</string>
     <string name="mi_filter">Filter</string>
     <string name="pu_musea">Musea</string>
     <string name="pu_streetart">Streetart</string>

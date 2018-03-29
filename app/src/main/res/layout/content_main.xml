@@ -25,12 +25,13 @@
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:background="@color/cardview_dark_background"
+        android:contentDescription="Close button"
+        android:elevation="0dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detail_frag_container"
-        app:srcCompat="@drawable/ic_keyboard_arrow_up_24dp"
-        android:contentDescription="Close button" />
+        app:srcCompat="@drawable/ic_keyboard_arrow_up_24dp" />
 
     <FrameLayout
         android:id="@+id/detail_frag_container"
