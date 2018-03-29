@@ -5,7 +5,7 @@
     <color name="colorAccent">#e30059</color>
 
     //nav Drawer
-    <color name="color_navigation_list_background">#FFFFFF</color>
+    <color name="color_navigation_list_background">#ffffff</color>
     <color name="color_selector_navigation_icon">#e30059</color>
     <color name="color_selector_navigation_item">#030410</color>
 
