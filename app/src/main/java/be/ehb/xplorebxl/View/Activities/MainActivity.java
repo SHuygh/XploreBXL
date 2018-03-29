@@ -712,8 +712,8 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     polylineOptions.addAll(points);
-                    polylineOptions.width(15);
-                    polylineOptions.color(Color.BLUE);
+                    polylineOptions.width(10);
+                    polylineOptions.color(Color.WHITE);
                     polylineOptions.geodesic(true);
                 }
 
