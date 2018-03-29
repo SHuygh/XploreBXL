@@ -4,7 +4,6 @@ package be.ehb.xplorebxl.View.Fragments.Museum;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,7 @@ import android.widget.ListView;
 
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.Utils.ListviewItemListener;
+import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.Adapter.MuseumListAdapter;
 
 /**

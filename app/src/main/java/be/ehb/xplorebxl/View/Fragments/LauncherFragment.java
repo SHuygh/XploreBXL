@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.Utils.StartBtnListener;
+import be.ehb.xplorebxl.Utils.Listener.StartBtnListener;
 
 
 public class LauncherFragment extends Fragment {
