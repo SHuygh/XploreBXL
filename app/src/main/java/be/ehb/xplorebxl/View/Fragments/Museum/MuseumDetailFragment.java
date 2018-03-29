@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -34,6 +35,10 @@ public class MuseumDetailFragment extends Fragment {
     private Museum selectedMuseum;
 
     private Location location;
+
+    private Button btnInfo;
+
+
 
 
     public MuseumDetailFragment() {}
@@ -69,7 +74,29 @@ public class MuseumDetailFragment extends Fragment {
 
     @NonNull
     public View setupView(LayoutInflater inflater, ViewGroup container) {
-        View rootView = inflater.inflate(R.layout.fragment_museum_detail,container,false);
+        final View rootView = inflater.inflate(R.layout.fragment_museum_detail,container,false);
+
+        btnInfo = rootView.findViewById(R.id.btn_info);
+        btnInfo.setVisibility(View.VISIBLE);
+
+        if (rootView.findViewById(R.id.contact_frag_container).getVisibility() == View.VISIBLE){
+            rootView.findViewById(R.id.contact_frag_container).setVisibility(View.GONE);
+        }
+
+        btnInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (rootView.findViewById(R.id.contact_frag_container).getVisibility() == View.GONE){
+                    rootView.findViewById(R.id.contact_frag_container).setVisibility(View.VISIBLE);
+                } else {
+                    rootView.findViewById(R.id.contact_frag_container).setVisibility(View.GONE);
+                }
+
+            }
+        });
+
+
+
 
         tvName = rootView.findViewById(R.id.tv_detail_museum_name);
         tvAdress = rootView.findViewById(R.id.tv_detail_museum_address);

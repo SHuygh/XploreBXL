@@ -216,7 +216,6 @@ public class MainActivity extends AppCompatActivity
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             menu.setGroupVisible(R.id.mg_filter, false);
 
-
             closeFABFrag();
             closeDetailFrag();
         } else if (id == R.id.nav_list_streetart) {
