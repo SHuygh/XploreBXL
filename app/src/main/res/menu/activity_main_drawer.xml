@@ -21,11 +21,12 @@
             android:title="@string/txt_nav_list_comics" />
         <item
             android:id="@+id/nav_about"
-            android:icon="@android:drawable/stat_notify_chat"
+            android:icon="@android:drawable/ic_menu_help"
             android:title="@string/txt_nav_about" />
     </group>
     <item
         android:id="@+id/nav_update"
+        android:icon="@android:drawable/ic_popup_sync"
         android:title="@string/txt_nav_item_update_data" />
 
 </menu>

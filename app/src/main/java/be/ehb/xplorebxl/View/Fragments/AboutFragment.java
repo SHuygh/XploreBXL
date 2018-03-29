@@ -15,7 +15,7 @@ import be.ehb.xplorebxl.R;
 
 public class AboutFragment extends android.app.Fragment {
 
-    private ImageView ivLogo;
+    private ImageView ivAbout;
 
     public AboutFragment() {
         // Required empty public constructor
