@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -20,10 +21,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -34,6 +37,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -63,9 +67,9 @@ import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.DirectionsParser;
 import be.ehb.xplorebxl.Utils.Downloader;
-import be.ehb.xplorebxl.Utils.ListviewItemListener;
+import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
-import be.ehb.xplorebxl.Utils.StartBtnListener;
+import be.ehb.xplorebxl.Utils.Listener.StartBtnListener;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
@@ -98,6 +102,14 @@ public class MainActivity extends AppCompatActivity
     private int filterId;
     private Toolbar toolbar;
     private Polyline route;
+    private BitmapDescriptor
+            IC_MUSEUM,
+            IC_STREETART,
+            IC_COMIC,
+            IC_SELECTED,
+            IC_FAV;
+
+
 
 
     @Override
@@ -106,7 +118,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         getFragmentManager().beginTransaction().replace(R.id.frag_container, LauncherFragment.newInstance()).commit();
-
 
         downloader = Downloader.getInstance();
 
@@ -120,6 +131,8 @@ public class MainActivity extends AppCompatActivity
         LocationUtil.getInstance().setupLocationServices(this);
 
         setupFAB();
+
+
 
     }
 
@@ -199,10 +212,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_list) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, new MuseumListViewFragment())
+                    .replace(R.id.frag_container, MuseumListViewFragment.newInstance())
                     .addToBackStack("back")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             menu.setGroupVisible(R.id.mg_filter, false);
+
 
             closeFABFrag();
             closeDetailFrag();
@@ -261,6 +275,11 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
+        IC_MUSEUM = BitmapDescriptorFactory.defaultMarker(180);
+        IC_STREETART = BitmapDescriptorFactory.defaultMarker(90);
+        IC_COMIC = BitmapDescriptorFactory.defaultMarker(10);
+        IC_SELECTED = BitmapDescriptorFactory.defaultMarker(50);
+        IC_FAV = BitmapDescriptorFactory.defaultMarker(270);
 
         drawMarkers();
 
@@ -310,7 +329,8 @@ public class MainActivity extends AppCompatActivity
             clearMapBeforeDraw();
         }
 
-        List<Museum> museums = LandMarksDatabase.getInstance(this).getMuseums();
+        LandMarksDatabase landMarksDatabase = LandMarksDatabase.getInstance(this);
+        List<Museum> museums = landMarksDatabase.getMuseums();
 
         for(Museum element: museums){
 
@@ -318,33 +338,43 @@ public class MainActivity extends AppCompatActivity
                     new MarkerOptions()
                             .title(element.getName())
                             .position(element.getCoord())
-                            .icon(BitmapDescriptorFactory.defaultMarker(180)));
+                            .icon(IC_MUSEUM));
 
             objectLinkedToMarker.put(marker,element);
+            if(landMarksDatabase.checkFav(element)){
+                marker.setIcon(IC_FAV);
+            }
             }
 
-        List<StreetArt> streetArtList = LandMarksDatabase.getInstance(this).getAllStreetArt();
+        List<StreetArt> streetArtList = landMarksDatabase.getAllStreetArt();
 
         for(StreetArt element: streetArtList){
-            objectLinkedToMarker.put(map.addMarker(
+
+            Marker marker = map.addMarker(
                     new MarkerOptions()
                             .title(element.getNameOfArtist())
                             .position(element.getCoord())
-                            .icon(BitmapDescriptorFactory.defaultMarker(90))),
-                    element
-            );
+                            .icon(IC_STREETART));
+            objectLinkedToMarker.put(marker, element);
+
+            if(landMarksDatabase.checkFav(element)){
+                marker.setIcon(IC_FAV);
+            }
         }
 
-        List<Comic> comicsList = LandMarksDatabase.getInstance(this).getAllComics();
+        List<Comic> comicsList = landMarksDatabase.getAllComics();
 
         for (Comic element: comicsList){
 
-            objectLinkedToMarker.put(map.addMarker(
+            Marker marker = map.addMarker(
                     new MarkerOptions()
                             .title(element.getNameOfIllustrator())
                             .position(element.getCoord())
-                            .icon(BitmapDescriptorFactory.defaultMarker(10))),
-                            element);
+                            .icon(IC_COMIC));
+            objectLinkedToMarker.put(marker, element);
+            if(landMarksDatabase.checkFav(element)){
+                marker.setIcon(IC_FAV);
+            }
         }
 
         }
@@ -361,7 +391,12 @@ public class MainActivity extends AppCompatActivity
         if(museums.size() > 0){
             LatLng coord = museums.get(0).getCoord();
                 if(coord != null){
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coord, 13);
+                    CameraUpdate cameraUpdate;
+                    if(map.getCameraPosition().zoom < 6) {
+                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(coord, 6);
+                        map.moveCamera(cameraUpdate);
+                    }
+                    cameraUpdate = CameraUpdateFactory.newLatLngZoom(coord, 13);
                     map.animateCamera(cameraUpdate);
                 }
         }
@@ -371,12 +406,28 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+
+
         fab_container.setVisibility(View.GONE);
+        switchFav(marker);
         updateSelectedMarker(marker);
 
         return true;
     }
 
+    private void switchFav(Marker marker) {
+        Object o = objectLinkedToMarker.get(marker);
+
+        boolean fav = LandMarksDatabase.getInstance(this).switchFav(o);
+
+        if(fav) {
+            marker.setIcon(IC_FAV);
+        }else{
+            if(o instanceof Museum){marker.setIcon(IC_MUSEUM);
+            }else if(o instanceof StreetArt){marker.setIcon(IC_STREETART);
+            }else{marker.setIcon(IC_COMIC);}
+        }
+    }
 
     @Override
     public void itemSelected(Object o) {
@@ -409,13 +460,17 @@ public class MainActivity extends AppCompatActivity
 
     public void updateSelectedMarker(Marker marker) {
 
+        if(route != null){
+            route.remove();
+        }
+
         cancelSelectedMarker();
 
         fabDirections.setVisibility(View.VISIBLE);
 
         selectedMarker = marker;
 
-        marker.setIcon(BitmapDescriptorFactory.defaultMarker(50));
+        marker.setIcon(IC_SELECTED);
         CameraUpdate cu = CameraUpdateFactory.newLatLngZoom((marker.getPosition()),16);
         map.animateCamera(cu);
 
@@ -428,19 +483,17 @@ public class MainActivity extends AppCompatActivity
 
             Object o = objectLinkedToMarker.get(selectedMarker);
 
-            if(route != null){
-                route.remove();
+            if(LandMarksDatabase.getInstance(this).checkFav(o)) {
+                selectedMarker.setIcon(IC_FAV);
+            }else {
+                if (o instanceof Museum) {
+                    selectedMarker.setIcon(IC_MUSEUM);
+                } else if (o instanceof StreetArt) {
+                    selectedMarker.setIcon(IC_STREETART);
+                } else if (o instanceof Comic) {
+                    selectedMarker.setIcon(IC_COMIC);
+                }
             }
-
-            float hue = 0;
-            if(o instanceof Museum){
-                hue = 180;
-            }else if(o instanceof StreetArt){
-                hue = 90;
-            }else if(o instanceof Comic){
-                hue = 10;
-            }
-            selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker(hue));
 
             selectedMarker = null;
 
@@ -504,6 +557,19 @@ public class MainActivity extends AppCompatActivity
                             break;
                         case R.id.pu_streetart:
                             filterMarker(StreetArt.class);
+                            break;
+                        case R.id.pu_fav:
+                            //TODO filter markers on favourites
+                            for(Marker element: objectLinkedToMarker.keySet()){
+                                element.setVisible(false);
+                            }
+                            for(Object o: LandMarksDatabase.getInstance(getApplicationContext()).getAllFavObjects()){
+                                for(Marker marker: objectLinkedToMarker.keySet()){
+                                    if(objectLinkedToMarker.get(marker).equals(o)){
+                                        marker.setVisible(true);
+                                    }
+                                }
+                            }
                             break;
                     }
 
@@ -569,10 +635,9 @@ public class MainActivity extends AppCompatActivity
            public void onClick(View view) {
 
                Object object = objectLinkedToMarker.get(selectedMarker);
-
+                fabDirections.setVisibility(View.GONE);
                if(object instanceof Museum){
                    getDirections(((Museum) object).getCoord());
-
                }else if(object instanceof StreetArt){
                    getDirections(((StreetArt) object).getCoord());
 
@@ -591,7 +656,8 @@ public class MainActivity extends AppCompatActivity
         if(location_origin != null) {
             LatLng origin = new LatLng(location_origin.getLatitude(), location_origin.getLongitude());
 
-            String url = getRequestURL(origin, destination);
+            //String url = getRequestURL(origin, destination);
+            String url = getRequestURLFav(origin, destination);
             TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
             taskRequestDirections.execute(url);
         }
@@ -605,6 +671,47 @@ public class MainActivity extends AppCompatActivity
         String mode = "mode=walking";
 
         String param = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
+
+        String output = "json";
+
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param;
+
+        return url;
+    }
+
+    private String getRequestURLFav(LatLng origin, LatLng destination) {
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        String str_dest = "destination=" + destination.latitude + "," + destination.longitude;
+
+        String sensor = "sensor=false";
+        String mode = "mode=walking";
+
+        String waypoints = "waypoints=optimize:true";
+
+        ArrayList<Object> favList = LandMarksDatabase.getInstance(this).getAllFavObjects();
+
+        for(Object o: favList){
+            if(!waypoints.endsWith("=")){
+                waypoints += "|";
+            }
+            if(o instanceof Museum){
+                Museum m = (Museum) o;
+                String waypoint = m.getCoordX() + "," + m.getCoordY();
+                waypoints += waypoint;
+            }else if(o instanceof StreetArt){
+                StreetArt s = (StreetArt) o;
+                String waypoint = s.getCoordX() + "," + s.getCoordY();
+                waypoints += waypoint;
+            }else if(o instanceof Comic){
+                Comic c = (Comic) o;
+                String waypoint = c.getCoordX() + "," + c.getCoordY();
+                waypoints += waypoint;
+            }
+        }
+
+
+
+        String param = str_origin + "&" + str_dest + "&" + sensor + "&" + mode + "&" + waypoints;
 
         String output = "json";
 
@@ -682,12 +789,14 @@ public class MainActivity extends AppCompatActivity
         protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
             JSONObject jsonObject = null;
             List<List<HashMap<String, String>>> routes = null;
+            Log.d(TAG, "doInBackground: " + strings[0]);
             try {
                 jsonObject = new JSONObject(strings[0]);
                 DirectionsParser directionsParser = new DirectionsParser();
                 routes = directionsParser.parse(jsonObject);
             } catch (JSONException e) {
                 e.printStackTrace();
+                fabDirections.setVisibility(View.VISIBLE);
             }
 
             return routes;
@@ -720,6 +829,9 @@ public class MainActivity extends AppCompatActivity
                 if (polylineOptions != null) {
                     route = map.addPolyline(polylineOptions);
                 }
+            }else{
+                Toast.makeText(getApplicationContext(), "Problem connecting to Google Maps, please try again", Toast.LENGTH_LONG).show();
+                fabDirections.setVisibility(View.VISIBLE);
             }
         }
     }

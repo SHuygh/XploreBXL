@@ -30,10 +30,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginRight="32dp"
+        android:layout_marginLeft="8dp">
 
         <TextView
-            android:id="@+id/tv_detail_streetart_artistname"
+            android:id="@+id/tv_detail_museum_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -59,7 +61,7 @@
             android:paddingRight="4dp"
             android:textColor="#FF030410"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_streetart_artistname"
+            app:layout_constraintTop_toBottomOf="@+id/tv_detail_museum_name"
             tools:text="explanation" />
     </android.support.constraint.ConstraintLayout>
 
@@ -75,8 +77,9 @@
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:textColor="@color/cardview_light_background"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="8dp" />
 </android.support.constraint.ConstraintLayout>

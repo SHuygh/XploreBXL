@@ -14,9 +14,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import be.ehb.xplorebxl.Database.DAO.ComicDAO;
+import be.ehb.xplorebxl.Database.DAO.FavouritesDAO;
 import be.ehb.xplorebxl.Database.DAO.MuseumDAO;
 import be.ehb.xplorebxl.Database.DAO.StreetArtDAO;
 import be.ehb.xplorebxl.Model.Comic;
+import be.ehb.xplorebxl.Model.Favourites;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
@@ -25,7 +27,7 @@ import be.ehb.xplorebxl.R;
  * Created by TDS-Team on 16/03/2018.
  */
 
-@Database(entities = {Museum.class, StreetArt.class, Comic.class}, version = 1 ,exportSchema = false)
+@Database(entities = {Museum.class, StreetArt.class, Comic.class, Favourites.class}, version = 1 ,exportSchema = false)
 public abstract class LandMarksDatabase extends RoomDatabase {
 
     //singleton
@@ -38,6 +40,106 @@ public abstract class LandMarksDatabase extends RoomDatabase {
         return instance;
     }
 
+/**FAVOURITES**/
+    public abstract FavouritesDAO getFavouritesDAO();
+
+    public List<String> getFavRecordId(){
+        return getFavouritesDAO().getAllRecordID();
+    }
+
+    public List<Favourites> getAllFav(){
+        return getFavouritesDAO().getAllFavourites();
+    }
+
+    public boolean switchFav(Object o){
+        if(o instanceof Museum){
+            return switchFav((Museum) o);
+        }else if(o instanceof StreetArt){
+            return switchFav((StreetArt) o);
+        }else if(o instanceof Comic){
+            return switchFav((Comic) o);
+        }
+        return false;
+    }
+
+    public boolean switchFav(Comic c){
+        Favourites f = new Favourites(c);
+        return switchFav(f);
+    }
+
+    public boolean switchFav(StreetArt s){
+        Favourites f = new Favourites(s);
+        return switchFav(f);
+    }
+
+    public boolean switchFav(Museum m){
+        Favourites f = new Favourites(m);
+        return switchFav(f);
+    }
+
+    private boolean switchFav(Favourites f){
+        if(getAllFav().contains(f)){
+            deleteFav(f);
+            return false;
+        }else{
+            insertFav(f);
+            return true;
+        }
+    }
+
+    public boolean checkFav(Object o){
+        List<String> recordIdList = getFavRecordId();
+        String recordId = "";
+        if(o instanceof Museum){
+            recordId = ((Museum) o).getRecordId();
+        }else if(o instanceof StreetArt){
+            recordId = ((StreetArt) o).getRecordId();
+        }else if(o instanceof Comic){
+            recordId = ((Comic) o).getRecordId();
+        }
+
+        return recordIdList.contains(recordId);
+
+    }
+    private void deleteFav(Favourites f){
+        getFavouritesDAO().deleteFav(f);
+    }
+
+    private void insertFav(Favourites f){
+        getFavouritesDAO().insertFav(f);
+    }
+
+
+    public ArrayList<Object> getAllFavObjects(){
+        List<Favourites> favList = getAllFav();
+        ArrayList<Object> objectList = new ArrayList<>();
+
+        for(Favourites fav: favList){
+            if(fav.getType().equals(Favourites.TYPE_MUSEUM)){
+                List<Museum> list = getMuseumDao().getMuseumOnId(fav.getRecordId());
+                if(list != null) {
+                    Museum m = list.get(0);
+                    objectList.add(m);
+                }
+
+            }else if(fav.getType().equals(Favourites.TYPE_COMIC)){
+                List<Comic> list = getComicDao().getComicOnId(fav.getRecordId());
+                if(list != null) {
+                    Comic c = list.get(0);
+                    objectList.add(c);
+                }
+            }else if(fav.getType().equals(Favourites.TYPE_STREETART)){
+                List<StreetArt> list = getStreetArtDao().getStreetArtOnId(fav.getRecordId());
+                if(list != null) {
+                    StreetArt s = list.get(0);
+                    objectList.add(s);
+                }
+            }
+        }
+
+        return objectList;
+
+    }
 
 /**MUSEUM**/
 
@@ -219,6 +321,9 @@ public abstract class LandMarksDatabase extends RoomDatabase {
                 break;
             case R.id.pu_streetart:
                 list.addAll(getAllStreetArt());
+                break;
+            case R.id.pu_fav:
+                list.addAll(getAllFavObjects());
                 break;
         }
 

@@ -1,15 +1,9 @@
 package be.ehb.xplorebxl.Utils.Adapter;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ContextWrapper;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -121,7 +115,7 @@ public class StreetArtListAdapter extends BaseAdapter {
         view = context.getLayoutInflater().inflate(R.layout.fragment_street_art_detail,viewGroup,false);
         mViewHolder = new ViewHolder();
 
-        mViewHolder.tvStreetartArtistName = view.findViewById(R.id.tv_detail_streetart_artistname);
+        mViewHolder.tvStreetartArtistName = view.findViewById(R.id.tv_detail_museum_name);
         mViewHolder.tvStreetartAddress = view.findViewById(R.id.tv_detail_streetart_explanation);
         mViewHolder.ivStreetartPhoto = view.findViewById(R.id.iv_detail_streetart);
         mViewHolder.tvDistance = view.findViewById(R.id.tv_detail_streetart_distance);

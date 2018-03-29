@@ -1,14 +1,9 @@
 package be.ehb.xplorebxl.Utils.Adapter;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ContextWrapper;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -22,7 +17,6 @@ import java.util.List;
 
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Comic;
-import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.LocationUtil;
 
@@ -95,7 +89,7 @@ public class ComicListAdapter extends BaseAdapter {
         view = context.getLayoutInflater().inflate(R.layout.fragment_street_art_detail,viewGroup,false);
         mViewHolder = new Viewholder();
 
-        mViewHolder.tvArtistName = view.findViewById(R.id.tv_detail_streetart_artistname);
+        mViewHolder.tvArtistName = view.findViewById(R.id.tv_detail_museum_name);
         mViewHolder.tvPersonnage = view.findViewById(R.id.tv_detail_streetart_explanation);
         mViewHolder.ivComicMuralPhoto = view.findViewById(R.id.iv_detail_streetart);
         mViewHolder.tvDistance = view.findViewById(R.id.tv_detail_streetart_distance);

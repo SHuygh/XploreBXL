@@ -7,6 +7,7 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.StreetArt;
 
 /**
@@ -24,6 +25,9 @@ public interface StreetArtDAO {
 
     @Query("SELECT imgUrl FROM StreetArt")
     List<String> getImgUrl();
+
+    @Query("SELECT * FROM StreetArt WHERE recordId LIKE :id")
+    List<StreetArt> getStreetArtOnId(String id);
 
     @Insert
     void insertStreetArt(StreetArt s);
