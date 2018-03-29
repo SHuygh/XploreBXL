@@ -11,13 +11,15 @@
             android:title="@string/txt_nav_map" />
         <item
             android:id="@+id/nav_list"
-            android:icon="@android:drawable/ic_menu_agenda"
+            android:icon="@drawable/ic_museum"
             android:title="@string/txt_nav_list" />
         <item
             android:id="@+id/nav_list_streetart"
+            android:icon="@drawable/ic_streetart"
             android:title="@string/txt_nav_item_list_streetart" />
         <item
             android:id="@+id/nav_list_comics"
+            android:icon="@drawable/ic_comics"
             android:title="@string/txt_nav_list_comics" />
         <item
             android:id="@+id/nav_about"
