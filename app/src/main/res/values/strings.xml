@@ -35,4 +35,5 @@
 
     <string name="txt_detail_illustrator">Illustrator: </string>
     <string name="txt_detail_featuring">Feat. </string>
+    <string name="pu_favourites">Favourites</string>
 </resources>

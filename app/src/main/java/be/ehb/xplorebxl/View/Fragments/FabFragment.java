@@ -3,18 +3,16 @@ package be.ehb.xplorebxl.View.Fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.Adapter.FabAdapter;
-import be.ehb.xplorebxl.Utils.ListviewItemListener;
+import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 
 
 /**

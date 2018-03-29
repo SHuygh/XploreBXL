@@ -26,7 +26,7 @@
         android:layout_height="16dp"
         android:background="@color/cardview_dark_background"
         android:contentDescription="Close button"
-        android:elevation="0dp"
+        android:elevation="24dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,11 +62,13 @@
         android:layout_marginEnd="32dp"
         android:clickable="true"
         android:focusable="true"
+        android:scaleType="center"
         android:visibility="gone"
-        app:backgroundTint="@android:color/darker_gray"
+        app:backgroundTint="@color/Blue_dark"
+        app:elevation="24dp"
         app:layout_constraintBottom_toTopOf="@+id/fab"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_dialog_map" />
+        app:srcCompat="@android:drawable/ic_menu_directions" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -77,9 +79,11 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
+        app:backgroundTint="@color/colorAccent"
+        app:elevation="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/circle" />
+        app:srcCompat="@android:drawable/ic_dialog_map" />
 
     <FrameLayout
         android:id="@+id/fab_frag_container"

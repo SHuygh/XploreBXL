@@ -14,9 +14,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import be.ehb.xplorebxl.Database.DAO.ComicDAO;
+import be.ehb.xplorebxl.Database.DAO.FavouritesDAO;
 import be.ehb.xplorebxl.Database.DAO.MuseumDAO;
 import be.ehb.xplorebxl.Database.DAO.StreetArtDAO;
 import be.ehb.xplorebxl.Model.Comic;
+import be.ehb.xplorebxl.Model.Favourites;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
@@ -37,6 +39,52 @@ public abstract class LandMarksDatabase extends RoomDatabase {
         }
         return instance;
     }
+
+/**FAVOURITES**/
+    public abstract FavouritesDAO getFavouritesDAO();
+
+    public List<String> getFavRecordId(){
+        return getFavouritesDAO().getAllRecordID();
+    }
+
+    public void insertFav(Favourites f){
+        getFavouritesDAO().insertFav(f);
+    }
+
+    public void insertFav(Comic c){
+        Favourites f = new Favourites(c);
+        insertFav(f);
+    }
+
+    public void insertFav(StreetArt s){
+        Favourites f = new Favourites(s);
+        insertFav(f);
+    }
+
+    public void insertFav(Museum m){
+        Favourites f = new Favourites(m);
+        insertFav(f);
+    }
+
+    public void deleteFav(Favourites f){
+        getFavouritesDAO().deleteFav(f);
+    }
+
+    public void deletetFav(Comic c){
+        Favourites f = new Favourites(c);
+        deleteFav(f);
+    }
+
+    public void deleteFav(StreetArt s){
+        Favourites f = new Favourites(s);
+        deleteFav(f);
+    }
+
+    public void deleteFav(Museum m){
+        Favourites f = new Favourites(m);
+        deleteFav(f);
+    }
+
 
 
 /**MUSEUM**/

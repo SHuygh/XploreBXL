@@ -20,9 +20,8 @@ import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.Utils.ListviewItemListener;
+import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
-import be.ehb.xplorebxl.Utils.OnItemClickListener;
 import be.ehb.xplorebxl.View.Activities.MainActivity;
 
 import static android.content.Context.MODE_PRIVATE;

@@ -3,7 +3,6 @@ package be.ehb.xplorebxl.View.Fragments.Comic;
 
 import android.app.Activity;
 import android.content.Context;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,7 +14,7 @@ import android.widget.ListView;
 import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.Adapter.ComicListAdapter;
-import be.ehb.xplorebxl.Utils.ListviewItemListener;
+import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 
 /**
  * A simple {@link Fragment} subclass.

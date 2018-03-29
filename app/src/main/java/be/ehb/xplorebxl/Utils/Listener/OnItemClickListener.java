@@ -1,4 +1,4 @@
-package be.ehb.xplorebxl.Utils;
+package be.ehb.xplorebxl.Utils.Listener;
 
 import be.ehb.xplorebxl.Model.StreetArt;
 

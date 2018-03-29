@@ -3,7 +3,6 @@ package be.ehb.xplorebxl.View.Fragments.StreetArt;
 
 import android.app.Activity;
 import android.content.Context;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,7 +13,7 @@ import android.widget.ListView;
 
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.Utils.ListviewItemListener;
+import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.Adapter.StreetArtListAdapter;
 
 /**

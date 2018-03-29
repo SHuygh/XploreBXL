@@ -63,9 +63,9 @@ import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.DirectionsParser;
 import be.ehb.xplorebxl.Utils.Downloader;
-import be.ehb.xplorebxl.Utils.ListviewItemListener;
+import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
-import be.ehb.xplorebxl.Utils.StartBtnListener;
+import be.ehb.xplorebxl.Utils.Listener.StartBtnListener;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
@@ -361,7 +361,12 @@ public class MainActivity extends AppCompatActivity
         if(museums.size() > 0){
             LatLng coord = museums.get(0).getCoord();
                 if(coord != null){
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coord, 13);
+                    CameraUpdate cameraUpdate;
+                    if(map.getCameraPosition().zoom < 6) {
+                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(coord, 6);
+                        map.moveCamera(cameraUpdate);
+                    }
+                    cameraUpdate = CameraUpdateFactory.newLatLngZoom(coord, 13);
                     map.animateCamera(cameraUpdate);
                 }
         }
@@ -409,6 +414,10 @@ public class MainActivity extends AppCompatActivity
 
     public void updateSelectedMarker(Marker marker) {
 
+        if(route != null){
+            route.remove();
+        }
+
         cancelSelectedMarker();
 
         fabDirections.setVisibility(View.VISIBLE);
@@ -427,10 +436,6 @@ public class MainActivity extends AppCompatActivity
         if(selectedMarker != null){
 
             Object o = objectLinkedToMarker.get(selectedMarker);
-
-            if(route != null){
-                route.remove();
-            }
 
             float hue = 0;
             if(o instanceof Museum){
@@ -719,6 +724,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (polylineOptions != null) {
                     route = map.addPolyline(polylineOptions);
+                    fabDirections.setVisibility(View.GONE);
                 }
             }
         }
