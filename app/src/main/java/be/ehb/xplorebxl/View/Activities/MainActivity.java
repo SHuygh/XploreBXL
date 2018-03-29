@@ -61,11 +61,11 @@ import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
-import be.ehb.xplorebxl.Utils.StartBtnListener;
 import be.ehb.xplorebxl.Utils.DirectionsParser;
 import be.ehb.xplorebxl.Utils.Downloader;
 import be.ehb.xplorebxl.Utils.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
+import be.ehb.xplorebxl.Utils.StartBtnListener;
 import be.ehb.xplorebxl.View.Fragments.AboutFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicDetailFragment;
 import be.ehb.xplorebxl.View.Fragments.Comic.ComicListViewFragment;
@@ -249,6 +249,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void closeDetailFrag() {
+        fabDirections.setVisibility(View.GONE);
         findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
         btnCloseExtraFrag.setVisibility(View.GONE);
         cancelSelectedMarker();
