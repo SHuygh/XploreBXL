@@ -35,4 +35,5 @@
 
     <string name="txt_detail_illustrator">Illustrator: </string>
     <string name="txt_detail_featuring">Feat. </string>
+    <string name="txt_btn_detail_museum_contact">contact</string>
 </resources>

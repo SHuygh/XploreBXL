@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -100,6 +102,8 @@ public class MainActivity extends AppCompatActivity
     private Polyline route;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +124,8 @@ public class MainActivity extends AppCompatActivity
         LocationUtil.getInstance().setupLocationServices(this);
 
         setupFAB();
+
+
 
     }
 
@@ -199,10 +205,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_list) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.frag_container, new MuseumListViewFragment())
+                    .replace(R.id.frag_container, MuseumListViewFragment.newInstance())
                     .addToBackStack("back")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             menu.setGroupVisible(R.id.mg_filter, false);
+
 
             closeFABFrag();
             closeDetailFrag();
@@ -371,6 +378,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+
+
         fab_container.setVisibility(View.GONE);
         updateSelectedMarker(marker);
 

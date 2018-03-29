@@ -1,16 +1,11 @@
 package be.ehb.xplorebxl.View.Fragments.Comic;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContextWrapper;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +97,7 @@ public class ComicDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_street_art_detail,container,false);
 
         ivComic = rootView.findViewById(R.id.iv_detail_streetart);
-        tvIllustratorName = rootView.findViewById(R.id.tv_detail_streetart_artistname);
+        tvIllustratorName = rootView.findViewById(R.id.tv_detail_museum_name);
         tvPersonnage = rootView.findViewById(R.id.tv_detail_streetart_explanation);
         tvDistance = rootView.findViewById(R.id.tv_detail_streetart_distance);
         return rootView;

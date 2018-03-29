@@ -39,11 +39,11 @@
         android:layout_height="wrap_content"
         android:background="@android:color/background_light"
         android:clickable="true"
+        android:focusable="true"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:focusable="true">
+        app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 
