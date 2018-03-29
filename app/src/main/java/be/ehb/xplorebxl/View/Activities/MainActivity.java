@@ -21,6 +21,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -634,10 +635,9 @@ public class MainActivity extends AppCompatActivity
            public void onClick(View view) {
 
                Object object = objectLinkedToMarker.get(selectedMarker);
-
+                fabDirections.setVisibility(View.GONE);
                if(object instanceof Museum){
                    getDirections(((Museum) object).getCoord());
-
                }else if(object instanceof StreetArt){
                    getDirections(((StreetArt) object).getCoord());
 
@@ -656,7 +656,8 @@ public class MainActivity extends AppCompatActivity
         if(location_origin != null) {
             LatLng origin = new LatLng(location_origin.getLatitude(), location_origin.getLongitude());
 
-            String url = getRequestURL(origin, destination);
+            //String url = getRequestURL(origin, destination);
+            String url = getRequestURLFav(origin, destination);
             TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
             taskRequestDirections.execute(url);
         }
@@ -670,6 +671,47 @@ public class MainActivity extends AppCompatActivity
         String mode = "mode=walking";
 
         String param = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
+
+        String output = "json";
+
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param;
+
+        return url;
+    }
+
+    private String getRequestURLFav(LatLng origin, LatLng destination) {
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        String str_dest = "destination=" + destination.latitude + "," + destination.longitude;
+
+        String sensor = "sensor=false";
+        String mode = "mode=walking";
+
+        String waypoints = "waypoints=optimize:true";
+
+        ArrayList<Object> favList = LandMarksDatabase.getInstance(this).getAllFavObjects();
+
+        for(Object o: favList){
+            if(!waypoints.endsWith("=")){
+                waypoints += "|";
+            }
+            if(o instanceof Museum){
+                Museum m = (Museum) o;
+                String waypoint = m.getCoordX() + "," + m.getCoordY();
+                waypoints += waypoint;
+            }else if(o instanceof StreetArt){
+                StreetArt s = (StreetArt) o;
+                String waypoint = s.getCoordX() + "," + s.getCoordY();
+                waypoints += waypoint;
+            }else if(o instanceof Comic){
+                Comic c = (Comic) o;
+                String waypoint = c.getCoordX() + "," + c.getCoordY();
+                waypoints += waypoint;
+            }
+        }
+
+
+
+        String param = str_origin + "&" + str_dest + "&" + sensor + "&" + mode + "&" + waypoints;
 
         String output = "json";
 
@@ -747,12 +789,14 @@ public class MainActivity extends AppCompatActivity
         protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
             JSONObject jsonObject = null;
             List<List<HashMap<String, String>>> routes = null;
+            Log.d(TAG, "doInBackground: " + strings[0]);
             try {
                 jsonObject = new JSONObject(strings[0]);
                 DirectionsParser directionsParser = new DirectionsParser();
                 routes = directionsParser.parse(jsonObject);
             } catch (JSONException e) {
                 e.printStackTrace();
+                fabDirections.setVisibility(View.VISIBLE);
             }
 
             return routes;
@@ -784,8 +828,10 @@ public class MainActivity extends AppCompatActivity
 
                 if (polylineOptions != null) {
                     route = map.addPolyline(polylineOptions);
-                    fabDirections.setVisibility(View.GONE);
                 }
+            }else{
+                Toast.makeText(getApplicationContext(), "Problem connecting to Google Maps, please try again", Toast.LENGTH_LONG).show();
+                fabDirections.setVisibility(View.VISIBLE);
             }
         }
     }
