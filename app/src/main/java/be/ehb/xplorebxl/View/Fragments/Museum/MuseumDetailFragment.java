@@ -1,6 +1,7 @@
 package be.ehb.xplorebxl.View.Fragments.Museum;
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;

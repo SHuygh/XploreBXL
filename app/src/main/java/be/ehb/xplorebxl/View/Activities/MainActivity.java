@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
@@ -439,6 +440,9 @@ public class MainActivity extends AppCompatActivity
         }else{
             floatingActionButton.setVisibility(View.VISIBLE);
             fabDirections.setVisibility(View.VISIBLE);
+            fabDirections.setTag(false);
+            fabDirections.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.Blue_dark)));
+
         }
 
         Marker marker = null;
@@ -466,6 +470,9 @@ public class MainActivity extends AppCompatActivity
         cancelSelectedMarker();
 
         fabDirections.setVisibility(View.VISIBLE);
+        fabDirections.setTag(false);
+        fabDirections.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.Blue_dark)));
+
 
         selectedMarker = marker;
 
@@ -541,34 +548,36 @@ public class MainActivity extends AppCompatActivity
                 public boolean onMenuItemClick(MenuItem item) {
 
                     filterId = item.getItemId();
+                    closeDetailFrag();
 
                     switch (filterId){
                         case R.id.pu_all:
-
                             getSupportActionBar().setTitle(getString(R.string.app_name));
-
-
+                            fabDirections.setVisibility(View.GONE);
                             for(Marker element: objectLinkedToMarker.keySet()){
                                     element.setVisible(true);
                             }
                             break;
                         case R.id.pu_musea:
                             getSupportActionBar().setTitle(getString(R.string.pu_musea));
-
+                            fabDirections.setVisibility(View.GONE);
                             filterMarker(Museum.class);
                             break;
                         case R.id.pu_comic:
                             getSupportActionBar().setTitle(getString(R.string.pu_comic));
-
+                            fabDirections.setVisibility(View.GONE);
                             filterMarker(Comic.class);
                             break;
                         case R.id.pu_streetart:
                             getSupportActionBar().setTitle(getString(R.string.pu_streetart));
-
+                            fabDirections.setVisibility(View.GONE);
                             filterMarker(StreetArt.class);
                             break;
                         case R.id.pu_fav:
                             getSupportActionBar().setTitle(getString(R.string.pu_favourites));
+                            fabDirections.setVisibility(View.VISIBLE);
+                            fabDirections.setTag(true);
+                            fabDirections.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
                             for(Marker element: objectLinkedToMarker.keySet()){
                                 element.setVisible(false);
                             }
@@ -638,21 +647,35 @@ public class MainActivity extends AppCompatActivity
        });
 
        fabDirections = findViewById(R.id.fab_route);
+       fabDirections.setTag(false);
+        fabDirections.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.Blue_dark)));
 
-       fabDirections.setOnClickListener(new View.OnClickListener() {
+
+
+        fabDirections.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-
-               Object object = objectLinkedToMarker.get(selectedMarker);
+               Log.d(TAG, "onClick: fabdirections");
+               
                 fabDirections.setVisibility(View.GONE);
-               if(object instanceof Museum){
-                   getDirections(((Museum) object).getCoord());
-               }else if(object instanceof StreetArt){
-                   getDirections(((StreetArt) object).getCoord());
 
-               }else if(object instanceof Comic){
-                   getDirections(((Comic) object).getCoord());
-               }
+                boolean fav = (boolean) fabDirections.getTag();
+
+                if(fav){
+                    Log.d(TAG, "onClick: fav");
+                    getDirections();
+                }else {
+                    Log.d(TAG, "onClick: notfav");
+                    Object object = objectLinkedToMarker.get(selectedMarker);
+                    if (object instanceof Museum) {
+                        getDirections(((Museum) object).getCoord());
+                    } else if (object instanceof StreetArt) {
+                        getDirections(((StreetArt) object).getCoord());
+
+                    } else if (object instanceof Comic) {
+                        getDirections(((Comic) object).getCoord());
+                    }
+                }
 
            }
        });
@@ -664,9 +687,27 @@ public class MainActivity extends AppCompatActivity
         Location location_origin = LocationUtil.getInstance().getLocation();
         if(location_origin != null) {
             LatLng origin = new LatLng(location_origin.getLatitude(), location_origin.getLongitude());
+            String url = "";
 
-            //String url = getRequestURL(origin, destination);
-            String url = getRequestURLFav(origin, destination);
+           
+               Log.d(TAG, "getDirections: notfav");
+                url = getRequestURL(origin, destination);
+            
+            
+            TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
+            taskRequestDirections.execute(url);
+        }
+    }    
+    
+    public void getDirections(){
+        Location location_origin = LocationUtil.getInstance().getLocation();
+        if(location_origin != null) {
+            LatLng origin = new LatLng(location_origin.getLatitude(), location_origin.getLongitude());
+            String url = "";
+
+            Log.d(TAG, "getDirections: fav");
+                url = getRequestURLFav(origin, origin);
+            
             TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
             taskRequestDirections.execute(url);
         }
@@ -726,6 +767,8 @@ public class MainActivity extends AppCompatActivity
 
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param;
 
+        Log.d(TAG, "getRequestURLFav: " + url);
+
         return url;
     }
 
@@ -783,7 +826,7 @@ public class MainActivity extends AppCompatActivity
             String responseStr = "";
 
             responseStr = requestDirections(strings[0]);
-
+            Log.d(TAG, "doInBackground: response str" + responseStr);
             return responseStr;
         }
 
@@ -833,7 +876,7 @@ public class MainActivity extends AppCompatActivity
 
                     polylineOptions.addAll(points);
                     polylineOptions.width(10);
-                    polylineOptions.color(Color.WHITE);
+                    polylineOptions.color(Color.BLACK);
                     polylineOptions.geodesic(true);
                 }
 
