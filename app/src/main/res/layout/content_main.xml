@@ -22,11 +22,13 @@
 
     <ImageButton
         android:id="@+id/btn_main_close"
+        style="@android:style/Widget.Material.ImageButton"
         android:layout_width="0dp"
         android:layout_height="16dp"
-        android:background="@color/cardview_dark_background"
+        android:background="@color/cardview_light_background"
         android:contentDescription="Close button"
-        android:elevation="0dp"
+        android:elevation="5dp"
+        android:tint="@color/colorPrimary"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
