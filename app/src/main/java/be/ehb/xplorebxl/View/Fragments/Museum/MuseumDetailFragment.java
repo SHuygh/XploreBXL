@@ -4,6 +4,7 @@ package be.ehb.xplorebxl.View.Fragments.Museum;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.Listener.FavouriteItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
 
 /**
@@ -38,6 +40,8 @@ public class MuseumDetailFragment extends Fragment {
 
     private Button btnInfo;
 
+    private FavouriteItemListener faveCallback;
+
 
 
 
@@ -50,6 +54,20 @@ public class MuseumDetailFragment extends Fragment {
         return fragment;
     }
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        faveCallback = (FavouriteItemListener) context;
+
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        faveCallback = (FavouriteItemListener) activity;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

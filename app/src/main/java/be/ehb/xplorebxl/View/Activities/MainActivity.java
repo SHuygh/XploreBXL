@@ -64,6 +64,7 @@ import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.DirectionsParser;
 import be.ehb.xplorebxl.Utils.Downloader;
+import be.ehb.xplorebxl.Utils.Listener.FavouriteItemListener;
 import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.Listener.StartBtnListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
@@ -82,7 +83,7 @@ import be.ehb.xplorebxl.View.Fragments.StreetArt.StreetArtListViewFragment;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, ListviewItemListener, StartBtnListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback, ListviewItemListener, StartBtnListener, FavouriteItemListener {
 
     private Downloader downloader;
     private String TAG = "testtesttest";
@@ -773,6 +774,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+
     public class TaskRequestDirections extends AsyncTask<String, Void, String> {
 
         @Override
@@ -850,5 +853,10 @@ public class MainActivity extends AppCompatActivity
         toolbar.setVisibility(View.VISIBLE);
 
         floatingActionButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void favouriteSelected(Object o) {
+
     }
 }

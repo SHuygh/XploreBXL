@@ -1,6 +1,8 @@
 package be.ehb.xplorebxl.View.Fragments.Comic;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.location.Location;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import java.io.File;
 
 import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.Listener.FavouriteItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -33,6 +36,9 @@ public class ComicDetailFragment extends Fragment {
 
     private Location location;
 
+    private FavouriteItemListener faveCallback;
+
+
 
     public ComicDetailFragment() {
         // Required empty public constructor
@@ -46,6 +52,19 @@ public class ComicDetailFragment extends Fragment {
         return fragment;
     }
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        faveCallback = (FavouriteItemListener) context;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        faveCallback = (FavouriteItemListener) activity;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

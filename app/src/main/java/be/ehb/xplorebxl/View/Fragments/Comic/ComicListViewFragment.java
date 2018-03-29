@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import be.ehb.xplorebxl.Model.Comic;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.Adapter.ComicListAdapter;
+import be.ehb.xplorebxl.Utils.Listener.FavouriteItemListener;
 import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 
 /**
@@ -27,6 +29,8 @@ public class ComicListViewFragment extends Fragment {
     private ListView lvComics;
 
     private ListviewItemListener callback;
+
+    private FavouriteItemListener faveCallback;
 
 
     public ComicListViewFragment() {
@@ -43,6 +47,8 @@ public class ComicListViewFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         callback = (ListviewItemListener) context;
+
+        faveCallback = (FavouriteItemListener) context;
     }
 
     //voor oudere android versies
@@ -50,6 +56,8 @@ public class ComicListViewFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         callback = (ListviewItemListener) activity;
+
+        faveCallback = (FavouriteItemListener) activity;
     }
 
     @Override
@@ -70,6 +78,8 @@ public class ComicListViewFragment extends Fragment {
                 callback.itemSelected(selectedComic);
             }
         });
+
+        
 
         return rootView;
     }

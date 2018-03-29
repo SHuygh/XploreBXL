@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.Listener.FavouriteItemListener;
 import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.Adapter.MuseumListAdapter;
 
@@ -31,6 +32,8 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
 
     private ListviewItemListener callback;
 
+    private FavouriteItemListener faveCallback;
+
     public MuseumListViewFragment() {
     }
 
@@ -45,6 +48,8 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
     public void onAttach(Context context) {
         super.onAttach(context);
         callback = (ListviewItemListener) context;
+
+        faveCallback = (FavouriteItemListener) context;
     }
 
     //voor oudere android versies:
@@ -52,6 +57,8 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         callback = (ListviewItemListener) activity;
+
+        faveCallback = (FavouriteItemListener) activity;
     }
 
     @Override
