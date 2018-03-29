@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,8 @@ public class StreetArtListViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_street_art_list_view, container, false);
 
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.pu_streetart));
+
         lvStreetart = rootView.findViewById(R.id.lv_streetart);
 
         final StreetArtListAdapter streetArtListAdapter = new StreetArtListAdapter(getActivity());
@@ -64,6 +67,7 @@ public class StreetArtListViewFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 StreetArt selectedStreetart = (StreetArt) streetArtListAdapter.getItem(i);
                 callback.itemSelected(selectedStreetart);
+
 
             }
         });

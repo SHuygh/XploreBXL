@@ -27,7 +27,7 @@
         android:layout_height="16dp"
         android:background="@color/cardview_light_background"
         android:contentDescription="Close button"
-        android:elevation="5dp"
+        android:elevation="4dp"
         android:tint="@color/colorPrimary"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
