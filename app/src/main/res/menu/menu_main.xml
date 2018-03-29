@@ -4,8 +4,7 @@
     <group android:id="@+id/mg_filter">
         <item
             android:id="@+id/mi_marker_filter"
-            android:icon="@android:drawable/ic_menu_sort_by_size"
-
+            android:icon="@drawable/ic_funnel"
             android:orderInCategory="100"
             android:title="@string/mi_filter"
             app:showAsAction="always" />

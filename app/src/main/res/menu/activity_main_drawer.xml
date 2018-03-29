@@ -4,31 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_map"
-            android:icon="@android:drawable/ic_menu_mapmode"
-            android:title="@string/txt_nav_map" />
-        <item
-            android:id="@+id/nav_list"
-            android:icon="@drawable/ic_museum"
-            android:title="@string/txt_nav_list" />
-        <item
-            android:id="@+id/nav_list_streetart"
-            android:icon="@drawable/ic_streetart"
-            android:title="@string/txt_nav_item_list_streetart" />
-        <item
-            android:id="@+id/nav_list_comics"
-            android:icon="@drawable/ic_comics"
-            android:title="@string/txt_nav_list_comics" />
+    <group android:id="@+id/Navigation">
+        android:checkableBehavior="single">
+
+
+
+        <item android:title="Navigation">
+            <menu>
+                <item
+                    android:id="@+id/nav_map"
+                    android:icon="@drawable/ic_map_drawer"
+                    android:title="@string/txt_nav_map" />
+                <item
+                    android:id="@+id/nav_list"
+                    android:icon="@drawable/ic_museum"
+                    android:title="@string/txt_nav_list" />
+                <item
+                    android:id="@+id/nav_list_streetart"
+                    android:icon="@drawable/ic_streetart"
+                    android:title="@string/txt_nav_item_list_streetart" />
+                <item
+                    android:id="@+id/nav_list_comics"
+                    android:icon="@drawable/ic_comics"
+                    android:title="@string/txt_nav_list_comics" />
+            </menu>
+        </item>
+    </group>
+
+    <group android:id="@+id/Support">
+
+        <item android:title="Help &amp; Support">
+        <menu>
+
         <item
             android:id="@+id/nav_about"
             android:icon="@android:drawable/ic_menu_help"
             android:title="@string/txt_nav_about" />
+
+        <item
+            android:id="@+id/nav_update"
+            android:icon="@android:drawable/ic_popup_sync"
+            android:title="@string/txt_nav_item_update_data" />
+        </menu>
+        </item>
     </group>
-    <item
-        android:id="@+id/nav_update"
-        android:icon="@android:drawable/ic_popup_sync"
-        android:title="@string/txt_nav_item_update_data" />
+
 
 </menu>
