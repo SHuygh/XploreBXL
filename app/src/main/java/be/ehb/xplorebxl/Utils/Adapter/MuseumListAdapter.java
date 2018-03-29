@@ -1,25 +1,21 @@
 package be.ehb.xplorebxl.Utils.Adapter;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
@@ -35,6 +31,7 @@ public class MuseumListAdapter extends BaseAdapter {
     private class ViewHolder {
         Button btnPhone, btnWebsite, btnEmail;
         TextView tvName, tvAdress, tvDistance;
+        ImageView ivMuseum;
     }
 
     private Activity context;
@@ -74,6 +71,9 @@ public class MuseumListAdapter extends BaseAdapter {
             mViewHolder = (ViewHolder) view.getTag();
         }
 
+
+
+
         final Museum currentMuseum = items.get(i);
 
         mViewHolder.tvName.setText(currentMuseum.getName());
@@ -81,7 +81,10 @@ public class MuseumListAdapter extends BaseAdapter {
 
         setupDistance(currentMuseum);
 
+
         setupButtons(viewGroup, currentMuseum);
+
+        randomMuseumImage(mViewHolder);
 
         return view;
     }
@@ -163,6 +166,8 @@ public class MuseumListAdapter extends BaseAdapter {
         view = context.getLayoutInflater().inflate(R.layout.fragment_museum_detail, viewGroup, false);
         mViewHolder = new ViewHolder();
 
+        mViewHolder.ivMuseum = view.findViewById(R.id.iv_detail_museum);
+
         mViewHolder.btnEmail = view.findViewById(R.id.btn_detail_museum_mail);
         mViewHolder.btnPhone = view.findViewById(R.id.btn_detail_museum_phone);
         mViewHolder.btnWebsite = view.findViewById(R.id.btn_detail_museum_website);
@@ -174,4 +179,22 @@ public class MuseumListAdapter extends BaseAdapter {
         view.setTag(mViewHolder);
         return view;
     }
+
+
+
+    private void randomMuseumImage(ViewHolder viewHolder) {
+
+        Random random = new Random();
+        List<Integer> generated = new ArrayList<Integer>();
+        generated.add(R.drawable.museum1);
+        generated.add(R.drawable.museum2);
+        generated.add(R.drawable.museum3);
+        generated.add(R.drawable.museum4);
+        generated.add(R.drawable.museum5);
+        generated.add(R.drawable.museum6);
+
+        Integer next = random.nextInt(5);
+        viewHolder.ivMuseum.setImageResource(generated.get(next));
+    }
+
 }

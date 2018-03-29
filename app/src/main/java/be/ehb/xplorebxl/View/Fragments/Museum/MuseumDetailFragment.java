@@ -1,24 +1,23 @@
 package be.ehb.xplorebxl.View.Fragments.Museum;
 
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
@@ -33,6 +32,8 @@ public class MuseumDetailFragment extends Fragment {
     private Button btnPhone, btnWebsite, btnEmail;
     private TextView tvName, tvAdress, tvDistance;
     private Museum selectedMuseum;
+
+    private ImageView ivDetailMuseum;
 
     private Location location;
 
@@ -60,6 +61,7 @@ public class MuseumDetailFragment extends Fragment {
         tvName.setText(selectedMuseum.getName());
         tvAdress.setText(String.format("%s, %s", selectedMuseum.getAdres(), selectedMuseum.getCity()));
 
+
         setupBtnPhone(rootView);
         setupBtnEmail(rootView);
         setupBtnWebsite(rootView);
@@ -75,6 +77,11 @@ public class MuseumDetailFragment extends Fragment {
     @NonNull
     public View setupView(LayoutInflater inflater, ViewGroup container) {
         final View rootView = inflater.inflate(R.layout.fragment_museum_detail,container,false);
+
+        ivDetailMuseum = rootView.findViewById(R.id.iv_detail_museum);
+
+
+        randomMuseumImage();
 
         btnInfo = rootView.findViewById(R.id.btn_info);
         btnInfo.setVisibility(View.VISIBLE);
@@ -103,6 +110,27 @@ public class MuseumDetailFragment extends Fragment {
         tvDistance = rootView.findViewById(R.id.tv_detail_museum_distance);
         return rootView;
     }
+
+    private void randomMuseumImage() {
+
+
+        Random random = new Random();
+        List<Integer> generated = new ArrayList<Integer>();
+        generated.add(R.drawable.museum1);
+        generated.add(R.drawable.museum2);
+        generated.add(R.drawable.museum3);
+        generated.add(R.drawable.museum4);
+        generated.add(R.drawable.museum5);
+        generated.add(R.drawable.museum6);
+
+
+        Integer next = random.nextInt(6);
+        ivDetailMuseum.setImageResource(generated.get(next));
+    }
+
+
+
+
 
     public void setupDistance() {
         if (location != null){
