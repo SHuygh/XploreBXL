@@ -6,5 +6,5 @@ package be.ehb.xplorebxl.Utils.Listener;
 
 public interface FavouriteItemListener {
 
-    void favouriteSelected(Object o);
+    void onFavButtonClick(Object o);
 }

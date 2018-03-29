@@ -1,12 +1,14 @@
 package be.ehb.xplorebxl.View.Fragments.Museum;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.Listener.FavouriteItemListener;
@@ -35,17 +38,11 @@ public class MuseumDetailFragment extends Fragment {
     private Button btnPhone, btnWebsite, btnEmail;
     private TextView tvName, tvAdress, tvDistance;
     private Museum selectedMuseum;
-
     private ImageView ivDetailMuseum;
-
     private Location location;
-
     private Button btnInfo;
-
-    private FavouriteItemListener faveCallback;
-
-
-
+    private Button btnFav;
+    private FavouriteItemListener favouriteItemListener;
 
     public MuseumDetailFragment() {}
 
@@ -60,7 +57,7 @@ public class MuseumDetailFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        faveCallback = (FavouriteItemListener) context;
+        favouriteItemListener = (FavouriteItemListener) context;
 
     }
 
@@ -68,7 +65,7 @@ public class MuseumDetailFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        faveCallback = (FavouriteItemListener) activity;
+        favouriteItemListener = (FavouriteItemListener) activity;
     }
 
     @Override
@@ -122,11 +119,52 @@ public class MuseumDetailFragment extends Fragment {
         });
 
 
-
-
         tvName = rootView.findViewById(R.id.tv_detail_museum_name);
         tvAdress = rootView.findViewById(R.id.tv_detail_museum_address);
         tvDistance = rootView.findViewById(R.id.tv_detail_museum_distance);
+        btnFav = rootView.findViewById(R.id.btn_favourite_museum);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            if (LandMarksDatabase.getInstance(getActivity()).checkFav(selectedMuseum)) {
+                btnFav.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+            } else {
+                btnFav.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+            }
+
+            btnFav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (LandMarksDatabase.getInstance(getActivity()).checkFav(selectedMuseum)) {
+                        btnFav.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+                    } else {
+                        btnFav.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+                    }
+                    favouriteItemListener.onFavButtonClick(selectedMuseum);
+                }
+            });
+
+        }else{
+            if (LandMarksDatabase.getInstance(getActivity()).checkFav(selectedMuseum)) {
+                btnFav.setBackground(getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+            } else {
+                btnFav.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+            }
+
+            btnFav.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onClick(View view) {
+                    if (LandMarksDatabase.getInstance(getActivity()).checkFav(selectedMuseum)) {
+                        btnFav.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+                    } else {
+                        btnFav.setBackground(getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+                    }
+                    favouriteItemListener.onFavButtonClick(selectedMuseum);
+                }
+            });
+        }
+
+
         return rootView;
     }
 
@@ -134,7 +172,7 @@ public class MuseumDetailFragment extends Fragment {
 
 
         Random random = new Random();
-        List<Integer> generated = new ArrayList<Integer>();
+        List<Integer> generated = new ArrayList<>();
         generated.add(R.drawable.museum1);
         generated.add(R.drawable.museum2);
         generated.add(R.drawable.museum3);

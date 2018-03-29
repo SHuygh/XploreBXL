@@ -1,9 +1,11 @@
 package be.ehb.xplorebxl.Utils.Adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,6 +22,7 @@ import java.util.Random;
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Museum;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.Listener.FavouriteItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
 
 /**
@@ -32,16 +35,18 @@ public class MuseumListAdapter extends BaseAdapter {
         Button btnPhone, btnWebsite, btnEmail;
         TextView tvName, tvAdress, tvDistance;
         ImageView ivMuseum;
+        Button btnFav;
     }
 
     private Activity context;
     private List<Museum> items;
     private Location location;
     private ViewHolder mViewHolder;
-
+    private FavouriteItemListener favouriteItemListener;
 
     public MuseumListAdapter(Activity context) {
         this.context = context;
+        favouriteItemListener = (FavouriteItemListener) context;
         location = LocationUtil.getInstance().getLocation();
         items = LandMarksDatabase.getInstance(context).getSortedMuseums(location);
 
@@ -71,9 +76,6 @@ public class MuseumListAdapter extends BaseAdapter {
             mViewHolder = (ViewHolder) view.getTag();
         }
 
-
-
-
         final Museum currentMuseum = items.get(i);
 
         mViewHolder.tvName.setText(currentMuseum.getName());
@@ -81,11 +83,50 @@ public class MuseumListAdapter extends BaseAdapter {
 
         setupDistance(currentMuseum);
 
-
         setupButtons(viewGroup, currentMuseum);
 
         randomMuseumImage(mViewHolder);
+        final Button btnFav = mViewHolder.btnFav;
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            if (LandMarksDatabase.getInstance(context).checkFav(currentMuseum)) {
+                btnFav.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+            } else {
+                btnFav.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+            }
+
+            btnFav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (LandMarksDatabase.getInstance(context).checkFav(currentMuseum)) {
+                        btnFav.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+                    } else {
+                        btnFav.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+                    }
+                    favouriteItemListener.onFavButtonClick(currentMuseum);
+                }
+            });
+
+        }else{
+            if (LandMarksDatabase.getInstance(context).checkFav(currentMuseum)) {
+                btnFav.setBackground(context.getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+            } else {
+                btnFav.setBackground(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+            }
+
+            btnFav.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onClick(View view) {
+                    if (LandMarksDatabase.getInstance(context).checkFav(currentMuseum)) {
+                        btnFav.setBackground(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+                    } else {
+                        btnFav.setBackground(context.getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+                    }
+                    favouriteItemListener.onFavButtonClick(currentMuseum);
+                }
+            });
+        }
         return view;
     }
 
@@ -99,6 +140,7 @@ public class MuseumListAdapter extends BaseAdapter {
         if(TextUtils.isEmpty(currentMuseum.getUrl())){
             mViewHolder.btnWebsite.setVisibility(View.GONE);
         }else{
+            mViewHolder.btnWebsite.setVisibility(View.VISIBLE);
             mViewHolder.btnWebsite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -122,6 +164,7 @@ public class MuseumListAdapter extends BaseAdapter {
         if(TextUtils.isEmpty(currentMuseum.getEmail())){
             mViewHolder.btnEmail.setVisibility(View.GONE);
         }else {
+            mViewHolder.btnEmail.setVisibility(View.VISIBLE);
             mViewHolder.btnEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -137,6 +180,7 @@ public class MuseumListAdapter extends BaseAdapter {
         if(TextUtils.isEmpty(currentMuseum.getTel())){
             mViewHolder.btnPhone.setVisibility(View.GONE);
         }else{
+            mViewHolder.btnPhone.setVisibility(View.VISIBLE);
             mViewHolder.btnPhone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -156,7 +200,7 @@ public class MuseumListAdapter extends BaseAdapter {
             mViewHolder.tvDistance.setText(String.format("%.2f km", distance));
 
         }else {
-            mViewHolder.tvDistance.setText("");
+            mViewHolder.tvDistance.setVisibility(View.GONE);
         }
     }
 
@@ -175,6 +219,8 @@ public class MuseumListAdapter extends BaseAdapter {
         mViewHolder.tvAdress = view.findViewById(R.id.tv_detail_museum_address);
         mViewHolder.tvName = view.findViewById(R.id.tv_detail_museum_name);
         mViewHolder.tvDistance = view.findViewById(R.id.tv_detail_museum_distance);
+        mViewHolder.btnFav = view.findViewById(R.id.btn_favourite_museum);
+
 
         view.setTag(mViewHolder);
         return view;
@@ -185,7 +231,7 @@ public class MuseumListAdapter extends BaseAdapter {
     private void randomMuseumImage(ViewHolder viewHolder) {
 
         Random random = new Random();
-        List<Integer> generated = new ArrayList<Integer>();
+        List<Integer> generated = new ArrayList<>();
         generated.add(R.drawable.museum1);
         generated.add(R.drawable.museum2);
         generated.add(R.drawable.museum3);

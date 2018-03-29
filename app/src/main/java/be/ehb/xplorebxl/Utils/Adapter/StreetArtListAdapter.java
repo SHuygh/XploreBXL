@@ -1,12 +1,15 @@
 package be.ehb.xplorebxl.Utils.Adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContextWrapper;
 import android.location.Location;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +21,7 @@ import java.util.List;
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.StreetArt;
 import be.ehb.xplorebxl.R;
+import be.ehb.xplorebxl.Utils.Listener.FavouriteItemListener;
 import be.ehb.xplorebxl.Utils.LocationUtil;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -33,16 +37,18 @@ public class StreetArtListAdapter extends BaseAdapter {
         TextView tvStreetartAddress;
         TextView tvDistance;
         ImageView ivStreetartPhoto;
+        Button btnFav;
+
     }
     private Activity context;
     private List<StreetArt> items;
     private Location location;
     private ViewHolder mViewHolder;
-
-
+    private FavouriteItemListener favouriteItemListener;
 
     public StreetArtListAdapter(Activity context) {
         this.context = context;
+        favouriteItemListener = (FavouriteItemListener) context;
         location = LocationUtil.getInstance().getLocation();
         items = LandMarksDatabase.getInstance(context).getSortedStreetArt(location);
     }
@@ -71,7 +77,7 @@ public class StreetArtListAdapter extends BaseAdapter {
             mViewHolder = (ViewHolder) view.getTag();
         }
 
-        StreetArt currentStreetArt = items.get(i);
+        final StreetArt currentStreetArt = items.get(i);
 
         mViewHolder.tvStreetartArtistName.setText(currentStreetArt.getNameOfArtist());
         mViewHolder.tvStreetartAddress.setText(currentStreetArt.getAddress());
@@ -80,6 +86,47 @@ public class StreetArtListAdapter extends BaseAdapter {
 
         setupImgView(currentStreetArt);
 
+        final Button btnFav = mViewHolder.btnFav;
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            if (LandMarksDatabase.getInstance(context).checkFav(currentStreetArt)) {
+                btnFav.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+            } else {
+                btnFav.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+            }
+
+            btnFav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (LandMarksDatabase.getInstance(context).checkFav(currentStreetArt)) {
+                        btnFav.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+                    } else {
+                        btnFav.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+                    }
+                    favouriteItemListener.onFavButtonClick(currentStreetArt);
+                }
+            });
+
+        }else{
+            if (LandMarksDatabase.getInstance(context).checkFav(currentStreetArt)) {
+                btnFav.setBackground(context.getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+            } else {
+                btnFav.setBackground(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+            }
+
+            btnFav.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onClick(View view) {
+                    if (LandMarksDatabase.getInstance(context).checkFav(currentStreetArt)) {
+                        btnFav.setBackground(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_36dp));
+                    } else {
+                        btnFav.setBackground(context.getResources().getDrawable(R.drawable.ic_favorite_black_36dp));
+                    }
+                    favouriteItemListener.onFavButtonClick(currentStreetArt);
+                }
+            });
+        }
         return view;
     }
 
@@ -119,6 +166,8 @@ public class StreetArtListAdapter extends BaseAdapter {
         mViewHolder.tvStreetartAddress = view.findViewById(R.id.tv_detail_streetart_explanation);
         mViewHolder.ivStreetartPhoto = view.findViewById(R.id.iv_detail_streetart);
         mViewHolder.tvDistance = view.findViewById(R.id.tv_detail_streetart_distance);
+        mViewHolder.btnFav = view.findViewById(R.id.btn_favourite_streetart);
+
 
 
         view.setTag(mViewHolder);

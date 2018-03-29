@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 closeDetailFrag();
-                fabDirections.setVisibility(View.GONE);
             }
         });
     }
@@ -211,6 +210,24 @@ public class MainActivity extends AppCompatActivity
             setupMap();
             closeDetailFrag();
 
+            switch (filterId){
+                case R.id.pu_all:
+                    getSupportActionBar().setTitle(getString(R.string.app_name));
+                    break;
+                case R.id.pu_musea:
+                    getSupportActionBar().setTitle(getString(R.string.pu_musea));
+                    break;
+                case R.id.pu_comic:
+                    getSupportActionBar().setTitle(getString(R.string.pu_comic));
+                    break;
+                case R.id.pu_streetart:
+                    getSupportActionBar().setTitle(getString(R.string.pu_streetart));
+                    break;
+                case R.id.pu_fav:
+                    getSupportActionBar().setTitle(getString(R.string.pu_favourites));
+                    break;
+            }
+
         } else if (id == R.id.nav_list) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.frag_container, MuseumListViewFragment.newInstance())
@@ -220,6 +237,7 @@ public class MainActivity extends AppCompatActivity
 
             closeFABFrag();
             closeDetailFrag();
+            fabDirections.setVisibility(View.GONE);
         } else if (id == R.id.nav_list_streetart) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.frag_container, StreetArtListViewFragment.newInstance())
@@ -229,6 +247,8 @@ public class MainActivity extends AppCompatActivity
 
             closeFABFrag();
             closeDetailFrag();
+            fabDirections.setVisibility(View.GONE);
+
         } else if (id == R.id.nav_list_comics) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.frag_container, ComicListViewFragment.newInstance())
@@ -238,6 +258,8 @@ public class MainActivity extends AppCompatActivity
 
             closeFABFrag();
             closeDetailFrag();
+            fabDirections.setVisibility(View.GONE);
+
         } else if (id == R.id.nav_about) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.frag_container, AboutFragment.newInstance())
@@ -247,6 +269,8 @@ public class MainActivity extends AppCompatActivity
 
             closeFABFrag();
             closeDetailFrag();
+            fabDirections.setVisibility(View.GONE);
+
         } else if (id == R.id.nav_update) {
             downloader.downloadData(this);
             Toast.makeText(this, R.string.txt_toast_update_data, Toast.LENGTH_LONG).show();
@@ -263,7 +287,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void closeDetailFrag() {
-        fabDirections.setVisibility(View.GONE);
+        if(filterId == R.id.pu_fav) {
+            fabDirections.setVisibility(View.VISIBLE);
+            fabDirections.setTag(true);
+            fabDirections.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+        }else {
+            fabDirections.setVisibility(View.GONE);
+        }
         findViewById(R.id.detail_frag_container).setVisibility(View.GONE);
         btnCloseExtraFrag.setVisibility(View.GONE);
         cancelSelectedMarker();
@@ -296,8 +326,6 @@ public class MainActivity extends AppCompatActivity
             floatingActionButton.setVisibility(View.VISIBLE);
         }
 
-
-
         map.setOnMarkerClickListener(this);
         updateCamera();
         if (!(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
@@ -328,6 +356,13 @@ public class MainActivity extends AppCompatActivity
         if(objectLinkedToMarker.size()>0){
             clearMapBeforeDraw();
         }
+
+        if(filterId != R.id.pu_all) {
+            filterId = R.id.pu_all;
+            fabDirections.setVisibility(View.GONE);
+            getSupportActionBar().setTitle(getString(R.string.app_name));
+        }
+
 
         LandMarksDatabase landMarksDatabase = LandMarksDatabase.getInstance(this);
         List<Museum> museums = landMarksDatabase.getMuseums();
@@ -407,33 +442,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-
         fab_container.setVisibility(View.GONE);
-        switchFav(marker);
         updateSelectedMarker(marker);
 
         return true;
     }
 
-    private void switchFav(Marker marker) {
-        Object o = objectLinkedToMarker.get(marker);
 
-        boolean fav = LandMarksDatabase.getInstance(this).switchFav(o);
-
-        if(fav) {
-            marker.setIcon(IC_FAV);
-        }else{
-            if(o instanceof Museum){marker.setIcon(IC_MUSEUM);
-            }else if(o instanceof StreetArt){marker.setIcon(IC_STREETART);
-            }else{marker.setIcon(IC_COMIC);}
-        }
-    }
 
     @Override
     public void itemSelected(Object o) {
 
         menu.setGroupVisible(R.id.mg_filter, true);
-
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
             floatingActionButton.setVisibility(View.GONE);
@@ -442,7 +462,31 @@ public class MainActivity extends AppCompatActivity
             fabDirections.setVisibility(View.VISIBLE);
             fabDirections.setTag(false);
             fabDirections.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.Blue_dark)));
+        }
 
+        if(findViewById(R.id.fab_frag_container).getVisibility() != View.VISIBLE){
+            if(o instanceof Museum){
+                filterId = R.id.pu_musea;
+            }else if(o instanceof StreetArt){
+                filterId = R.id.pu_streetart;
+            }else if(o instanceof Comic){
+                filterId = R.id.pu_comic;
+            }
+
+            switch (filterId){
+                case R.id.pu_musea:
+                    getSupportActionBar().setTitle(getString(R.string.pu_musea));
+                    filterMarker(Museum.class);
+                    break;
+                case R.id.pu_comic:
+                    getSupportActionBar().setTitle(getString(R.string.pu_comic));
+                    filterMarker(Comic.class);
+                    break;
+                case R.id.pu_streetart:
+                    getSupportActionBar().setTitle(getString(R.string.pu_streetart));
+                    filterMarker(StreetArt.class);
+                    break;
+            }
         }
 
         Marker marker = null;
@@ -459,13 +503,11 @@ public class MainActivity extends AppCompatActivity
             fab_container.setVisibility(View.GONE);
             updateSelectedMarker(marker);
         }
+
+
     }
 
     public void updateSelectedMarker(Marker marker) {
-
-        if(route != null){
-            route.remove();
-        }
 
         cancelSelectedMarker();
 
@@ -641,6 +683,11 @@ public class MainActivity extends AppCompatActivity
                            .commit();
                }else{
                    fab_container.setVisibility(View.GONE);
+                   if(filterId == R.id.pu_fav){
+                       fabDirections.setVisibility(View.VISIBLE);
+                       fabDirections.setTag(true);
+                       fabDirections.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                   }
                }
 
            }
@@ -684,32 +731,40 @@ public class MainActivity extends AppCompatActivity
 
     //Tutorial (class DirectionParser also from) https://www.youtube.com/watch?v=jg1urt3FGCY
     public void getDirections(LatLng destination){
+        if(route != null){
+            route.remove();
+        }
         Location location_origin = LocationUtil.getInstance().getLocation();
         if(location_origin != null) {
             LatLng origin = new LatLng(location_origin.getLatitude(), location_origin.getLongitude());
-            String url = "";
+            String url;
 
-           
                Log.d(TAG, "getDirections: notfav");
                 url = getRequestURL(origin, destination);
-            
-            
+
             TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
             taskRequestDirections.execute(url);
+        }else{
+            Toast.makeText(this, "No User location found...", Toast.LENGTH_LONG).show();
         }
     }    
     
     public void getDirections(){
+        if(route != null){
+            route.remove();
+        }
         Location location_origin = LocationUtil.getInstance().getLocation();
         if(location_origin != null) {
             LatLng origin = new LatLng(location_origin.getLatitude(), location_origin.getLongitude());
-            String url = "";
+            String url;
 
             Log.d(TAG, "getDirections: fav");
                 url = getRequestURLFav(origin, origin);
             
             TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
             taskRequestDirections.execute(url);
+        }else{
+            Toast.makeText(this, "No Userlocation retrieved", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -724,9 +779,7 @@ public class MainActivity extends AppCompatActivity
 
         String output = "json";
 
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param;
-
-        return url;
+        return  "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param;
     }
 
     private String getRequestURLFav(LatLng origin, LatLng destination) {
@@ -736,30 +789,28 @@ public class MainActivity extends AppCompatActivity
         String sensor = "sensor=false";
         String mode = "mode=walking";
 
-        String waypoints = "waypoints=optimize:true";
+        StringBuilder waypoints = new StringBuilder("waypoints=optimize:true");
 
         ArrayList<Object> favList = LandMarksDatabase.getInstance(this).getAllFavObjects();
 
         for(Object o: favList){
-            if(!waypoints.endsWith("=")){
-                waypoints += "|";
+            if(!waypoints.toString().endsWith("=")){
+                waypoints.append("|");
             }
             if(o instanceof Museum){
                 Museum m = (Museum) o;
                 String waypoint = m.getCoordX() + "," + m.getCoordY();
-                waypoints += waypoint;
+                waypoints.append(waypoint);
             }else if(o instanceof StreetArt){
                 StreetArt s = (StreetArt) o;
                 String waypoint = s.getCoordX() + "," + s.getCoordY();
-                waypoints += waypoint;
+                waypoints.append(waypoint);
             }else if(o instanceof Comic){
                 Comic c = (Comic) o;
                 String waypoint = c.getCoordX() + "," + c.getCoordY();
-                waypoints += waypoint;
+                waypoints.append(waypoint);
             }
         }
-
-
 
         String param = str_origin + "&" + str_dest + "&" + sensor + "&" + mode + "&" + waypoints;
 
@@ -786,14 +837,14 @@ public class MainActivity extends AppCompatActivity
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-            StringBuffer stringBuffer = new StringBuffer();
-            String line = "";
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
 
             while ((line = bufferedReader.readLine()) != null){
-                stringBuffer.append(line);
+                stringBuilder.append(line);
             }
 
-            responseStr = stringBuffer.toString();
+            responseStr = stringBuilder.toString();
             bufferedReader.close();
             inputStreamReader.close();
 
@@ -823,7 +874,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected String doInBackground(String... strings) {
-            String responseStr = "";
+            String responseStr;
 
             responseStr = requestDirections(strings[0]);
             Log.d(TAG, "doInBackground: response str" + responseStr);
@@ -841,7 +892,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             List<List<HashMap<String, String>>> routes = null;
             Log.d(TAG, "doInBackground: " + strings[0]);
             try {
@@ -859,7 +910,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
             if(lists != null) {
-                ArrayList points = null;
+                ArrayList points;
 
                 PolylineOptions polylineOptions = null;
 
@@ -899,7 +950,38 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void favouriteSelected(Object o) {
+    public void onFavButtonClick(Object o) {
+        Marker marker = null;
 
+        for(Marker element: objectLinkedToMarker.keySet()){
+            if(objectLinkedToMarker.get(element).equals(o)){
+                marker = element;
+                break;
+            }
+        }
+        if(marker != null) {
+            switchFav(marker, o);
+        }
+    }
+
+    private void switchFav(Marker marker, Object o) {
+
+        boolean fav = LandMarksDatabase.getInstance(this).switchFav(o);
+
+        if(fav) {
+            marker.setIcon(IC_SELECTED);
+            marker.setVisible(true);
+        }else{
+            if(o instanceof Museum){
+                marker.setIcon(IC_MUSEUM);
+            }else if(o instanceof StreetArt){
+                marker.setIcon(IC_STREETART);
+            }else{
+                marker.setIcon(IC_COMIC);
+            }
+            if(filterId == R.id.pu_fav) {
+                marker.setVisible(false);
+            }
+        }
     }
 }
