@@ -1,5 +1,6 @@
 package be.ehb.xplorebxl.View.Fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -24,6 +25,14 @@ public class LauncherFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        super.onAttach(context);
+        startBtnListener = (StartBtnListener) context;
+    }
+
+
+    //voor oudere android versies
+    @Override
+    public void onAttach(Activity context) {
         super.onAttach(context);
         startBtnListener = (StartBtnListener) context;
     }
