@@ -702,17 +702,14 @@ public class MainActivity extends AppCompatActivity
         fabDirections.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               Log.d(TAG, "onClick: fabdirections");
-               
+
                 fabDirections.setVisibility(View.GONE);
 
                 boolean fav = (boolean) fabDirections.getTag();
 
                 if(fav){
-                    Log.d(TAG, "onClick: fav");
                     getDirections();
                 }else {
-                    Log.d(TAG, "onClick: notfav");
                     Object object = objectLinkedToMarker.get(selectedMarker);
                     if (object instanceof Museum) {
                         getDirections(((Museum) object).getCoord());
@@ -739,7 +736,6 @@ public class MainActivity extends AppCompatActivity
             LatLng origin = new LatLng(location_origin.getLatitude(), location_origin.getLongitude());
             String url;
 
-               Log.d(TAG, "getDirections: notfav");
                 url = getRequestURL(origin, destination);
 
             TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
@@ -758,7 +754,6 @@ public class MainActivity extends AppCompatActivity
             LatLng origin = new LatLng(location_origin.getLatitude(), location_origin.getLongitude());
             String url;
 
-            Log.d(TAG, "getDirections: fav");
                 url = getRequestURLFav(origin, origin);
             
             TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
@@ -779,7 +774,7 @@ public class MainActivity extends AppCompatActivity
 
         String output = "json";
 
-        return  "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param;
+        return  "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&KEY=AIzaSyDN-j0Xys4VYBa_N-h4Wmx91F1LHEOU2ac";
     }
 
     private String getRequestURLFav(LatLng origin, LatLng destination) {
@@ -816,9 +811,7 @@ public class MainActivity extends AppCompatActivity
 
         String output = "json";
 
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param;
-
-        Log.d(TAG, "getRequestURLFav: " + url);
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&KEY=AIzaSyDN-j0Xys4VYBa_N-h4Wmx91F1LHEOU2ac";
 
         return url;
     }
@@ -877,7 +870,6 @@ public class MainActivity extends AppCompatActivity
             String responseStr;
 
             responseStr = requestDirections(strings[0]);
-            Log.d(TAG, "doInBackground: response str" + responseStr);
             return responseStr;
         }
 
@@ -894,7 +886,7 @@ public class MainActivity extends AppCompatActivity
         protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
             JSONObject jsonObject;
             List<List<HashMap<String, String>>> routes = null;
-            Log.d(TAG, "doInBackground: " + strings[0]);
+
             try {
                 jsonObject = new JSONObject(strings[0]);
                 DirectionsParser directionsParser = new DirectionsParser();
