@@ -37,4 +37,6 @@
     <string name="txt_detail_featuring">Feat. </string>
     <string name="txt_btn_detail_museum_contact">contact</string>
     <string name="pu_favourites">Favourites</string>
+    <string name="txt_menu_title_navigation">Navigation</string>
+    <string name="txt_menu_help_support"><![CDATA[Help & Support]]></string>
 </resources>

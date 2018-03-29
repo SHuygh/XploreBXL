@@ -8,8 +8,7 @@
         android:checkableBehavior="single">
 
 
-
-        <item android:title="Navigation">
+        <item android:title="@string/txt_menu_title_navigation">
             <menu>
                 <item
                     android:id="@+id/nav_map"
@@ -33,19 +32,19 @@
 
     <group android:id="@+id/Support">
 
-        <item android:title="Help &amp; Support">
-        <menu>
+        <item android:title="@string/txt_menu_help_support">
+            <menu>
 
-        <item
-            android:id="@+id/nav_about"
-            android:icon="@android:drawable/ic_menu_help"
-            android:title="@string/txt_nav_about" />
+                <item
+                    android:id="@+id/nav_about"
+                    android:icon="@android:drawable/ic_menu_help"
+                    android:title="@string/txt_nav_about" />
 
-        <item
-            android:id="@+id/nav_update"
-            android:icon="@android:drawable/ic_popup_sync"
-            android:title="@string/txt_nav_item_update_data" />
-        </menu>
+                <item
+                    android:id="@+id/nav_update"
+                    android:icon="@android:drawable/ic_popup_sync"
+                    android:title="@string/txt_nav_item_update_data" />
+            </menu>
         </item>
     </group>
 

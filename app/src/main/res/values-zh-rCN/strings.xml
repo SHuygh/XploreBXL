@@ -38,5 +38,8 @@
     <string name="txt_detail_illustrator">插图作者: </string>
     <string name="txt_detail_featuring">主角: </string>
     <string name="txt_btn_detail_museum_contact">contact</string>
+    <string name="txt_menu_title_navigation">目录</string>
+    <string name="txt_menu_help_support"><![CDATA[帮助]]></string>
+    <string name="pu_favourites">收藏</string>
 
 </resources>
