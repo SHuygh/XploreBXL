@@ -13,6 +13,7 @@ package be.ehb.xplorebxl.Utils;
 /**
  * Created by NgocTri on 12/11/2017.
  */
+//Tutorial (class DirectionParser also from) https://www.youtube.com/watch?v=jg1urt3FGCY
 
 public class DirectionsParser {
     /**

@@ -585,7 +585,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    //Tutorial https://www.youtube.com/watch?v=jg1urt3FGCY
+    //Tutorial (class DirectionParser also from) https://www.youtube.com/watch?v=jg1urt3FGCY
     public void getDirections(LatLng destination){
         Location location_origin = LocationUtil.getInstance().getLocation();
         if(location_origin != null) {
