@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import be.ehb.xplorebxl.Model.Museum;
@@ -18,6 +17,7 @@ import be.ehb.xplorebxl.R;
 import be.ehb.xplorebxl.Utils.Listener.FavouriteItemListener;
 import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 import be.ehb.xplorebxl.Utils.Adapter.MuseumListAdapter;
+import be.ehb.xplorebxl.Utils.Listener.ListviewItemListener;
 
 /**
  * Created by TDS-Team on 16/03/2018.
@@ -27,8 +27,8 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
 
 
     private MuseumListAdapter museumListAdapter;
-    private Button btn_musea;
     private ListView lv_musea;
+
 
     private ListviewItemListener callback;
 
@@ -66,9 +66,9 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
                              Bundle savedInstanceState) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.pu_musea));
 
+
         View rootView = inflater.inflate(R.layout.fragment_list_view, container, false);
 
-        btn_musea = rootView.findViewById(R.id.btn_lv_musea);
         lv_musea = rootView.findViewById(R.id.lv_museums);
 
         museumListAdapter = new MuseumListAdapter(getActivity());
@@ -86,5 +86,7 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
         callback.itemSelected(selectedMuseum);
 
     }
+
+
 
 }

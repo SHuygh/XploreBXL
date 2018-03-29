@@ -14,6 +14,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import be.ehb.xplorebxl.Database.LandMarksDatabase;
 import be.ehb.xplorebxl.Model.Comic;
@@ -134,6 +136,7 @@ public class FabAdapter extends RecyclerView.Adapter<FabAdapter.CustomViewHolder
 
     public void setupView(CustomViewHolder customViewHolder, Museum museum) {
         customViewHolder.tvTitle.setText(museum.getName());
+        randomMuseumImage(customViewHolder);
         setupDistance(museum.getCoordX(), museum.getCoordY(), customViewHolder);
 
     }
@@ -154,7 +157,20 @@ public class FabAdapter extends RecyclerView.Adapter<FabAdapter.CustomViewHolder
         return (null != items ? items.size() : 0);
     }
 
+    private void randomMuseumImage(CustomViewHolder viewHolder) {
 
+        Random random = new Random();
+        List<Integer> generated = new ArrayList<Integer>();
+        generated.add(R.drawable.museum1);
+        generated.add(R.drawable.museum2);
+        generated.add(R.drawable.museum3);
+        generated.add(R.drawable.museum4);
+        generated.add(R.drawable.museum5);
+        generated.add(R.drawable.museum6);
+
+        Integer next = random.nextInt(5);
+        viewHolder.imageView.setImageResource(generated.get(next));
+    }
 
 }
 
