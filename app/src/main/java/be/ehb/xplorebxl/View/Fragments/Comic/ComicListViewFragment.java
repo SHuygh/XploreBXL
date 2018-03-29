@@ -79,7 +79,7 @@ public class ComicListViewFragment extends Fragment {
             }
         });
 
-        
+
 
         return rootView;
     }
