@@ -774,7 +774,7 @@ public class MainActivity extends AppCompatActivity
 
         String output = "json";
 
-        return  "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&KEY=AIzaSyDN-j0Xys4VYBa_N-h4Wmx91F1LHEOU2ac";
+        return  "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&key=AIzaSyBv-FdF9KVbAUp9uuEvFFgkBqGFDfDn_8s";
     }
 
     private String getRequestURLFav(LatLng origin, LatLng destination) {
@@ -811,8 +811,9 @@ public class MainActivity extends AppCompatActivity
 
         String output = "json";
 
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&KEY=AIzaSyDN-j0Xys4VYBa_N-h4Wmx91F1LHEOU2ac";
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&key=AIzaSyBv-FdF9KVbAUp9uuEvFFgkBqGFDfDn_8s";
 
+        Log.d(TAG, "getRequestURLFav: " + url);
         return url;
     }
 
@@ -884,6 +885,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
+            Log.d(TAG, "doInBackground: " + strings[0]);
             JSONObject jsonObject;
             List<List<HashMap<String, String>>> routes = null;
 
