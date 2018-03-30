@@ -13,6 +13,8 @@
         android:id="@+id/lv_museums"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:divider="@color/colorPrimaryDark"
+        android:dividerHeight="@dimen/nav_header_vertical_spacing"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

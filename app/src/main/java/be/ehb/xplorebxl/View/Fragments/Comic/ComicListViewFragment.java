@@ -30,8 +30,6 @@ public class ComicListViewFragment extends Fragment {
 
     private ListviewItemListener callback;
 
-    private FavouriteItemListener faveCallback;
-
 
     public ComicListViewFragment() {
         // Required empty public constructor
@@ -47,8 +45,6 @@ public class ComicListViewFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         callback = (ListviewItemListener) context;
-
-        faveCallback = (FavouriteItemListener) context;
     }
 
     //voor oudere android versies
@@ -56,8 +52,6 @@ public class ComicListViewFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         callback = (ListviewItemListener) activity;
-
-        faveCallback = (FavouriteItemListener) activity;
     }
 
     @Override

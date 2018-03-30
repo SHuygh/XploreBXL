@@ -307,9 +307,9 @@ public class MainActivity extends AppCompatActivity
 
         IC_MUSEUM = BitmapDescriptorFactory.defaultMarker(180);
         IC_STREETART = BitmapDescriptorFactory.defaultMarker(90);
-        IC_COMIC = BitmapDescriptorFactory.defaultMarker(10);
+        IC_COMIC = BitmapDescriptorFactory.defaultMarker(270);
         IC_SELECTED = BitmapDescriptorFactory.defaultMarker(50);
-        IC_FAV = BitmapDescriptorFactory.defaultMarker(270);
+        IC_FAV = BitmapDescriptorFactory.defaultMarker(10);
 
         drawMarkers();
 
@@ -731,7 +731,9 @@ public class MainActivity extends AppCompatActivity
         if(route != null){
             route.remove();
         }
+
         Location location_origin = LocationUtil.getInstance().getLocation();
+
         if(location_origin != null) {
             LatLng origin = new LatLng(location_origin.getLatitude(), location_origin.getLongitude());
             String url;
@@ -759,7 +761,7 @@ public class MainActivity extends AppCompatActivity
             TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
             taskRequestDirections.execute(url);
         }else{
-            Toast.makeText(this, "No Userlocation retrieved", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No User location found...", Toast.LENGTH_LONG).show();
         }
     }
 
