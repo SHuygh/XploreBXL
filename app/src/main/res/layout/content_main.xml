@@ -67,7 +67,7 @@
         android:scaleType="center"
         android:visibility="gone"
         app:backgroundTint="@color/Blue_dark"
-        app:elevation="24dp"
+        app:elevation="4dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/fab"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +83,7 @@
         android:focusable="true"
         android:visibility="gone"
         app:backgroundTint="@color/colorAccent"
-        app:elevation="24dp"
+        app:elevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_dialog_map" />
