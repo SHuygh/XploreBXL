@@ -731,7 +731,9 @@ public class MainActivity extends AppCompatActivity
         if(route != null){
             route.remove();
         }
+
         Location location_origin = LocationUtil.getInstance().getLocation();
+
         if(location_origin != null) {
             LatLng origin = new LatLng(location_origin.getLatitude(), location_origin.getLongitude());
             String url;
@@ -759,7 +761,7 @@ public class MainActivity extends AppCompatActivity
             TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
             taskRequestDirections.execute(url);
         }else{
-            Toast.makeText(this, "No Userlocation retrieved", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No User location found...", Toast.LENGTH_LONG).show();
         }
     }
 
