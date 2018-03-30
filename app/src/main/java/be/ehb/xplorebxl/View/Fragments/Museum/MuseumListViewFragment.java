@@ -32,7 +32,6 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
 
     private ListviewItemListener callback;
 
-    private FavouriteItemListener faveCallback;
 
     public MuseumListViewFragment() {
     }
@@ -49,7 +48,6 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
         super.onAttach(context);
         callback = (ListviewItemListener) context;
 
-        faveCallback = (FavouriteItemListener) context;
     }
 
     //voor oudere android versies:
@@ -58,7 +56,6 @@ public class MuseumListViewFragment extends Fragment implements AdapterView.OnIt
         super.onAttach(activity);
         callback = (ListviewItemListener) activity;
 
-        faveCallback = (FavouriteItemListener) activity;
     }
 
     @Override
