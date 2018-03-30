@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">XploreBXL</string>
+    <string name="app_name">Discover Brussels</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -21,8 +21,9 @@
     <string name="txt_nav_list_comics">Comic Book Murals</string>
     <string name="mi_filter">Filter</string>
     <string name="pu_musea">Musea</string>
-    <string name="pu_streetart">Streetart</string>
-    <string name="pu_comic">Comic</string>
+    <string name="pu_streetart">Street Art</string>
+    <string name="about">About</string>
+    <string name="pu_comic">Comic Book Murals</string>
     <string name="pu_all">All</string>
     <string name="txt_distance">3.25\\nkm</string>
 

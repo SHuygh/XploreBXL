@@ -307,9 +307,9 @@ public class MainActivity extends AppCompatActivity
 
         IC_MUSEUM = BitmapDescriptorFactory.defaultMarker(180);
         IC_STREETART = BitmapDescriptorFactory.defaultMarker(90);
-        IC_COMIC = BitmapDescriptorFactory.defaultMarker(10);
+        IC_COMIC = BitmapDescriptorFactory.defaultMarker(270);
         IC_SELECTED = BitmapDescriptorFactory.defaultMarker(50);
-        IC_FAV = BitmapDescriptorFactory.defaultMarker(270);
+        IC_FAV = BitmapDescriptorFactory.defaultMarker(10);
 
         drawMarkers();
 

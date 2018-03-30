@@ -1,17 +1,30 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout6"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
     tools:clickable="true"
-    tools:context="be.ehb.xplorebxl.View.Fragments.AboutFragment" android:focusable="true">
+    tools:context="be.ehb.xplorebxl.View.Fragments.AboutFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <ImageView
         android:id="@+id/iv_about"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/about"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_launcher"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
         android:src="@drawable/about" />
-</FrameLayout>
+</android.support.constraint.ConstraintLayout>

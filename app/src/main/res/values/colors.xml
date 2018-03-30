@@ -5,6 +5,9 @@
     <color name="colorAccent">#e30059</color>
 
     <color name="Blue_dark">#2a76a9</color>
+    <color name="White">#ffffff</color>
+
+
     //nav Drawer
     <color name="color_navigation_list_background">#ffffff</color>
     <color name="color_selector_navigation_icon">#e30059</color>
